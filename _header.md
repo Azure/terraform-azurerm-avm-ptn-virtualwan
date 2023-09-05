@@ -1,9 +1,40 @@
-resource "random_password" "shared_key" {
-  length           = 12
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
+# Terraform Verified Module for Azure Virtual WAN Hub Networking
 
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Azure/terraform-azurerm-vwan.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-vwan "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/Azure/terraform-azurerm-vwan.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-vwan "Percentage of issues still open")
+
+This module is designed to simplify the creation of virtual wan based networks in Azure.
+
+## Features
+
+- Virtual WAN:
+- Virtual WAN Hub:
+  - Virtual WAN Hub.
+  - Secured Virtual Hub.
+  - Routing intent
+- Azure Firewall
+  - Secured Virtual Hub
+  - AzureFirewallSubnet.
+- Site-to-Site Virtual Network Gateway:
+  - S2S VPN Gateway.
+  - Active-Active or Single.
+  - VPN Site
+  - VPN Site Connection
+  - Deployment of `GatewaySubnet`.
+- Point-to-Site Virtual Network Gateway:
+  - P2S VPN Gateway.
+  - P2S server configuration.
+  - Active-Active or Single.
+  - Deployment of `GatewaySubnet`.
+- ER Gateway:
+  - ER Gateway.
+  - ER Gateway Connection.
+  - Active-Active or Single.
+  - Deployment of `GatewaySubnet`.
+
+## Example
+
+```terraform
 module "vwan_with_vhub" {
   source                         = "../../"
   resource_group_name            = "tvmVwanRg"
@@ -11,6 +42,7 @@ module "vwan_with_vhub" {
   virtual_wan_name               = "tvmVwan"
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
+  bgp_community                  = "12076:51010"
   type                           = "Standard"
   virtual_wan_tags = {
     environment = "dev"
@@ -63,9 +95,11 @@ module "vwan_with_vhub" {
         policy_based_traffic_selector_enabled = false
         ratelimit_enabled                     = false
         route_weight                          = 1
-        shared_key                            = random_password.shared_key.result
+        shared_key                            = "AzureA1b2C3"
         vpn_site_link_number                  = 0
       }]
     }
   }
 }
+
+```

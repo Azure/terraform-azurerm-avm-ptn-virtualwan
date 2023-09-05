@@ -86,7 +86,7 @@ resource "azurerm_virtual_network_gateway_connection" "onpremisesconnection" {
   type                       = "IPsec"
   connection_protocol        = "IKEv2"
   routing_weight             = 10
-  shared_key                 = "AzureA1b2C3"
+  shared_key                 = random_password.shared_key.result
   enable_bgp                 = true
 }
 

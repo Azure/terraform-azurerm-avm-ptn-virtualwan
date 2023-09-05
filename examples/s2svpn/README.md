@@ -1,9 +1,22 @@
-resource "random_password" "shared_key" {
-  length           = 12
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
+# Test Site-to-Site VPN vWAN in Terraform Verified Module for Azure Virtual WAN
 
+This folder contains a Terraform configuration that shows an example of how to test a Site-to-Site VPN vWAN in Azure using Terraform.
+
+## Resource deployed
+
+- Virtual WAN:
+- Virtual WAN Hub:
+  - Virtual WAN Hub.
+- Site-to-Site Virtual Network Gateway:
+  - S2S VPN Gateway.
+  - Active-Active or Single.
+  - VPN Site
+  - VPN Site Connection
+  - Deployment of `GatewaySubnet`.
+
+## Example
+
+```terraform
 module "vwan_with_vhub" {
   source                         = "../../"
   resource_group_name            = "tvmVwanRg"
@@ -69,3 +82,5 @@ module "vwan_with_vhub" {
     }
   }
 }
+
+```

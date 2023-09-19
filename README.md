@@ -112,15 +112,11 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.3.0)
 
-- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (>=1.8.0)
-
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0)
 
 ## Providers
 
 The following providers are used by this module:
-
-- <a name="provider_azapi"></a> [azapi](#provider\_azapi) (>=1.8.0)
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0)
 
@@ -128,7 +124,6 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
-- [azapi_resource.routing_intent](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
 - [azurerm_express_route_connection.er_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_connection) (resource)
 - [azurerm_express_route_gateway.express_route_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_gateway) (resource)
 - [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) (resource)
@@ -136,6 +131,7 @@ The following resources are used by this module:
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_virtual_hub.virtual_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub) (resource)
 - [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
+- [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
 - [azurerm_virtual_wan.virtual_wan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_wan) (resource)
 - [azurerm_vpn_gateway.vpn_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway) (resource)
 - [azurerm_vpn_gateway_connection.vpn_site_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway_connection) (resource)
@@ -354,24 +350,13 @@ Type:
 
 ```hcl
 map(object({
-    type                 = string
-    name                 = string
-    virtual_hub_name     = string
-    policy_name          = string       # Name of the policy
-    policy_destinations  = list(string) # Private and/or Internet
-    policy_nexthop       = string       # Azure Firewall name
-    remove_special_chars = optional(string)
-    location             = optional(string)
-    identity = optional(object({
-      type         = string
-      identity_ids = list(string)
+    name             = string
+    virtual_hub_name = string
+    routing_policies = list(object({
+      name         = string
+      destinations = list(string)
+      next_hop     = string
     }))
-    tags                      = optional(map(string))
-    response_export_values    = optional(list(string))
-    locks                     = optional(list(string))
-    ignore_casing             = optional(bool)
-    ignore_missing_property   = optional(bool)
-    schema_validation_enabled = optional(bool)
   }))
 ```
 

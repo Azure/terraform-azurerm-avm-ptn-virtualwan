@@ -36,21 +36,17 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
 }
 
 # Routing intent
-resource "azapi_resource" "routing_intent" {
-  for_each = local.routing_intents != null && length(local.routing_intents) > 0 ? local.routing_intents : {}
+resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
+  for_each       = local.routing_intents != null && length(local.routing_intents) > 0 ? local.routing_intents : {}
+  name           = each.value.name
+  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
 
-  type      = try(each.value.type, "Microsoft.Network/virtualHubs/routingIntent@2023-02-01")
-  name      = each.value.name
-  parent_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
-  body = jsonencode({
-    properties = {
-      "routingPolicies" : [
-        {
-          "name" : each.value.policy_name,
-          "destinations" : each.value.policy_destinations,
-          "nextHop" : azurerm_firewall.fw[each.value.policy_nexthop].id
-        }
-      ]
+  dynamic "routing_policy" {
+    for_each = each.value.routing_policies != null && length(each.value.routing_policies) > 0 ? each.value.routing_policies : []
+    content {
+      name         = routing_policy.value.name
+      destinations = routing_policy.value.destinations
+      next_hop     = azurerm_firewall.fw[routing_policy.value.next_hop].id
     }
-  })
+  }
 }

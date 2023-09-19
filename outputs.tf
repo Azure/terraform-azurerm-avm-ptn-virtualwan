@@ -9,7 +9,7 @@ output "virtual_wan_id" {
 }
 
 output "virtual_hub_id" {
-  value       = var.virtual_hubs != null ? [for hub in var.virtual_hubs : hub.id] : null
+  value       = var.virtual_hubs != null ? [for hub in azurerm_virtual_hub.virtual_hub : hub.id] : null
   description = "Virtual Hub ID"
 }
 

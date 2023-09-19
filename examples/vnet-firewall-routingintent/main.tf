@@ -5,9 +5,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0"
     }
-    azapi = {
-      source = "Azure/azapi"
-    }
   }
 }
 provider "azurerm" {
@@ -45,6 +42,17 @@ module "vwan_with_vhub" {
       sku_tier         = "Standard"
       name             = "aue-hub-fw"
       virtual_hub_name = "aue-vhub"
+    }
+  }
+  routing_intents = {
+    "aue-vhub-routing-intent" = {
+      name             = "private-routing-intent"
+      virtual_hub_name = "aue-vhub"
+      routing_policies = [{
+        name         = "aue-vhub-routing-policy-private"
+        destinations = ["PrivateTraffic"]
+        next_hop     = "aue-vhub-fw"
+      }]
     }
   }
 }

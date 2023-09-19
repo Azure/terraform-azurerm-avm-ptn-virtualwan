@@ -268,7 +268,6 @@ variable "er_circuit_connections" {
 }
 
 # Azure Firewall
-# TODO - Change to optional
 variable "firewalls" {
   type = map(object({
     virtual_hub_name     = string
@@ -331,30 +330,6 @@ variable "virtual_network_connections" {
 }
 
 # Routing intent for virutal hubs
-# variable "routing_intents" {
-#   type = map(object({
-#     type                 = string
-#     name                 = string
-#     virtual_hub_name     = string
-#     policy_name          = string       # Name of the policy
-#     policy_destinations  = list(string) # Private and/or Internet
-#     policy_nexthop       = string       # Azure Firewall name
-#     remove_special_chars = optional(string)
-#     location             = optional(string)
-#     identity = optional(object({
-#       type         = string
-#       identity_ids = list(string)
-#     }))
-#     tags                      = optional(map(string))
-#     response_export_values    = optional(list(string))
-#     locks                     = optional(list(string))
-#     ignore_casing             = optional(bool)
-#     ignore_missing_property   = optional(bool)
-#     schema_validation_enabled = optional(bool)
-#   }))
-#   description = "Routing intent for virutal hubs"
-#   default     = {}
-# }
 variable "routing_intents" {
   type = map(object({
     name             = string

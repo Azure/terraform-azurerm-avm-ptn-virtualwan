@@ -18,6 +18,11 @@ output "s2s_vpn_gw_id" {
   description = "S2S VPN Gateway ID"
 }
 
+output "s2s_vpn_gw" {
+  value       = var.vpn_gateways != null ? [for gw in azurerm_vpn_gateway.vpn_gateway : gw] : null
+  description = "S2S VPN Gateway Objects"
+}
+
 output "p2s_vpn_gw_id" {
   value       = var.p2s_gateways != null ? [for gw in azurerm_vpn_gateway.vpn_gateway : gw.id] : null
   description = "P2S VPN Gateway ID"

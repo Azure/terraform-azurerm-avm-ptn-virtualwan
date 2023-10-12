@@ -41,10 +41,10 @@ module "vwan_with_vhub" {
         name          = "link1"
         provider_name = "Cisco"
         bgp = {
-          asn             = 65001
-          peering_address = "172.16.1.254"
+          asn             = azurerm_virtual_network_gateway.gw.bgp_settings[0].asn
+          peering_address = azurerm_virtual_network_gateway.gw.bgp_settings[0].peering_addresses[0].default_addresses[0]
         }
-        ip_address    = "20.28.182.157"
+        ip_address    = azurerm_public_ip.gw-ip.ip_address
         speed_in_mbps = "20"
       }]
     }
@@ -68,4 +68,9 @@ module "vwan_with_vhub" {
       }]
     }
   }
+}
+
+output "s2s_vpn_gw" {
+  value       = [for gw in module.vwan_with_vhub.s2s_vpn_gw : gw]
+  description = "S2S VPN GW"
 }

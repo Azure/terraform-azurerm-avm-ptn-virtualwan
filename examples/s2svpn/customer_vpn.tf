@@ -67,10 +67,10 @@ resource "azurerm_local_network_gateway" "onpremiseslocalgw" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  gateway_address = "20.227.10.89"
+  gateway_address = tolist(module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1]
   bgp_settings {
-    asn                 = 65515
-    bgp_peering_address = "10.0.0.12"
+    asn                 = module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].asn
+    bgp_peering_address = tolist(module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].instance_0_bgp_peering_address[0].default_ips)[0]
     peer_weight         = 0
   }
 }

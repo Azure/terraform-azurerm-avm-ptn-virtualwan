@@ -18,7 +18,6 @@ module "vwan_with_vhub" {
   resource_group_name            = "tvmVwanRg"
   location                       = "australiaeast"
   virtual_wan_name               = "tvmVwan"
-  disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"
   virtual_wan_tags = {

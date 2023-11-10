@@ -11,7 +11,7 @@ resource "azurerm_virtual_wan" "virtual_wan" {
   name                              = var.virtual_wan_name
   location                          = var.location
   resource_group_name               = var.resource_group_name
-  disable_vpn_encryption            = var.disable_vpn_encryption ? false : true
+  disable_vpn_encryption            = var.disable_vpn_encryption
   allow_branch_to_branch_traffic    = try(var.allow_branch_to_branch_traffic, true)
   office365_local_breakout_category = try(var.office365_local_breakout_category, "None")
   type                              = var.type

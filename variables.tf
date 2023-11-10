@@ -3,6 +3,12 @@ variable "location" {
   type        = string
   description = "Virtual WAN location"
 }
+variable "create_rg" {
+  type        = bool
+  description = "Switch to create resource group"
+  default     = false
+}
+
 variable "resource_group_name" {
   type        = string
   description = "Virutal WAN Resource group name"

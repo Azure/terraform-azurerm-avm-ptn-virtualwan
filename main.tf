@@ -1,6 +1,6 @@
 # Create rgs as defined by var.virtual_wan
 resource "azurerm_resource_group" "rg" {
-  for_each = var.resource_group_name != null ? toset([var.resource_group_name]) : toset([])
+  for_each = var.create_rg ? toset([var.resource_group_name]) : toset([])
 
   location = var.location
   name     = var.resource_group_name
@@ -16,6 +16,8 @@ resource "azurerm_virtual_wan" "virtual_wan" {
   office365_local_breakout_category = try(var.office365_local_breakout_category, "None")
   type                              = var.type
   tags                              = merge(var.tags, var.virtual_wan_tags)
+
+  depends_on = [ azurerm_resource_group.rg ]
 }
 
 resource "azurerm_virtual_hub" "virtual_hub" {

@@ -35,6 +35,7 @@ variable "virtual_wan_name" {
 variable "disable_vpn_encryption" {
   type        = bool
   description = "Switch to flip VWAN vpn encryption"
+  default     = false
 }
 
 variable "allow_branch_to_branch_traffic" {

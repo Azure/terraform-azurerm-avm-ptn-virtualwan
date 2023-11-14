@@ -15,6 +15,7 @@ provider "azurerm" {
 
 module "vwan_with_vhub" {
   source                         = "../../"
+  create_resource_group          = true
   resource_group_name            = "tvmVwanRg"
   location                       = "australiaeast"
   virtual_wan_name               = "tvmVwan"

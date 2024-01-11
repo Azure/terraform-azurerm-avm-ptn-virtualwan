@@ -3,9 +3,20 @@ variable "location" {
   type        = string
   description = "Virtual WAN location"
 }
+
+variable "create_resource_group" {
+  type        = bool
+  description = "If true will create a resource group, otherwise will use the existing resource group supplied in resource_group_name"
+  default     = false
+}
+
 variable "resource_group_name" {
   type        = string
-  description = "Virutal WAN Resource group name"
+  description = "Virtual WAN Resource group name"
+  validation {
+    condition     = length(var.resource_group_name) > 0
+    error_message = "Resource group name must be specified."
+  }
 }
 
 variable "resource_group_tags" {

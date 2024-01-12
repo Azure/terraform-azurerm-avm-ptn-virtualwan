@@ -39,7 +39,7 @@ module "vwan_with_vhub" {
   p2s_gateways = {
     "aue-vhub-p2s-gw" = {
       name                                      = "aue-vhub-p2s-gw"
-      virtual_hub_name                          = "aue-vhub"
+      virtual_hub_map_key                          = "aue-vhub"
       p2s_gateway_vpn_server_configuration_name = "aue-vhub-p2s-vpn-svr-conf"
       scale_unit                                = 1
       connection_configuration = {
@@ -53,7 +53,7 @@ module "vwan_with_vhub" {
   p2s_gateway_vpn_server_configurations = {
     "aue-vhub-p2s-vpn-svr-conf" = {
       name                     = "aue-vhub-p2s-vpn-conf"
-      virtual_hub_name         = "aue-vhub"
+      virtual_hub_map_key         = "aue-vhub"
       vpn_authentication_types = ["Certificate"]
       client_root_certificate = {
         name             = "DigiCert-Federated-ID-Root-CA"

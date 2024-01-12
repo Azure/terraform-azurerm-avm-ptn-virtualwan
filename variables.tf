@@ -98,7 +98,7 @@ variable "vpn_sites" {
   type = map(object({
     name = string
     # Name of the virtual hub
-    virtual_hub_name = string
+    virtual_hub_map_key = string
     links = list(object({
       name = string
       bgp = optional(object({
@@ -188,7 +188,7 @@ variable "vpn_site_connections" {
 variable "p2s_gateways" {
   type = map(object({
     name                                      = string
-    virtual_hub_name                          = string
+    virtual_hub_map_key                          = string
     tags                                      = optional(map(string))
     p2s_gateway_vpn_server_configuration_name = string
     connection_configuration = object({
@@ -209,7 +209,7 @@ variable "p2s_gateways" {
 variable "p2s_gateway_vpn_server_configurations" {
   type = map(object({
     name                     = string
-    virtual_hub_name         = string
+    virtual_hub_map_key         = string
     vpn_authentication_types = list(string)
     tags                     = optional(map(string))
     client_root_certificate = object({
@@ -271,7 +271,7 @@ variable "er_circuit_connections" {
 # Azure Firewall
 variable "firewalls" {
   type = map(object({
-    virtual_hub_name     = string
+    virtual_hub_map_key     = string
     sku_name             = string
     sku_tier             = string
     name                 = optional(string)
@@ -310,7 +310,7 @@ variable "firewalls" {
 variable "virtual_network_connections" {
   type = map(object({
     name                      = string
-    virtual_hub_name          = string
+    virtual_hub_map_key          = string
     remote_virtual_network_id = string
     internet_security_enabled = optional(bool)
     routing = optional(object({
@@ -334,7 +334,7 @@ variable "virtual_network_connections" {
 variable "routing_intents" {
   type = map(object({
     name             = string
-    virtual_hub_name = string
+    virtual_hub_map_key = string
     routing_policies = list(object({
       name         = string
       destinations = list(string)

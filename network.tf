@@ -4,7 +4,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
   for_each = local.virtual_network_connections != null && length(local.virtual_network_connections) > 0 ? local.virtual_network_connections : {}
 
   name                      = each.value.name
-  virtual_hub_id            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
+  virtual_hub_id            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_map_key].id
   remote_virtual_network_id = each.value.remote_virtual_network_id
   internet_security_enabled = try(each.value.internet_security_enabled, null)
   dynamic "routing" {
@@ -39,7 +39,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
 resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
   for_each       = local.routing_intents != null && length(local.routing_intents) > 0 ? local.routing_intents : {}
   name           = each.value.name
-  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
+  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_map_key].id
 
   dynamic "routing_policy" {
     for_each = each.value.routing_policies != null && length(each.value.routing_policies) > 0 ? each.value.routing_policies : []

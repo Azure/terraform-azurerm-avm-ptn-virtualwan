@@ -13,8 +13,8 @@ resource "azurerm_vpn_site" "vpn_site" {
   for_each = local.vpn_sites != null ? local.vpn_sites : {}
 
   name                = each.value.name
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].location
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].resource_group_name
+  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_map_key].location
+  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_map_key].resource_group_name
   virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
   address_cidrs       = try(each.value.address_cidrs, null)
   dynamic "link" {
@@ -22,7 +22,7 @@ resource "azurerm_vpn_site" "vpn_site" {
 
     content {
       name          = link.value.name
-      ip_address    = try(link.value.ip_address, null)
+      ip_address    = link.value.ip_address
       fqdn          = try(link.value.fqdn, null)
       speed_in_mbps = link.value.speed_in_mbps
 

@@ -77,25 +77,7 @@ locals {
       routing                   = try(vnet_conn.routing, {})
     }
   } : null
-  # routing_intents = var.routing_intents != null ? {
-  #   for key, intent in var.routing_intents : key => {
-  #     type                      = intent.type
-  #     name                      = intent.name
-  #     virtual_hub_name          = intent.virtual_hub_name
-  #     policy_name               = intent.policy_name
-  #     policy_destinations       = intent.policy_destinations
-  #     policy_nexthop            = intent.policy_nexthop
-  #     remove_special_chars      = try(intent.remove_special_chars, null)
-  #     location                  = try(intent.location, null)
-  #     identity                  = try(intent.identity, null)
-  #     tags                      = try(intent.tags, null)
-  #     response_export_values    = try(intent.response_export_values, null)
-  #     locks                     = try(intent.locks, null)
-  #     ignore_casing             = try(intent.ignore_casing, null)
-  #     ignore_missing_property   = try(intent.ignore_missing_property, null)
-  #     schema_validation_enabled = try(intent.schema_validation_enabled, null)
-  #   }
-  # } : null
+
   routing_intents = var.routing_intents != null ? {
     for key, intent in var.routing_intents : key => {
       name             = intent.name

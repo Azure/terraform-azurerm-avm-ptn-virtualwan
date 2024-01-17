@@ -137,6 +137,7 @@ The following resources are used by this module:
 - [azurerm_vpn_gateway_connection.vpn_site_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway_connection) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
 - [azurerm_vpn_site.vpn_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_site) (resource)
+- [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -149,12 +150,6 @@ Description: Switch to flip VWAN branch to branch traffic
 
 Type: `bool`
 
-### <a name="input_disable_vpn_encryption"></a> [disable\_vpn\_encryption](#input\_disable\_vpn\_encryption)
-
-Description: Switch to flip VWAN vpn encryption
-
-Type: `bool`
-
 ### <a name="input_location"></a> [location](#input\_location)
 
 Description: Virtual WAN location
@@ -163,7 +158,7 @@ Type: `string`
 
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
-Description: Virutal WAN Resource group name
+Description: Virtual WAN Resource group name
 
 Type: `string`
 
@@ -176,6 +171,22 @@ Type: `string`
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### <a name="input_create_resource_group"></a> [create\_resource\_group](#input\_create\_resource\_group)
+
+Description: If true will create a resource group, otherwise will use the existing resource group supplied in resource\_group\_name
+
+Type: `bool`
+
+Default: `false`
+
+### <a name="input_disable_vpn_encryption"></a> [disable\_vpn\_encryption](#input\_disable\_vpn\_encryption)
+
+Description: Switch to flip VWAN vpn encryption
+
+Type: `bool`
+
+Default: `false`
 
 ### <a name="input_er_circuit_connections"></a> [er\_circuit\_connections](#input\_er\_circuit\_connections)
 
@@ -577,9 +588,13 @@ Description: Firewall Name
 
 Description: P2S VPN Gateway ID
 
-### <a name="output_rg"></a> [rg](#output\_rg)
+### <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name)
 
 Description: Resource Group Name
+
+### <a name="output_s2s_vpn_gw"></a> [s2s\_vpn\_gw](#output\_s2s\_vpn\_gw)
+
+Description: S2S VPN Gateway Objects
 
 ### <a name="output_s2s_vpn_gw_id"></a> [s2s\_vpn\_gw\_id](#output\_s2s\_vpn\_gw\_id)
 

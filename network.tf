@@ -8,13 +8,13 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
   remote_virtual_network_id = each.value.remote_virtual_network_id
   internet_security_enabled = try(each.value.internet_security_enabled, null)
   dynamic "routing" {
-    for_each = each.value.routing != null && length(each.value.routing) > 0 ? each.value.routing : []
+    for_each = each.value.routing != null && length(coalesce([each.value.routing], [])) > 0 ? [each.value.routing] : []
 
     content {
       associated_route_table_id = try(routing.value.associated_route_table_id, null)
 
       dynamic "propagated_route_table" {
-        for_each = routing.value.propagated_route_table != null && length(routing.value.propagated_route_table) > 0 ? routing.value.propagated_route_table : []
+        for_each = routing.value.propagated_route_table != null && length(routing.value.propagated_route_table) > 0 ? [routing.value.propagated_route_table] : []
 
         content {
           route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
@@ -23,7 +23,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
       }
 
       dynamic "static_vnet_route" {
-        for_each = routing.value.static_vnet_route != null && length(routing.value.static_vnet_route) > 0 ? routing.value.static_vnet_route : []
+        for_each = routing.value.static_vnet_route != null && length(routing.value.static_vnet_route) > 0 ? [routing.value.static_vnet_route] : []
 
         content {
           name                = try(static_vnet_route.value.name, null)

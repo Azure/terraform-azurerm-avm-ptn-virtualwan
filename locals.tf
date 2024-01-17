@@ -68,15 +68,26 @@ locals {
       routing                              = try(er_conn.routing, {})
     }
   } : null
-  virtual_network_connections = var.virtual_network_connections != null ? {
+  virtual_network_connections = {
     for key, vnet_conn in var.virtual_network_connections : key => {
       name                      = vnet_conn.name
       virtual_hub_name          = vnet_conn.virtual_hub_name
       remote_virtual_network_id = vnet_conn.remote_virtual_network_id
-      internet_security_enabled = try(vnet_conn.internet_security_enabled, null)
-      routing                   = try(vnet_conn.routing, {})
+      internet_security_enabled = vnet_conn.internet_security_enabled
+      routing                   = lookup(vnet_conn, "routing", null) == null ? [] : [{
+        associated_route_table_id = vnet_conn.routing.associated_route_table_id
+        propagated_route_table = lookup(vnet_conn.routing, "propagated_route_table", null) == null ? [] : [{
+          route_table_ids = vnet_conn.routing.propagated_route_table.route_table_ids
+          labels          = vnet_conn.routing.propagated_route_table.labels
+        }]
+        static_vnet_route = lookup(vnet_conn, "static_vnet_route", null) == null ? [] : [{
+          name                = vnet_conn.routing.static_vnet_route.name
+          address_prefixes    = vnet_conn.routing.static_vnet_route.address_prefixes
+          next_hop_ip_address = vnet_conn.routing.static_vnet_route.next_hop_ip_address
+        }]
+      }]
     }
-  } : null
+  }
 
   routing_intents = var.routing_intents != null ? {
     for key, intent in var.routing_intents : key => {

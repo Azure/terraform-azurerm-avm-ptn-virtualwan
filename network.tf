@@ -37,12 +37,12 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
 
 # Routing intent
 resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
-  for_each       = local.routing_intents != null && length(local.routing_intents) > 0 ? local.routing_intents : {}
+  for_each       = local.routing_intents
   name           = each.value.name
   virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
 
   dynamic "routing_policy" {
-    for_each = each.value.routing_policies != null && length(each.value.routing_policies) > 0 ? each.value.routing_policies : []
+    for_each = each.value.routing_policies
     content {
       name         = routing_policy.value.name
       destinations = routing_policy.value.destinations

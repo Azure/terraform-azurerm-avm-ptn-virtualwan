@@ -89,11 +89,15 @@ locals {
     }
   }
 
-  routing_intents = var.routing_intents != null ? {
+  routing_intents = {
     for key, intent in var.routing_intents : key => {
       name             = intent.name
       virtual_hub_name = intent.virtual_hub_name
-      routing_policies = intent.routing_policies
+      routing_policies = lookup(intent, "routing_policies", null) == null ? [] : [{
+        name         = intent.routing_policies.name
+        destinations = intent.routing_policies.destinations
+        next_hop     = intent.routing_policies.next_hop
+      }]
     }
-  } : null
+  }
 }

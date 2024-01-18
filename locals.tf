@@ -74,7 +74,7 @@ locals {
       virtual_hub_name          = vnet_conn.virtual_hub_name
       remote_virtual_network_id = vnet_conn.remote_virtual_network_id
       internet_security_enabled = vnet_conn.internet_security_enabled
-      routing                   = lookup(vnet_conn, "routing", null) == null ? [] : [{
+      routing = lookup(vnet_conn, "routing", null) == null ? [] : [{
         associated_route_table_id = vnet_conn.routing.associated_route_table_id
         propagated_route_table = lookup(vnet_conn.routing, "propagated_route_table", null) == null ? [] : [{
           route_table_ids = vnet_conn.routing.propagated_route_table.route_table_ids

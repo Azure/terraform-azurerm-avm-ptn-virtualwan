@@ -355,4 +355,5 @@ variable "routing_intents" {
   }))
   description = "Routing intent for virutal hubs"
   default     = {}
+  nullable = false
 }

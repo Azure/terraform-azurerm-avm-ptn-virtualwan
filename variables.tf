@@ -323,22 +323,23 @@ variable "virtual_network_connections" {
     name                      = string
     virtual_hub_name          = string
     remote_virtual_network_id = string
-    internet_security_enabled = optional(bool)
+    internet_security_enabled = optional(bool, false)
     routing = optional(object({
       associated_route_table_id = string
       propagated_route_table = optional(object({
-        route_table_ids = optional(list(string))
-        labels          = optional(list(string))
+        route_table_ids = optional(list(string), [])
+        labels          = optional(list(string), [])
       }))
       static_vnet_route = optional(object({
         name                = optional(string)
-        address_prefixes    = optional(list(string))
+        address_prefixes    = optional(list(string), [])
         next_hop_ip_address = optional(string)
       }))
     }))
   }))
   description = "Azure virtual network connections"
   default     = {}
+  nullable    = false
 }
 
 # Routing intent for virutal hubs
@@ -354,4 +355,5 @@ variable "routing_intents" {
   }))
   description = "Routing intent for virutal hubs"
   default     = {}
+  nullable    = false
 }

@@ -68,39 +68,36 @@ locals {
       routing                              = try(er_conn.routing, {})
     }
   } : null
-  virtual_network_connections = var.virtual_network_connections != null ? {
+  virtual_network_connections = {
     for key, vnet_conn in var.virtual_network_connections : key => {
       name                      = vnet_conn.name
       virtual_hub_name          = vnet_conn.virtual_hub_name
       remote_virtual_network_id = vnet_conn.remote_virtual_network_id
-      internet_security_enabled = try(vnet_conn.internet_security_enabled, null)
-      routing                   = try(vnet_conn.routing, {})
+      internet_security_enabled = vnet_conn.internet_security_enabled
+      routing = lookup(vnet_conn, "routing", null) == null ? [] : [{
+        associated_route_table_id = vnet_conn.routing.associated_route_table_id
+        propagated_route_table = lookup(vnet_conn.routing, "propagated_route_table", null) == null ? [] : [{
+          route_table_ids = vnet_conn.routing.propagated_route_table.route_table_ids
+          labels          = vnet_conn.routing.propagated_route_table.labels
+        }]
+        static_vnet_route = lookup(vnet_conn, "static_vnet_route", null) == null ? [] : [{
+          name                = vnet_conn.routing.static_vnet_route.name
+          address_prefixes    = vnet_conn.routing.static_vnet_route.address_prefixes
+          next_hop_ip_address = vnet_conn.routing.static_vnet_route.next_hop_ip_address
+        }]
+      }]
     }
-  } : null
-  # routing_intents = var.routing_intents != null ? {
-  #   for key, intent in var.routing_intents : key => {
-  #     type                      = intent.type
-  #     name                      = intent.name
-  #     virtual_hub_name          = intent.virtual_hub_name
-  #     policy_name               = intent.policy_name
-  #     policy_destinations       = intent.policy_destinations
-  #     policy_nexthop            = intent.policy_nexthop
-  #     remove_special_chars      = try(intent.remove_special_chars, null)
-  #     location                  = try(intent.location, null)
-  #     identity                  = try(intent.identity, null)
-  #     tags                      = try(intent.tags, null)
-  #     response_export_values    = try(intent.response_export_values, null)
-  #     locks                     = try(intent.locks, null)
-  #     ignore_casing             = try(intent.ignore_casing, null)
-  #     ignore_missing_property   = try(intent.ignore_missing_property, null)
-  #     schema_validation_enabled = try(intent.schema_validation_enabled, null)
-  #   }
-  # } : null
-  routing_intents = var.routing_intents != null ? {
+  }
+
+  routing_intents = {
     for key, intent in var.routing_intents : key => {
       name             = intent.name
       virtual_hub_name = intent.virtual_hub_name
-      routing_policies = intent.routing_policies
+      routing_policies = lookup(intent, "routing_policies", null) == null ? [] : [{
+        name         = intent.routing_policies.name
+        destinations = intent.routing_policies.destinations
+        next_hop     = intent.routing_policies.next_hop
+      }]
     }
-  } : null
+  }
 }

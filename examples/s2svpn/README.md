@@ -15,6 +15,10 @@ resource "random_password" "shared_key" {
   special          = true
 }
 
+locals {
+  virtual_hub_key = "aue-vhub"
+}
+
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
@@ -29,7 +33,7 @@ module "vwan_with_vhub" {
     deployment  = "terraform"
   }
   virtual_hubs = {
-    (random_pet.vvan_name.id) = {
+    (local.virtual_hub_key) = {
       name           = random_pet.vvan_name.id
       location       = "australiaeast"
       resource_group = random_pet.vvan_name.id
@@ -48,7 +52,7 @@ module "vwan_with_vhub" {
   vpn_sites = {
     "aue-vhub-vpn-site" = {
       name             = random_pet.vvan_name.id
-      virtual_hub_name = random_pet.vvan_name.id
+      virtual_hub_name = local.virtual_hub_key
       links = [{
         name          = "link1"
         provider_name = "Cisco"

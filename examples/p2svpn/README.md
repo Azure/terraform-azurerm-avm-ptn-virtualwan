@@ -9,6 +9,10 @@ resource "random_pet" "vvan_name" {
   separator = "-"
 }
 
+locals {
+  virtual_hub_key = "aue-vhub"
+}
+
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
@@ -23,7 +27,7 @@ module "vwan_with_vhub" {
     deployment  = "terraform"
   }
   virtual_hubs = {
-    (random_pet.vvan_name.id) = {
+    (local.virtual_hub_key) = {
       name           = random_pet.vvan_name.id
       location       = "australiaeast"
       resource_group = random_pet.vvan_name.id
@@ -36,7 +40,7 @@ module "vwan_with_vhub" {
   p2s_gateways = {
     "aue-vhub-p2s-gw" = {
       name                                      = random_pet.vvan_name.id
-      virtual_hub_name                          = random_pet.vvan_name.id
+      virtual_hub_name                          = local.virtual_hub_key
       p2s_gateway_vpn_server_configuration_name = random_pet.vvan_name.id
       scale_unit                                = 1
       connection_configuration = {

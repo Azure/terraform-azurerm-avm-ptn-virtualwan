@@ -11,7 +11,7 @@ locals {
     environment = "avm-vwan-testing"
   }
   vhubs = {
-    aue-vhub = {
+    (random_pet.vvan_name.id) = {
       name           = random_pet.vvan_name.id
       location       = "australiaeast"
       resource_group = random_pet.vvan_name.id

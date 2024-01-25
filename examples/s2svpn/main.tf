@@ -1,7 +1,7 @@
 resource "random_password" "shared_key" {
   length           = 12
-  special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
+  special          = true
 }
 
 module "vwan_with_vhub" {

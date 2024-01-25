@@ -14,11 +14,22 @@ provider "azurerm" {
 
 locals {
   location            = "australiaeast"
+  nsg_name            = "avm-vwan-nsg"
   resource_group_name = "tvmVwanRg"
   tags = {
     environment = "avm-vwan-testing"
   }
-  nsg_name = "avm-vwan-nsg"
+  vhubs = {
+    aue-vhub = {
+      name           = "aue_vhub"
+      location       = "australiaeast"
+      resource_group = "demo-vwan-rsg"
+      address_prefix = "192.168.0.0/24"
+      tags = {
+        "location" = "AUE"
+      }
+    }
+  }
   vnet01 = {
     name          = "avm-vwan-vnet01"
     address_space = ["10.0.0.0/16"]
@@ -33,6 +44,13 @@ locals {
       address_prefix = "10.0.2.0/24"
     }
   }
+  vnet_connections = {
+    aue-vnet = {
+      name                      = "aue-vnet-conn"
+      virtual_hub_name          = "aue-vhub"
+      internet_security_enabled = true
+    }
+  }
   vwan = {
     name                           = "avm-vwan"
     location                       = local.location
@@ -44,24 +62,6 @@ locals {
       environment = "avm-vwan-testing"
     }
   }
-  vhubs = {
-    aue-vhub = {
-      name           = "aue_vhub"
-      location       = "australiaeast"
-      resource_group = "demo-vwan-rsg"
-      address_prefix = "192.168.0.0/24"
-      tags = {
-        "location" = "AUE"
-      }
-    }
-  }
-  vnet_connections = {
-    aue-vnet = {
-      name                      = "aue-vnet-conn"
-      virtual_hub_name          = "aue-vhub"
-      internet_security_enabled = true
-    }
-  }
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -71,32 +71,30 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = local.nsg_name
   location            = azurerm_resource_group.rg.location
+  name                = local.nsg_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = local.vnet01.name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
   address_space       = local.vnet01.address_space
+  location            = azurerm_resource_group.rg.location
+  name                = local.vnet01.name
+  resource_group_name = azurerm_resource_group.rg.name
   dns_servers         = local.vnet01.dns_servers
+  tags                = local.tags
 
   subnet {
-    name           = local.vnet01.subnet1.name
     address_prefix = local.vnet01.subnet1.address_prefix
+    name           = local.vnet01.subnet1.name
   }
-
   subnet {
-    name           = local.vnet01.subnet2.name
     address_prefix = local.vnet01.subnet2.address_prefix
+    name           = local.vnet01.subnet2.name
     security_group = azurerm_network_security_group.nsg.id
   }
 
   depends_on = [azurerm_network_security_group.nsg]
-
-  tags = local.tags
 }
 
 module "vwan_with_vhub" {

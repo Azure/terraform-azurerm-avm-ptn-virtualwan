@@ -1,11 +1,11 @@
 resource "azurerm_express_route_gateway" "express_route_gateway" {
   for_each = local.expressroute_gateways != null && length(local.expressroute_gateways) > 0 ? local.expressroute_gateways : {}
 
-  name                = each.value.name
   location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].location
+  name                = each.value.name
   resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].resource_group_name
-  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].id
   scale_units         = each.value.scale_units
+  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].id
   tags                = try(each.value.tags, {})
 }
 
@@ -14,9 +14,9 @@ resource "azurerm_express_route_gateway" "express_route_gateway" {
 resource "azurerm_express_route_connection" "er_connection" {
   for_each = local.er_circuit_connections != null && length(local.er_circuit_connections) > 0 ? local.er_circuit_connections : {}
 
-  name                             = each.value.name
-  express_route_gateway_id         = azurerm_express_route_gateway.express_route_gateway[each.value.express_route_gateway_name].id
   express_route_circuit_peering_id = each.value.er_circuit_peering_id
+  express_route_gateway_id         = azurerm_express_route_gateway.express_route_gateway[each.value.express_route_gateway_name].id
+  name                             = each.value.name
   authorization_key                = try(each.value.authorization_key, null)
   enable_internet_security         = try(each.value.enable_internet_security, null)
   routing_weight                   = try(each.value.routing_weight, null)
@@ -31,8 +31,8 @@ resource "azurerm_express_route_connection" "er_connection" {
       dynamic "propagated_route_table" {
         for_each = routing.value.propagated_route_table != null && length(routing.value.propagated_route_table) > 0 ? [routing.value.propagated_route_table] : []
         content {
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
           labels          = try(propagated_route_tables.value.labels, [])
+          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
         }
       }
     }

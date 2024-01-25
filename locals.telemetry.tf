@@ -7,7 +7,7 @@ locals {
   module_name = "virtualwan"
 
   # TODO: Change this. Should be either `res` or `ptn`
-  module_type = "res"
+  module_type = "ptn"
 
   # This ensures we don't get errors if telemetry is disabled.
   telem_random_hex = can(random_id.telemetry[0].hex) ? random_id.telemetry[0].hex : ""

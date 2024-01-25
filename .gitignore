@@ -17,7 +17,7 @@ crash.*.log
 *.tfvars.json
 
 # Ignore override files as they are usually used to override resources locally and so
-# are not checked in
+# are not checked in.
 override.tf
 override.tf.json
 *_override.tf
@@ -33,14 +33,13 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# SSH Key
-private_ssh_key
-
-# generated readme by the pr-check job
-
+# Ignore the lock file, as this is a module
+.terraform.lock.hcl
+*tfplan*
 README-generated.md
-
-**/override.tf
+avm.tflint.hcl
+avm.tflint_example.hcl
+avmmakefile
 
 .tflint.hcl
 .tflint_example.hcl

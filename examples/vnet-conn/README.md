@@ -4,18 +4,23 @@
 This is the VNET conn example.
 
 ```hcl
+resource "random_pet" "vvan_name" {
+  length    = 2
+  separator = "-"
+}
+
 locals {
   location            = "australiaeast"
-  nsg_name            = "avm-vwan-nsg"
-  resource_group_name = "tvmVwanRg"
+  nsg_name            = random_pet.vvan_name.id
+  resource_group_name = random_pet.vvan_name.id
   tags = {
     environment = "avm-vwan-testing"
   }
   vhubs = {
     aue-vhub = {
-      name           = "aue_vhub"
+      name           = random_pet.vvan_name.id
       location       = "australiaeast"
-      resource_group = "demo-vwan-rsg"
+      resource_group = random_pet.vvan_name.id
       address_prefix = "192.168.0.0/24"
       tags = {
         "location" = "AUE"
@@ -23,7 +28,7 @@ locals {
     }
   }
   vnet01 = {
-    name          = "avm-vwan-vnet01"
+    name          = random_pet.vvan_name.id
     address_space = ["10.0.0.0/16"]
     dns_servers   = ["10.0.0.4", "10.0.0.5"]
     subnet1 = {
@@ -38,13 +43,13 @@ locals {
   }
   vnet_connections = {
     aue-vnet = {
-      name                      = "aue-vnet-conn"
-      virtual_hub_name          = "aue-vhub"
+      name                      = random_pet.vvan_name.id
+      virtual_hub_name          = random_pet.vvan_name.id
       internet_security_enabled = true
     }
   }
   vwan = {
-    name                           = "avm-vwan"
+    name                           = random_pet.vvan_name.id
     location                       = local.location
     disable_vpn_encryption         = false
     create_resource_group          = false
@@ -123,11 +128,15 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.7)
 
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
+
 ## Providers
 
 The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.7)
+
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.5)
 
 ## Resources
 
@@ -136,6 +145,7 @@ The following resources are used by this module:
 - [azurerm_network_security_group.nsg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) (resource)
+- [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

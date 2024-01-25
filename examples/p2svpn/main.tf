@@ -17,7 +17,7 @@ module "vwan_with_vhub" {
     deployment  = "terraform"
   }
   virtual_hubs = {
-    (arandom_pet.vvan_name.id) = {
+    (random_pet.vvan_name.id) = {
       name           = random_pet.vvan_name.id
       location       = "australiaeast"
       resource_group = random_pet.vvan_name.id

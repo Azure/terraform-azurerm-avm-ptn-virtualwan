@@ -51,7 +51,7 @@ module "vwan_with_vhub" {
           asn             = azurerm_virtual_network_gateway.gw.bgp_settings[0].asn
           peering_address = azurerm_virtual_network_gateway.gw.bgp_settings[0].peering_addresses[0].default_addresses[0]
         }
-        ip_address    = azurerm_public_ip.gw-ip.ip_address
+        ip_address    = azurerm_public_ip.gw_ip.ip_address
         speed_in_mbps = "20"
       }]
     }

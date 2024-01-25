@@ -41,9 +41,9 @@ locals {
       virtual_hub_name = intent.virtual_hub_name
       routing_policies = lookup(intent, "routing_policies", null) == null ? [] : [
         for routing_policy in intent.routing_policies : {
-        name         = routing_policy.name
-        destinations = routing_policy.destinations
-        next_hop     = routing_policy.next_hop
+          name         = routing_policy.name
+          destinations = routing_policy.destinations
+          next_hop     = routing_policy.next_hop
       }]
     }
   }

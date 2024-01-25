@@ -4,21 +4,6 @@
 This is the P2S VPN example.
 
 ```hcl
-terraform {
-  required_version = ">= 1.3.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0"
-    }
-  }
-}
-provider "azurerm" {
-  features {
-  }
-}
-
-
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
@@ -97,9 +82,9 @@ EOF
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.3.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.3)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.7)
 
 ## Providers
 

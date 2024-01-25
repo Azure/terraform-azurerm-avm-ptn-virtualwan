@@ -1,9 +1,14 @@
+resource "random_pet" "vvan_name" {
+  length    = 2
+  separator = "-"
+}
+
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
-  resource_group_name            = "tvmVwanRg"
+  resource_group_name            = random_pet.vvan_name.id
   location                       = "australiaeast"
-  virtual_wan_name               = "tvmVwan"
+  virtual_wan_name               = random_pet.vvan_name.id
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"
@@ -13,9 +18,9 @@ module "vwan_with_vhub" {
   }
   virtual_hubs = {
     aue-vhub = {
-      name           = "aue_vhub"
+      name           = random_pet.vvan_name.id
       location       = "australiaeast"
-      resource_group = "demo-vwan-rsg"
+      resource_group = random_pet.vvan_name.id
       address_prefix = "10.0.0.0/24"
       tags = {
         "location" = "AUE"
@@ -24,12 +29,12 @@ module "vwan_with_vhub" {
   }
   p2s_gateways = {
     "aue-vhub-p2s-gw" = {
-      name                                      = "aue-vhub-p2s-gw"
-      virtual_hub_name                          = "aue-vhub"
-      p2s_gateway_vpn_server_configuration_name = "aue-vhub-p2s-vpn-svr-conf"
+      name                                      = random_pet.vvan_name.id
+      virtual_hub_name                          = random_pet.vvan_name.id
+      p2s_gateway_vpn_server_configuration_name = random_pet.vvan_name.id
       scale_unit                                = 1
       connection_configuration = {
-        name = "aue-vhub-p2s-gw-conn"
+        name = random_pet.vvan_name.id
         vpn_client_address_pool = {
           address_prefixes = ["192.168.0.0/24"]
         }
@@ -38,8 +43,8 @@ module "vwan_with_vhub" {
   }
   p2s_gateway_vpn_server_configurations = {
     "aue-vhub-p2s-vpn-svr-conf" = {
-      name                     = "aue-vhub-p2s-vpn-conf"
-      virtual_hub_name         = "aue-vhub"
+      name                     = random_pet.vvan_name.id
+      virtual_hub_name         = random_pet.vvan_name.id
       vpn_authentication_types = ["Certificate"]
       client_root_certificate = {
         name             = "DigiCert-Federated-ID-Root-CA"

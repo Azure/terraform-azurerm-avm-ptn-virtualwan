@@ -1,3 +1,8 @@
+resource "random_pet" "vvan_name" {
+  length    = 2
+  separator = "-"
+}
+
 resource "random_password" "shared_key" {
   length           = 12
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -7,9 +12,9 @@ resource "random_password" "shared_key" {
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
-  resource_group_name            = "tvmVwanRg"
+  resource_group_name            = random_pet.vvan_name.id
   location                       = "australiaeast"
-  virtual_wan_name               = "tvmVwan"
+  virtual_wan_name               = random_pet.vvan_name.id
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"
@@ -19,9 +24,9 @@ module "vwan_with_vhub" {
   }
   virtual_hubs = {
     aue-vhub = {
-      name           = "aue_vhub"
+      name           = random_pet.vvan_name.id
       location       = "australiaeast"
-      resource_group = "demo-vwan-rsg"
+      resource_group = random_pet.vvan_name.id
       address_prefix = "10.0.0.0/24"
       tags = {
         "location" = "AUE"
@@ -30,14 +35,14 @@ module "vwan_with_vhub" {
   }
   vpn_gateways = {
     "aue-vhub-vpn-gw" = {
-      name        = "aue-vhub-vpn-gw"
-      virtual_hub = "aue-vhub"
+      name        = random_pet.vvan_name.id
+      virtual_hub = random_pet.vvan_name.id
     }
   }
   vpn_sites = {
     "aue-vhub-vpn-site" = {
-      name             = "aue-vhub-vpn-site"
-      virtual_hub_name = "aue-vhub"
+      name             = random_pet.vvan_name.id
+      virtual_hub_name = random_pet.vvan_name.id
       links = [{
         name          = "link1"
         provider_name = "Cisco"
@@ -52,9 +57,9 @@ module "vwan_with_vhub" {
   }
   vpn_site_connections = {
     "onprem1" = {
-      name                 = "aue-vhub-vpn-conn01"
-      vpn_gateway_name     = "aue-vhub-vpn-gw"
-      remote_vpn_site_name = "aue-vhub-vpn-site"
+      name                 = random_pet.vvan_name.id
+      vpn_gateway_name     = random_pet.vvan_name.id
+      remote_vpn_site_name = random_pet.vvan_name.id
 
       vpn_links = [{
         name                                  = "link1"

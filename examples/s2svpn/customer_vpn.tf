@@ -21,7 +21,7 @@ resource "azurerm_subnet" "gwsubnet" {
 }
 
 # Create virtual machine subnet
-resource "azurerm_subnet" "vm-subnet" {
+resource "azurerm_subnet" "vm_subnet" {
   address_prefixes     = ["172.16.0.0/24"]
   name                 = "vm-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -29,7 +29,7 @@ resource "azurerm_subnet" "vm-subnet" {
 }
 
 # Create public IP address
-resource "azurerm_public_ip" "gw-ip" {
+resource "azurerm_public_ip" "gw_ip" {
   allocation_method   = "Dynamic"
   location            = azurerm_resource_group.rg.location
   name                = "onpremises-gw-ip"
@@ -48,7 +48,7 @@ resource "azurerm_virtual_network_gateway" "gw" {
   vpn_type            = "RouteBased"
 
   ip_configuration {
-    public_ip_address_id          = azurerm_public_ip.gw-ip.id
+    public_ip_address_id          = azurerm_public_ip.gw_ip.id
     subnet_id                     = azurerm_subnet.gwsubnet.id
     name                          = "gw-ip-config"
     private_ip_address_allocation = "Dynamic"

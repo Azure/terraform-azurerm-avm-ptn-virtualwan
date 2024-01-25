@@ -1,18 +1,3 @@
-terraform {
-  required_version = ">= 1.3.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0"
-    }
-  }
-}
-provider "azurerm" {
-  features {
-  }
-}
-
-
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
@@ -57,7 +42,3 @@ module "vwan_with_vhub" {
     }
   }
 }
-
-
-# Create 4 VNETs (vnet-a, vnet-b, vnet-c, vnet-d)
-# Create Firewall Policies to allow traffic between vnets a and b, and c and d. Anyother traffic should be blocked.

@@ -34,7 +34,7 @@
       strategy:
         matrix:
           example: ${{ fromJson(needs.getexamples.outputs.examples) }}
-        max-parallel: 5
+        max-parallel: 10
       steps:
         - uses: actions/checkout@v4
   

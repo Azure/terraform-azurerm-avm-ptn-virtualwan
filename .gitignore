@@ -60,3 +60,9 @@ go.sum
 vendor/
 
 .terraform.lock.hcl
+*tfplan*
+avm.tflint.hcl
+avm.tflint.merged.hcl
+avm.tflint_example.hcl
+avm.tflint_example.merged.hcl
+avmmakefile

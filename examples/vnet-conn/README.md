@@ -10,6 +10,10 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
+  virtual_hub_key = "aue-vhub"
+}
+
+locals {
   location            = "australiaeast"
   nsg_name            = random_pet.vvan_name.id
   resource_group_name = random_pet.vvan_name.id
@@ -17,7 +21,7 @@ locals {
     environment = "avm-vwan-testing"
   }
   vhubs = {
-    (random_pet.vvan_name.id) = {
+    (local.virtual_hub_key) = {
       name           = random_pet.vvan_name.id
       location       = "australiaeast"
       resource_group = random_pet.vvan_name.id
@@ -44,7 +48,8 @@ locals {
   vnet_connections = {
     aue-vnet = {
       name                      = random_pet.vvan_name.id
-      virtual_hub_name          = random_pet.vvan_name.id
+      virtual_hub_name          = local.virtual_hub_key
+      remote_virtual_network_id = azurerm_virtual_network.vnet.id
       internet_security_enabled = true
     }
   }
@@ -90,8 +95,6 @@ resource "azurerm_virtual_network" "vnet" {
     name           = local.vnet01.subnet2.name
     security_group = azurerm_network_security_group.nsg.id
   }
-
-  depends_on = [azurerm_network_security_group.nsg]
 }
 
 module "vwan_with_vhub" {
@@ -104,18 +107,8 @@ module "vwan_with_vhub" {
   allow_branch_to_branch_traffic = local.vwan.allow_branch_to_branch_traffic
   type                           = local.vwan.type
   virtual_wan_tags               = local.vwan.tags
-  virtual_hubs = {
-    aue-vhub = local.vhubs.aue-vhub
-  }
-  virtual_network_connections = {
-    aue-vnet = {
-      name                      = local.vnet_connections.aue-vnet.name
-      virtual_hub_name          = local.vnet_connections.aue-vnet.virtual_hub_name
-      remote_virtual_network_id = azurerm_virtual_network.vnet.id
-      internet_security_enabled = local.vnet_connections.aue-vnet.internet_security_enabled
-    }
-  }
-  depends_on = [azurerm_resource_group.rg, azurerm_virtual_network.vnet]
+  virtual_hubs                   = local.vhubs.aue-vhub
+  virtual_network_connections    = local.vnet_connections
 }
 ```
 

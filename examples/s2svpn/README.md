@@ -68,7 +68,7 @@ module "vwan_with_vhub" {
           asn             = azurerm_virtual_network_gateway.gw.bgp_settings[0].asn
           peering_address = azurerm_virtual_network_gateway.gw.bgp_settings[0].peering_addresses[0].default_addresses[0]
         }
-        ip_address    = azurerm_public_ip.gw_ip.ip_address
+        ip_address    = data.azurerm_public_ip.gw_ip.ip_address
         speed_in_mbps = "20"
       }]
     }
@@ -133,6 +133,7 @@ The following resources are used by this module:
 - [azurerm_virtual_network_gateway_connection.onpremisesconnection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network_gateway_connection) (resource)
 - [random_password.shared_key](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) (resource)
 - [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
+- [azurerm_public_ip.gw_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/public_ip) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

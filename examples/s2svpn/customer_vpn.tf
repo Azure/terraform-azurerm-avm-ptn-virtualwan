@@ -38,7 +38,7 @@ resource "azurerm_subnet" "vm_subnet" {
 
 # Create public IP address
 resource "azurerm_public_ip" "gw_ip" {
-  allocation_method   = "Static"
+  allocation_method   = "Dynamic"
   location            = azurerm_resource_group.rg.location
   name                = local.on_prem_public_ip_name
   resource_group_name = azurerm_resource_group.rg.name
@@ -64,6 +64,13 @@ resource "azurerm_virtual_network_gateway" "gw" {
   bgp_settings {
     asn = 65001
   }
+}
+
+data "azurerm_public_ip" "gw_ip" {
+  name                = local.on_prem_public_ip_name
+  resource_group_name = azurerm_resource_group.rg.name
+
+  depends_on = [azurerm_virtual_network_gateway.gw]
 }
 
 # Create local network gateway

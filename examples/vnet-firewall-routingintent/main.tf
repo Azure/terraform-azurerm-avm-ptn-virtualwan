@@ -7,10 +7,13 @@ locals {
   firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
   location            = "australiaeast"
   resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
-  tags                = local.tags
-  virtual_hub_key     = "aue-vhub"
-  virtual_hub_name    = "vhub-avm-vwan-${random_pet.vvan_name.id}"
-  virtual_wan_name    = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+  tags = {
+    environment = "avm-vwan-testing"
+    deployment  = "terraform"
+  }
+  virtual_hub_key  = "aue-vhub"
+  virtual_hub_name = "vhub-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
 }
 
 module "vwan_with_vhub" {

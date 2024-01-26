@@ -4,10 +4,13 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
-  location                        = "australiaeast"
-  network_security_group_name     = "nsg-avm-vwan-${random_pet.vvan_name.id}"
-  resource_group_name             = "rg-avm-vwan-${random_pet.vvan_name.id}"
-  tags                            = local.tags
+  location                    = "australiaeast"
+  network_security_group_name = "nsg-avm-vwan-${random_pet.vvan_name.id}"
+  resource_group_name         = "rg-avm-vwan-${random_pet.vvan_name.id}"
+  tags = {
+    environment = "avm-vwan-testing"
+    deployment  = "terraform"
+  }
   virtual_hub_key                 = "aue-vhub"
   virtual_hub_name                = "vhub-avm-vwan-${random_pet.vvan_name.id}"
   virtual_network_connection_name = "vnet-conn-avm-vwan-${random_pet.vvan_name.id}"

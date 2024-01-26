@@ -4,8 +4,8 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
-  firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
   firewall_key        = "aue-vhub-fw"
+  firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
   location            = "australiaeast"
   resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
   tags = {

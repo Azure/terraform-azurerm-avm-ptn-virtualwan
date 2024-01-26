@@ -13,8 +13,8 @@ locals {
   location                                             = "australiaeast"
   p2s_gateway_name                                     = "p2s-avm-vwan-${random_pet.vvan_name.id}"
   p2s_gateway_vpn_server_configuration_connection_name = "p2s-vpn-conn-avm-vwan-${random_pet.vvan_name.id}"
+  p2s_gateway_vpn_server_configuration_key             = "aue-vhub-p2s-vpn-svr-conf"
   p2s_gateway_vpn_server_configuration_name            = "p2s-vpn-svr-avm-vwan-${random_pet.vvan_name.id}"
-  p2s_gateway_vpn_server_configurations_name           = "p2s-vpn-svr-conf-avm-vwan-${random_pet.vvan_name.id}"
   resource_group_name                                  = "rg-avm-vwan-${random_pet.vvan_name.id}"
   tags = {
     environment = "avm-vwan-testing"
@@ -46,10 +46,10 @@ module "vwan_with_vhub" {
   }
   p2s_gateways = {
     "aue-vhub-p2s-gw" = {
-      name                                      = local.p2s_gateway_name
-      virtual_hub_key                           = local.virtual_hub_key
-      p2s_gateway_vpn_server_configuration_name = local.p2s_gateway_vpn_server_configuration_name
-      scale_unit                                = 1
+      name                                     = local.p2s_gateway_name
+      virtual_hub_key                          = local.virtual_hub_key
+      p2s_gateway_vpn_server_configuration_key = local.p2s_gateway_vpn_server_configuration_key
+      scale_unit                               = 1
       connection_configuration = {
         name = local.p2s_gateway_vpn_server_configuration_connection_name
         vpn_client_address_pool = {
@@ -59,8 +59,8 @@ module "vwan_with_vhub" {
     }
   }
   p2s_gateway_vpn_server_configurations = {
-    "aue-vhub-p2s-vpn-svr-conf" = {
-      name                     = local.p2s_gateway_vpn_server_configurations_name
+    (local.p2s_gateway_vpn_server_configuration_key) = {
+      name                     = local.p2s_gateway_vpn_server_configuration_name
       virtual_hub_key          = local.virtual_hub_key
       vpn_authentication_types = ["Certificate"]
       client_root_certificate = {

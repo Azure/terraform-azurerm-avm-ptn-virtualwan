@@ -10,6 +10,7 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
+  firewall_key        = "aue-vhub-fw"
   firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
   location            = "australiaeast"
   resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
@@ -42,7 +43,7 @@ module "vwan_with_vhub" {
     }
   }
   firewalls = {
-    "aue-vhub-fw" = {
+    (local.firewall_key) = {
       sku_name        = "AZFW_Hub"
       sku_tier        = "Standard"
       name            = local.firewall_name
@@ -54,9 +55,9 @@ module "vwan_with_vhub" {
       name            = "private-routing-intent"
       virtual_hub_key = local.virtual_hub_key
       routing_policies = [{
-        name         = "aue-vhub-routing-policy-private"
-        destinations = ["PrivateTraffic"]
-        next_hop     = local.firewall_name
+        name                  = "aue-vhub-routing-policy-private"
+        destinations          = ["PrivateTraffic"]
+        next_hop_firewall_key = local.firewall_key
       }]
     }
   }

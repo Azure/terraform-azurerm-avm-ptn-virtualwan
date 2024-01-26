@@ -7,8 +7,8 @@ locals {
   location                                             = "australiaeast"
   p2s_gateway_name                                     = "p2s-avm-vwan-${random_pet.vvan_name.id}"
   p2s_gateway_vpn_server_configuration_connection_name = "p2s-vpn-conn-avm-vwan-${random_pet.vvan_name.id}"
-  p2s_gateway_vpn_server_configuration_name            = "p2s-vpn-svr-avm-vwan-${random_pet.vvan_name.id}"
   p2s_gateway_vpn_server_configuration_key             = "aue-vhub-p2s-vpn-svr-conf"
+  p2s_gateway_vpn_server_configuration_name            = "p2s-vpn-svr-avm-vwan-${random_pet.vvan_name.id}"
   resource_group_name                                  = "rg-avm-vwan-${random_pet.vvan_name.id}"
   tags = {
     environment = "avm-vwan-testing"

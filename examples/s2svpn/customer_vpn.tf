@@ -40,7 +40,7 @@ resource "azurerm_subnet" "vm_subnet" {
 resource "azurerm_public_ip" "gw_ip" {
   allocation_method   = "Dynamic"
   location            = azurerm_resource_group.rg.location
-  name                = loca.on_prem_public_ip_name
+  name                = local.on_prem_public_ip_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 

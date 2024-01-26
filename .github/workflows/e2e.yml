@@ -35,6 +35,7 @@
         matrix:
           example: ${{ fromJson(needs.getexamples.outputs.examples) }}
         max-parallel: 10
+        fail-fast: false
       steps:
         - uses: actions/checkout@v4
   

@@ -4,49 +4,50 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
-  virtual_hub_key = "aue-vhub"
+  firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
+  location            = "australiaeast"
+  resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
+  tags                = local.tags
+  virtual_hub_key     = "aue-vhub"
+  virtual_hub_name    = "vhub-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_wan_name    = "vwan-avm-vwan-${random_pet.vvan_name.id}"
 }
 
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
-  resource_group_name            = random_pet.vvan_name.id
-  location                       = "australiaeast"
-  virtual_wan_name               = random_pet.vvan_name.id
+  resource_group_name            = local.resource_group_name
+  location                       = local.location
+  virtual_wan_name               = rlocal.virtual_wan_name
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"
-  virtual_wan_tags = {
-    environment = "dev"
-    deployment  = "terraform"
-  }
+  virtual_wan_tags               = local.tags
   virtual_hubs = {
     (local.virtual_hub_key) = {
-      name           = random_pet.vvan_name.id
+      name           = local.virtual_hub_name
       location       = "australiaeast"
-      resource_group = random_pet.vvan_name.id
+      resource_group = local.resource_group_name
       address_prefix = "10.0.0.0/24"
-      tags = {
-        "location" = "AUE"
-      }
+      tags           = local.tags
     }
   }
   firewalls = {
     "aue-vhub-fw" = {
       sku_name         = "AZFW_Hub"
       sku_tier         = "Standard"
-      name             = random_pet.vvan_name.id
+      name             = local.firewall_name
       virtual_hub_name = local.virtual_hub_key
     }
   }
   routing_intents = {
     "aue-vhub-routing-intent" = {
       name             = "private-routing-intent"
-      virtual_hub_name = random_pet.vvan_name.id
+      virtual_hub_name = local.virtual_hub_key
       routing_policies = [{
         name         = "aue-vhub-routing-policy-private"
         destinations = ["PrivateTraffic"]
-        next_hop     = random_pet.vvan_name.id
+        next_hop     = local.firewall_name
       }]
     }
   }

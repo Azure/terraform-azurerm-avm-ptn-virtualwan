@@ -10,29 +10,29 @@ resource "random_pet" "vvan_name" {
 }
 
 locals {
-  virtual_hub_key = "aue-vhub"
+  location                        = "australiaeast"
+  network_security_group_name     = "nsg-avm-vwan-${random_pet.vvan_name.id}"
+  resource_group_name             = "rg-avm-vwan-${random_pet.vvan_name.id}"
+  tags                            = local.tags
+  virtual_hub_key                 = "aue-vhub"
+  virtual_hub_name                = "vhub-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_network_connection_name = "vnet-conn-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_network_name            = "vnet-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_wan_name                = "vwan-avm-vwan-${random_pet.vvan_name.id}"
 }
 
 locals {
-  location            = "australiaeast"
-  nsg_name            = random_pet.vvan_name.id
-  resource_group_name = random_pet.vvan_name.id
-  tags = {
-    environment = "avm-vwan-testing"
-  }
   vhubs = {
     (local.virtual_hub_key) = {
-      name           = random_pet.vvan_name.id
-      location       = "australiaeast"
-      resource_group = random_pet.vvan_name.id
+      name           = local.virtual_hub_name
+      location       = local.location
+      resource_group = local.resource_group_name
       address_prefix = "192.168.0.0/24"
-      tags = {
-        "location" = "AUE"
-      }
+      tags           = local.tags
     }
   }
   vnet01 = {
-    name          = random_pet.vvan_name.id
+    name          = local.virtual_network_name
     address_space = ["10.0.0.0/16"]
     dns_servers   = ["10.0.0.4", "10.0.0.5"]
     subnet1 = {
@@ -47,14 +47,15 @@ locals {
   }
   vnet_connections = {
     aue-vnet = {
-      name                      = random_pet.vvan_name.id
-      virtual_hub_name          = local.virtual_hub_key
-      remote_virtual_network_id = azurerm_virtual_network.vnet.id
-      internet_security_enabled = true
+      virtual_network_connection_name = "vnet-conn-avm-vwan-${random_pet.vvan_name.id}"
+      name                            = local.virtual_network_connection_name
+      virtual_hub_name                = local.virtual_hub_key
+      remote_virtual_network_id       = azurerm_virtual_network.vnet.id
+      internet_security_enabled       = true
     }
   }
   vwan = {
-    name                           = random_pet.vvan_name.id
+    name                           = local.virtual_wan_name
     location                       = local.location
     disable_vpn_encryption         = false
     create_resource_group          = false
@@ -74,7 +75,7 @@ resource "azurerm_resource_group" "rg" {
 
 resource "azurerm_network_security_group" "nsg" {
   location            = azurerm_resource_group.rg.location
-  name                = local.nsg_name
+  name                = local.network_security_group_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 

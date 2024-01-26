@@ -1,10 +1,10 @@
 locals {
-  on_prem_local_gateway_name   = "lg-avm-vhub-onprem-${random_pet.vvan_name.id}"
-  on_prem_public_ip_name       = "pip-avm-vhub-onprem-${random_pet.vvan_name.id}"
-  on_prem_resource_group_name  = "rg-avm-vhub-onprem-${random_pet.vvan_name.id}"
-  on_prem_vnet_connection_name = "vc-avm-vhub-onprem-${random_pet.vvan_name.id}"
-  on_prem_vnet_gateway_name    = "vg-avm-vhub-onprem-${random_pet.vvan_name.id}"
-  on_prem_vnet_name            = "vnet-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_local_gateway_name   = "lg-avm-vwan-onprem-${random_pet.vvan_name.id}"
+  on_prem_public_ip_name       = "pip-avm-vwan-onprem-${random_pet.vvan_name.id}"
+  on_prem_resource_group_name  = "rg-avm-vwan-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_connection_name = "vc-avm-vwan-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_gateway_name    = "vg-avm-vwan-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_name            = "vnet-avm-vwan-onprem-${random_pet.vvan_name.id}"
 }
 
 resource "azurerm_resource_group" "rg" {

@@ -40,7 +40,7 @@ module "vwan_with_vhub" {
   vpn_gateways = {
     "aue-vhub-vpn-gw" = {
       name        = random_pet.vvan_name.id
-      virtual_hub = random_pet.vvan_name.id
+      virtual_hub = local.virtual_hub_key
     }
   }
   vpn_sites = {

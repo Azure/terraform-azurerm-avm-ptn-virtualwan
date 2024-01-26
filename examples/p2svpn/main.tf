@@ -48,7 +48,7 @@ module "vwan_with_vhub" {
   p2s_gateway_vpn_server_configurations = {
     "aue-vhub-p2s-vpn-svr-conf" = {
       name                     = random_pet.vvan_name.id
-      virtual_hub_name         = random_pet.vvan_name.id
+      virtual_hub_name         = local.virtual_hub_key
       vpn_authentication_types = ["Certificate"]
       client_root_certificate = {
         name             = "DigiCert-Federated-ID-Root-CA"

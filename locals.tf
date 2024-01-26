@@ -2,7 +2,7 @@ locals {
   er_circuit_connections = var.er_circuit_connections != null ? {
     for key, er_conn in var.er_circuit_connections : key => {
       name                                 = er_conn.name
-      express_route_gateway_name           = er_conn.express_route_gateway_name
+      express_route_gateway_key            = er_conn.express_route_gateway_key
       express_route_circuit_peering_id     = er_conn.express_route_circuit_peering_id
       authorization_key                    = try(er_conn.authorization_key, null)
       enable_internet_security             = try(er_conn.enable_internet_security, null)
@@ -85,8 +85,8 @@ locals {
   vpn_site_connections = var.vpn_site_connections != null ? {
     for key, conn in var.vpn_site_connections : key => {
       name                    = conn.name
-      vpn_gateway_name        = conn.vpn_gateway_name
-      remote_vpn_site_name    = conn.remote_vpn_site_name
+      vpn_gateway_key         = conn.vpn_gateway_key
+      remote_vpn_site_key     = conn.remote_vpn_site_key
       vpn_links               = conn.vpn_links
       routing                 = conn.routing
       traffic_selector_policy = conn.traffic_selector_policy

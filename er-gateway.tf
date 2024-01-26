@@ -15,7 +15,7 @@ resource "azurerm_express_route_connection" "er_connection" {
   for_each = local.er_circuit_connections != null && length(local.er_circuit_connections) > 0 ? local.er_circuit_connections : {}
 
   express_route_circuit_peering_id = each.value.er_circuit_peering_id
-  express_route_gateway_id         = azurerm_express_route_gateway.express_route_gateway[each.value.express_route_gateway_name].id
+  express_route_gateway_id         = azurerm_express_route_gateway.express_route_gateway[each.value.express_route_gateway_key].id
   name                             = each.value.name
   authorization_key                = try(each.value.authorization_key, null)
   enable_internet_security         = try(each.value.enable_internet_security, null)

@@ -213,7 +213,7 @@ Type:
 ```hcl
 map(object({
     name                                 = string
-    express_route_gateway_name           = string
+    express_route_gateway_key            = string
     express_route_circuit_peering_id     = string
     authorization_key                    = optional(string)
     enable_internet_security             = optional(bool)
@@ -501,11 +501,9 @@ Type:
 
 ```hcl
 map(object({
-    name = string
-    # Name of the virtual hub
-    vpn_gateway_name = string
-    # Name of the vpn site
-    remote_vpn_site_name = string
+    name                = string
+    vpn_gateway_key     = string
+    remote_vpn_site_key = string
     vpn_links = list(object({
       name                 = string
       egress_nat_rule_ids  = optional(list(string))

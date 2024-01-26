@@ -25,8 +25,10 @@ locals {
   virtual_hub_key           = "aue-vhub"
   virtual_hub_name          = "vhub-avm-vwan-${random_pet.vvan_name.id}"
   virtual_wan_name          = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+  vpn_gateways_key          = "aue-vhub-vpn-gw"
   vpn_gateways_name         = "vhub-vpn-gw-avm-vwan-${random_pet.vvan_name.id}"
   vpn_site_connections_name = "vhub-vpn-site-conn-avm-vwan-${random_pet.vvan_name.id}"
+  vpn_sites_key             = "aue-vhub-vpn-site"
   vpn_sites_name            = "vhub-vpn-site-avm-vwan-${random_pet.vvan_name.id}"
 }
 
@@ -50,13 +52,13 @@ module "vwan_with_vhub" {
     }
   }
   vpn_gateways = {
-    "aue-vhub-vpn-gw" = {
+    (local.vpn_gateways_key) = {
       name            = local.vpn_gateways_name
       virtual_hub_key = local.virtual_hub_key
     }
   }
   vpn_sites = {
-    "aue-vhub-vpn-site" = {
+    (local.vpn_sites_key) = {
       name            = local.vpn_sites_name
       virtual_hub_key = local.virtual_hub_key
       links = [{
@@ -73,9 +75,9 @@ module "vwan_with_vhub" {
   }
   vpn_site_connections = {
     "onprem1" = {
-      name                 = local.vpn_site_connections_name
-      vpn_gateway_name     = local.vpn_gateways_name
-      remote_vpn_site_name = local.vpn_sites_name
+      name                = local.vpn_site_connections_name
+      vpn_gateway_key     = local.vpn_gateways_key
+      remote_vpn_site_key = local.vpn_sites_key
 
       vpn_links = [{
         name                                  = "link1"

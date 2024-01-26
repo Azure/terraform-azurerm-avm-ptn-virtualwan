@@ -107,7 +107,7 @@ module "vwan_with_vhub" {
   allow_branch_to_branch_traffic = local.vwan.allow_branch_to_branch_traffic
   type                           = local.vwan.type
   virtual_wan_tags               = local.vwan.tags
-  virtual_hubs                   = local.vhubs.aue-vhub
+  virtual_hubs                   = local.vhubs
   virtual_network_connections    = local.vnet_connections
 }
 ```

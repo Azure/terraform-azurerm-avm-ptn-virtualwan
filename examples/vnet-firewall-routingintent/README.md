@@ -35,7 +35,7 @@ module "vwan_with_vhub" {
   virtual_hubs = {
     (local.virtual_hub_key) = {
       name           = local.virtual_hub_name
-      location       = "australiaeast"
+      location       = local.location
       resource_group = local.resource_group_name
       address_prefix = "10.0.0.0/24"
       tags           = local.tags

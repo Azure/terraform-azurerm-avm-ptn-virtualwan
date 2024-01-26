@@ -1,14 +1,22 @@
+locals {
+  on_prem_local_gateway_name   = "lg-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_public_ip_name       = "pip-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_resource_group_name  = "rg-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_connection_name = "vc-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_gateway_name    = "vg-avm-vhub-onprem-${random_pet.vvan_name.id}"
+  on_prem_vnet_name            = "vnet-avm-vhub-onprem-${random_pet.vvan_name.id}"
+}
 
 resource "azurerm_resource_group" "rg" {
-  location = "australiaeast"
-  name     = "onpremises-rg-${random_pet.vvan_name.id}"
+  location = local.location
+  name     = local.on_prem_resource_group_name
 }
 
 # Create azure virtual  network
 resource "azurerm_virtual_network" "vnet" {
   address_space       = ["172.16.0.0/16"]
   location            = azurerm_resource_group.rg.location
-  name                = "onpremises-vnet"
+  name                = local.on_prem_vnet_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 
@@ -32,14 +40,14 @@ resource "azurerm_subnet" "vm_subnet" {
 resource "azurerm_public_ip" "gw_ip" {
   allocation_method   = "Dynamic"
   location            = azurerm_resource_group.rg.location
-  name                = "onpremises-gw-ip"
+  name                = loca.on_prem_public_ip_name
   resource_group_name = azurerm_resource_group.rg.name
 }
 
 # Create virtual network gateway
 resource "azurerm_virtual_network_gateway" "gw" {
   location            = azurerm_resource_group.rg.location
-  name                = "onpremises-gw-${random_pet.vvan_name.id}"
+  name                = local.on_prem_vnet_gateway_name
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "VpnGw1"
   type                = "Vpn"
@@ -61,7 +69,7 @@ resource "azurerm_virtual_network_gateway" "gw" {
 # Create local network gateway
 resource "azurerm_local_network_gateway" "onpremiseslocalgw" {
   location            = azurerm_resource_group.rg.location
-  name                = "onpremises-localgw-${random_pet.vvan_name.id}"
+  name                = local.on_prem_local_gateway_name
   resource_group_name = azurerm_resource_group.rg.name
   gateway_address     = tolist(module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1]
 
@@ -75,7 +83,7 @@ resource "azurerm_local_network_gateway" "onpremiseslocalgw" {
 # Create connection
 resource "azurerm_virtual_network_gateway_connection" "onpremisesconnection" {
   location                   = azurerm_resource_group.rg.location
-  name                       = "onpremises-connection-${random_pet.vvan_name.id}"
+  name                       = local.on_prem_vnet_connection_name
   resource_group_name        = azurerm_resource_group.rg.name
   type                       = "IPsec"
   virtual_network_gateway_id = azurerm_virtual_network_gateway.gw.id

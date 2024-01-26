@@ -27,7 +27,7 @@ module "vwan_with_vhub" {
   create_resource_group          = true
   resource_group_name            = local.resource_group_name
   location                       = local.location
-  virtual_wan_name               = rlocal.virtual_wan_name
+  virtual_wan_name               = local.virtual_wan_name
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"

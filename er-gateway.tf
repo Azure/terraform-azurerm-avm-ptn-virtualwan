@@ -1,11 +1,11 @@
 resource "azurerm_express_route_gateway" "express_route_gateway" {
   for_each = local.expressroute_gateways != null && length(local.expressroute_gateways) > 0 ? local.expressroute_gateways : {}
 
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].location
+  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
   name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].resource_group_name
+  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
   scale_units         = each.value.scale_units
-  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].id
+  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   tags                = try(each.value.tags, {})
 }
 

@@ -43,9 +43,9 @@ module "vwan_with_vhub" {
   }
   expressroute_gateways = {
     aue-vhub-er-gw = {
-      name        = local.express_route_gateway_name
-      virtual_hub = local.virtual_hub_key
-      scale_units = 1
+      name            = local.express_route_gateway_name
+      virtual_hub_key = local.virtual_hub_key
+      scale_units     = 1
     }
   }
   er_circuit_connections = {}

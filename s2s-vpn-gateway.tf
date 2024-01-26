@@ -1,10 +1,10 @@
 resource "azurerm_vpn_gateway" "vpn_gateway" {
   for_each = local.vpn_gateways != null && length(local.vpn_gateways) > 0 ? local.vpn_gateways : {}
 
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].location
+  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
   name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].resource_group_name
-  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub].id
+  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
+  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   tags                = try(each.value.tags, {})
 }
 
@@ -12,9 +12,9 @@ resource "azurerm_vpn_gateway" "vpn_gateway" {
 resource "azurerm_vpn_site" "vpn_site" {
   for_each = local.vpn_sites != null ? local.vpn_sites : {}
 
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].location
+  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
   name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].resource_group_name
+  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
   virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
   address_cidrs       = try(each.value.address_cidrs, null)
   device_model        = try(each.value.device_model, null)

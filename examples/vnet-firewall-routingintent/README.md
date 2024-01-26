@@ -40,16 +40,16 @@ module "vwan_with_vhub" {
   }
   firewalls = {
     "aue-vhub-fw" = {
-      sku_name         = "AZFW_Hub"
-      sku_tier         = "Standard"
-      name             = local.firewall_name
-      virtual_hub_name = local.virtual_hub_key
+      sku_name        = "AZFW_Hub"
+      sku_tier        = "Standard"
+      name            = local.firewall_name
+      virtual_hub_key = local.virtual_hub_key
     }
   }
   routing_intents = {
     "aue-vhub-routing-intent" = {
-      name             = "private-routing-intent"
-      virtual_hub_name = local.virtual_hub_key
+      name            = "private-routing-intent"
+      virtual_hub_key = local.virtual_hub_key
       routing_policies = [{
         name         = "aue-vhub-routing-policy-private"
         destinations = ["PrivateTraffic"]

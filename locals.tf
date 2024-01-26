@@ -13,15 +13,15 @@ locals {
   } : null
   expressroute_gateways = var.expressroute_gateways != null ? {
     for key, gw in var.expressroute_gateways : key => {
-      name        = gw.name
-      virtual_hub = gw.virtual_hub
-      scale_units = gw.scale_units
+      name            = gw.name
+      virtual_hub_key = gw.virtual_hub_key
+      scale_units     = gw.scale_units
     }
   } : null
   p2s_gateway_vpn_server_configurations = var.p2s_gateway_vpn_server_configurations != null ? {
     for key, svr in var.p2s_gateway_vpn_server_configurations : key => {
       name                     = svr.name
-      virtual_hub_name         = svr.virtual_hub_name
+      virtual_hub_key          = svr.virtual_hub_key
       vpn_authentication_types = svr.vpn_authentication_types
       client_root_certificate  = svr.client_root_certificate
     }
@@ -29,7 +29,7 @@ locals {
   p2s_gateways = var.p2s_gateways != null ? {
     for key, gw in var.p2s_gateways : key => {
       name                                      = gw.name
-      virtual_hub_name                          = gw.virtual_hub_name
+      virtual_hub_key                           = gw.virtual_hub_key
       scale_unit                                = gw.scale_unit
       connection_configuration                  = gw.connection_configuration
       p2s_gateway_vpn_server_configuration_name = gw.p2s_gateway_vpn_server_configuration_name
@@ -37,8 +37,8 @@ locals {
   } : null
   routing_intents = {
     for key, intent in var.routing_intents : key => {
-      name             = intent.name
-      virtual_hub_name = intent.virtual_hub_name
+      name            = intent.name
+      virtual_hub_key = intent.virtual_hub_key
       routing_policies = lookup(intent, "routing_policies", null) == null ? [] : [
         for routing_policy in intent.routing_policies : {
           name         = routing_policy.name
@@ -47,7 +47,7 @@ locals {
       }]
     }
   }
-  virtual_hub = {
+  virtual_hubs = {
     for key, vhub in var.virtual_hubs : key => {
       name           = vhub.name
       location       = vhub.location
@@ -59,7 +59,7 @@ locals {
   virtual_network_connections = {
     for key, vnet_conn in var.virtual_network_connections : key => {
       name                      = vnet_conn.name
-      virtual_hub_name          = vnet_conn.virtual_hub_name
+      virtual_hub_key           = vnet_conn.virtual_hub_key
       remote_virtual_network_id = vnet_conn.remote_virtual_network_id
       internet_security_enabled = vnet_conn.internet_security_enabled
       routing = lookup(vnet_conn, "routing", null) == null ? [] : [{
@@ -78,8 +78,8 @@ locals {
   }
   vpn_gateways = var.vpn_gateways != null ? {
     for key, gw in var.vpn_gateways : key => {
-      name        = gw.name
-      virtual_hub = gw.virtual_hub
+      name            = gw.name
+      virtual_hub_key = gw.virtual_hub_key
     }
   } : null
   vpn_site_connections = var.vpn_site_connections != null ? {
@@ -94,10 +94,10 @@ locals {
   } : null
   vpn_sites = var.vpn_sites != null ? {
     for key, site in var.vpn_sites : key => {
-      name             = site.name
-      virtual_hub_name = site.virtual_hub_name
-      address_cidrs    = site.address_cidrs
-      links            = site.links
+      name            = site.name
+      virtual_hub_key = site.virtual_hub_key
+      address_cidrs   = site.address_cidrs
+      links           = site.links
     }
   } : null
 }

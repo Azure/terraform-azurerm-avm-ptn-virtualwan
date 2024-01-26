@@ -5,7 +5,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
 
   name                      = each.value.name
   remote_virtual_network_id = each.value.remote_virtual_network_id
-  virtual_hub_id            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
+  virtual_hub_id            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   internet_security_enabled = each.value.internet_security_enabled
 
   dynamic "routing" {
@@ -40,7 +40,7 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
   for_each = local.routing_intents
 
   name           = each.value.name
-  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
+  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
 
   dynamic "routing_policy" {
     for_each = each.value.routing_policies

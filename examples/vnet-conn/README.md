@@ -49,7 +49,7 @@ locals {
     aue-vnet = {
       virtual_network_connection_name = "vnet-conn-avm-vwan-${random_pet.vvan_name.id}"
       name                            = local.virtual_network_connection_name
-      virtual_hub_name                = local.virtual_hub_key
+      virtual_hub_key                 = local.virtual_hub_key
       remote_virtual_network_id       = azurerm_virtual_network.vnet.id
       internet_security_enabled       = true
     }

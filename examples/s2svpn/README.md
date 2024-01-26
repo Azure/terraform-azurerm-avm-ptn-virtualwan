@@ -51,14 +51,14 @@ module "vwan_with_vhub" {
   }
   vpn_gateways = {
     "aue-vhub-vpn-gw" = {
-      name        = local.vpn_gateways_name
-      virtual_hub = local.virtual_hub_key
+      name            = local.vpn_gateways_name
+      virtual_hub_key = local.virtual_hub_key
     }
   }
   vpn_sites = {
     "aue-vhub-vpn-site" = {
-      name             = local.vpn_sites_name
-      virtual_hub_name = local.virtual_hub_key
+      name            = local.vpn_sites_name
+      virtual_hub_key = local.virtual_hub_key
       links = [{
         name          = "link1"
         provider_name = "Cisco"

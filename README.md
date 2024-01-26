@@ -68,8 +68,8 @@ module "vwan_with_vhub" {
   }
   vpn_sites = {
     "aue-vhub-vpn-site" = {
-      name             = "aue-vhub-vpn-site"
-      virtual_hub_name = "aue-vhub"
+      name            = "aue-vhub-vpn-site"
+      virtual_hub_key = "aue-vhub"
       links = [{
         name          = "link1"
         provider_name = "Cisco"
@@ -242,7 +242,7 @@ Type:
 ```hcl
 map(object({
     name                          = string
-    virtual_hub                   = string
+    virtual_hub_key               = string
     tags                          = optional(map(string))
     allow_non_virtual_wan_traffic = optional(bool)
     scale_units                   = number
@@ -259,7 +259,7 @@ Type:
 
 ```hcl
 map(object({
-    virtual_hub_name     = string
+    virtual_hub_key      = string
     sku_name             = string
     sku_tier             = string
     name                 = optional(string)
@@ -311,7 +311,7 @@ Type:
 ```hcl
 map(object({
     name                     = string
-    virtual_hub_name         = string
+    virtual_hub_key          = string
     vpn_authentication_types = list(string)
     tags                     = optional(map(string))
     client_root_certificate = object({
@@ -343,7 +343,7 @@ Type:
 ```hcl
 map(object({
     name                                      = string
-    virtual_hub_name                          = string
+    virtual_hub_key                           = string
     tags                                      = optional(map(string))
     p2s_gateway_vpn_server_configuration_name = string
     connection_configuration = object({
@@ -377,8 +377,8 @@ Type:
 
 ```hcl
 map(object({
-    name             = string
-    virtual_hub_name = string
+    name            = string
+    virtual_hub_key = string
     routing_policies = list(object({
       name         = string
       destinations = list(string)
@@ -440,7 +440,7 @@ Type:
 ```hcl
 map(object({
     name                      = string
-    virtual_hub_name          = string
+    virtual_hub_key           = string
     remote_virtual_network_id = string
     internet_security_enabled = optional(bool, false)
     routing = optional(object({
@@ -476,9 +476,8 @@ Type:
 
 ```hcl
 map(object({
-    name = string
-    # Name of the virtual hub
-    virtual_hub                           = string
+    name                                  = string
+    virtual_hub_key                       = string
     tags                                  = optional(map(string))
     bgp_route_translation_for_nat_enabled = optional(bool)
     bgp_settings = optional(object({
@@ -567,7 +566,7 @@ Type:
 map(object({
     name = string
     # Name of the virtual hub
-    virtual_hub_name = string
+    virtual_hub_key = string
     links = list(object({
       name = string
       bgp = optional(object({

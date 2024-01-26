@@ -29,7 +29,7 @@ resource "azurerm_virtual_wan" "virtual_wan" {
 }
 
 resource "azurerm_virtual_hub" "virtual_hub" {
-  for_each = local.virtual_hub != null && length(local.virtual_hub) > 0 ? local.virtual_hub : {}
+  for_each = local.virtual_hubs != null && length(local.virtual_hubs) > 0 ? local.virtual_hubs : {}
 
   location            = each.value.location
   name                = each.value.name

@@ -67,8 +67,8 @@ module "vwan_with_vhub" {
   }
   vpn_sites = {
     "aue-vhub-vpn-site" = {
-      name             = "aue-vhub-vpn-site"
-      virtual_hub_name = "aue-vhub"
+      name            = "aue-vhub-vpn-site"
+      virtual_hub_key = "aue-vhub"
       links = [{
         name          = "link1"
         provider_name = "Cisco"

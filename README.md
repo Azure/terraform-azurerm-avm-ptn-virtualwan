@@ -62,8 +62,8 @@ module "vwan_with_vhub" {
   }
   vpn_gateways = {
     "aue-vhub-vpn-gw" = {
-      name        = "aue-vhub-vpn-gw"
-      virtual_hub = "aue-vhub"
+      name            = "aue-vhub-vpn-gw"
+      virtual_hub_key = "aue-vhub"
     }
   }
   vpn_sites = {
@@ -84,9 +84,9 @@ module "vwan_with_vhub" {
   }
   vpn_site_connections = {
     "onprem1" = {
-      name                 = "aue-vhub-vpn-conn01"
-      vpn_gateway_name     = "aue-vhub-vpn-gw"
-      remote_vpn_site_name = "aue-vhub-vpn-site"
+      name                = "aue-vhub-vpn-conn01"
+      vpn_gateway_key     = "aue-vhub-vpn-gw"
+      remote_vpn_site_key = "aue-vhub-vpn-site"
 
       vpn_links = [{
         name                                  = "link1"

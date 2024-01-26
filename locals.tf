@@ -28,11 +28,11 @@ locals {
   } : null
   p2s_gateways = var.p2s_gateways != null ? {
     for key, gw in var.p2s_gateways : key => {
-      name                                      = gw.name
-      virtual_hub_key                           = gw.virtual_hub_key
-      scale_unit                                = gw.scale_unit
-      connection_configuration                  = gw.connection_configuration
-      p2s_gateway_vpn_server_configuration_name = gw.p2s_gateway_vpn_server_configuration_name
+      name                                     = gw.name
+      virtual_hub_key                          = gw.virtual_hub_key
+      scale_unit                               = gw.scale_unit
+      connection_configuration                 = gw.connection_configuration
+      p2s_gateway_vpn_server_configuration_key = gw.p2s_gateway_vpn_server_configuration_key
     }
   } : null
   routing_intents = {
@@ -41,9 +41,9 @@ locals {
       virtual_hub_key = intent.virtual_hub_key
       routing_policies = lookup(intent, "routing_policies", null) == null ? [] : [
         for routing_policy in intent.routing_policies : {
-          name         = routing_policy.name
-          destinations = routing_policy.destinations
-          next_hop     = routing_policy.next_hop
+          name                  = routing_policy.name
+          destinations          = routing_policy.destinations
+          next_hop_firewall_key = routing_policy.next_hop_firewall_key
       }]
     }
   }

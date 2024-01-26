@@ -22,7 +22,7 @@ resource "azurerm_point_to_site_vpn_gateway" "p2s_gateway" {
   resource_group_name         = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
   scale_unit                  = each.value.scale_unit
   virtual_hub_id              = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
-  vpn_server_configuration_id = azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration[each.value.p2s_gateway_vpn_server_configuration_name].id
+  vpn_server_configuration_id = azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration[each.value.p2s_gateway_vpn_server_configuration_key].id
   tags                        = try(each.value.tags, {})
 
   connection_configuration {

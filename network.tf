@@ -47,7 +47,7 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
     content {
       destinations = routing_policy.value.destinations
       name         = routing_policy.value.name
-      next_hop     = azurerm_firewall.fw[routing_policy.value.next_hop].id
+      next_hop     = azurerm_firewall.fw[routing_policy.value.next_hop_firewall_key].id
     }
   }
 }

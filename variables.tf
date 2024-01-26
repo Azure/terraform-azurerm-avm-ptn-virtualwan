@@ -152,10 +152,10 @@ variable "p2s_gateway_vpn_server_configurations" {
 # P2S gateway parameters
 variable "p2s_gateways" {
   type = map(object({
-    name                                      = string
-    virtual_hub_key                           = string
-    tags                                      = optional(map(string))
-    p2s_gateway_vpn_server_configuration_name = string
+    name                                     = string
+    virtual_hub_key                          = string
+    tags                                     = optional(map(string))
+    p2s_gateway_vpn_server_configuration_key = string
     connection_configuration = object({
       name = string
       vpn_client_address_pool = object({
@@ -183,9 +183,9 @@ variable "routing_intents" {
     name            = string
     virtual_hub_key = string
     routing_policies = list(object({
-      name         = string
-      destinations = list(string)
-      next_hop     = string
+      name                  = string
+      destinations          = list(string)
+      next_hop_firewall_key = string
     }))
   }))
   default     = {}

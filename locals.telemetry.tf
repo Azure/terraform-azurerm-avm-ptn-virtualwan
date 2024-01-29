@@ -1,10 +1,6 @@
 locals {
   module_name = "virtualwan"
   module_type = "ptn"
-
-  # This constructs the ARM deployment name that is used for the telemetry.
-  # We shouldn't ever hit the 64 character limit but use substr just in case.
-
   telem_arm_deployment_name = substr(
     format(
       "%s.%s.%s.v%s.%s",
@@ -17,10 +13,6 @@ locals {
     0,
     64
   )
-
-
-  # This is an empty ARM deployment template.
-
   telem_arm_template_content = <<TEMPLATE
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -39,7 +31,6 @@ locals {
   }
 }
 TEMPLATE
-
   telem_puid                 = "46d3xgtf"
   telem_random_hex           = can(random_id.telem[0].hex) ? random_id.telem[0].hex : ""
 }

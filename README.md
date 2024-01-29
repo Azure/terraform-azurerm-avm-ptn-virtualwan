@@ -62,14 +62,14 @@ module "vwan_with_vhub" {
   }
   vpn_gateways = {
     "aue-vhub-vpn-gw" = {
-      name        = "aue-vhub-vpn-gw"
-      virtual_hub = "aue-vhub"
+      name            = "aue-vhub-vpn-gw"
+      virtual_hub_key = "aue-vhub"
     }
   }
   vpn_sites = {
     "aue-vhub-vpn-site" = {
-      name             = "aue-vhub-vpn-site"
-      virtual_hub_name = "aue-vhub"
+      name            = "aue-vhub-vpn-site"
+      virtual_hub_key = "aue-vhub"
       links = [{
         name          = "link1"
         provider_name = "Cisco"
@@ -84,9 +84,9 @@ module "vwan_with_vhub" {
   }
   vpn_site_connections = {
     "onprem1" = {
-      name                 = "aue-vhub-vpn-conn01"
-      vpn_gateway_name     = "aue-vhub-vpn-gw"
-      remote_vpn_site_name = "aue-vhub-vpn-site"
+      name                = "aue-vhub-vpn-conn01"
+      vpn_gateway_key     = "aue-vhub-vpn-gw"
+      remote_vpn_site_key = "aue-vhub-vpn-site"
 
       vpn_links = [{
         name                                  = "link1"
@@ -110,15 +110,19 @@ module "vwan_with_vhub" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.3.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.3)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.7)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.7)
+
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.5)
 
 ## Resources
 
@@ -129,6 +133,7 @@ The following resources are used by this module:
 - [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) (resource)
 - [azurerm_point_to_site_vpn_gateway.p2s_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/point_to_site_vpn_gateway) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_resource_group_template_deployment.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) (resource)
 - [azurerm_virtual_hub.virtual_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub) (resource)
 - [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
 - [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
@@ -137,6 +142,7 @@ The following resources are used by this module:
 - [azurerm_vpn_gateway_connection.vpn_site_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway_connection) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
 - [azurerm_vpn_site.vpn_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_site) (resource)
+- [random_id.telem](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -188,6 +194,16 @@ Type: `bool`
 
 Default: `false`
 
+### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
+
+Description: This variable controls whether or not telemetry is enabled for the module.  
+For more information see https://aka.ms/avm/telemetryinfo.  
+If it is set to false, then no telemetry will be collected.
+
+Type: `bool`
+
+Default: `true`
+
 ### <a name="input_er_circuit_connections"></a> [er\_circuit\_connections](#input\_er\_circuit\_connections)
 
 Description: Mapping object to link ER circuits to ER Gateways for the creation of connection
@@ -197,7 +213,7 @@ Type:
 ```hcl
 map(object({
     name                                 = string
-    express_route_gateway_name           = string
+    express_route_gateway_key            = string
     express_route_circuit_peering_id     = string
     authorization_key                    = optional(string)
     enable_internet_security             = optional(bool)
@@ -226,7 +242,7 @@ Type:
 ```hcl
 map(object({
     name                          = string
-    virtual_hub                   = string
+    virtual_hub_key               = string
     tags                          = optional(map(string))
     allow_non_virtual_wan_traffic = optional(bool)
     scale_units                   = number
@@ -243,7 +259,7 @@ Type:
 
 ```hcl
 map(object({
-    virtual_hub_name     = string
+    virtual_hub_key      = string
     sku_name             = string
     sku_tier             = string
     name                 = optional(string)
@@ -295,7 +311,7 @@ Type:
 ```hcl
 map(object({
     name                     = string
-    virtual_hub_name         = string
+    virtual_hub_key          = string
     vpn_authentication_types = list(string)
     tags                     = optional(map(string))
     client_root_certificate = object({
@@ -326,10 +342,10 @@ Type:
 
 ```hcl
 map(object({
-    name                                      = string
-    virtual_hub_name                          = string
-    tags                                      = optional(map(string))
-    p2s_gateway_vpn_server_configuration_name = string
+    name                                     = string
+    virtual_hub_key                          = string
+    tags                                     = optional(map(string))
+    p2s_gateway_vpn_server_configuration_key = string
     connection_configuration = object({
       name = string
       vpn_client_address_pool = object({
@@ -361,12 +377,12 @@ Type:
 
 ```hcl
 map(object({
-    name             = string
-    virtual_hub_name = string
+    name            = string
+    virtual_hub_key = string
     routing_policies = list(object({
-      name         = string
-      destinations = list(string)
-      next_hop     = string
+      name                  = string
+      destinations          = list(string)
+      next_hop_firewall_key = string
     }))
   }))
 ```
@@ -380,6 +396,14 @@ Description: Overall tags
 Type: `map(string)`
 
 Default: `{}`
+
+### <a name="input_telemetry_resource_group_name"></a> [telemetry\_resource\_group\_name](#input\_telemetry\_resource\_group\_name)
+
+Description: The resource group where the telemetry will be deployed.
+
+Type: `string`
+
+Default: `""`
 
 ### <a name="input_type"></a> [type](#input\_type)
 
@@ -416,7 +440,7 @@ Type:
 ```hcl
 map(object({
     name                      = string
-    virtual_hub_name          = string
+    virtual_hub_key           = string
     remote_virtual_network_id = string
     internet_security_enabled = optional(bool, false)
     routing = optional(object({
@@ -452,9 +476,8 @@ Type:
 
 ```hcl
 map(object({
-    name = string
-    # Name of the virtual hub
-    virtual_hub                           = string
+    name                                  = string
+    virtual_hub_key                       = string
     tags                                  = optional(map(string))
     bgp_route_translation_for_nat_enabled = optional(bool)
     bgp_settings = optional(object({
@@ -478,11 +501,9 @@ Type:
 
 ```hcl
 map(object({
-    name = string
-    # Name of the virtual hub
-    vpn_gateway_name = string
-    # Name of the vpn site
-    remote_vpn_site_name = string
+    name                = string
+    vpn_gateway_key     = string
+    remote_vpn_site_key = string
     vpn_links = list(object({
       name                 = string
       egress_nat_rule_ids  = optional(list(string))
@@ -543,7 +564,7 @@ Type:
 map(object({
     name = string
     # Name of the virtual hub
-    virtual_hub_name = string
+    virtual_hub_key = string
     links = list(object({
       name = string
       bgp = optional(object({
@@ -612,20 +633,8 @@ Description: Virtual WAN ID
 
 No modules.
 
-## Contributing
-1. Fork the repository.
-2. Write Terraform code in a new branch.
-3. Run `docker run --rm -v ${pwd}:/src -w /src mcr.microsoft.com/azterraform:latest make pre-commit` to format the code.
-4. Run `docker run --rm -v $(pwd):/src -w /src mcr.microsoft.com/azterraform:latest make pr-check` to run the check locally.
-5. Create a pull request for the main branch.
-    * CI pr-check will be executed automatically.
-    * Once pr-check was passed, with manually approval, the e2e test and version upgrade test would be executed.
-6. Merge pull request after approval.
+<!-- markdownlint-disable-next-line MD041 -->
+## Data Collection
 
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services.
-Authorized use of Microsoft trademarks or logos is subject to and must follow Microsoft's Trademark & Brand Guidelines.
-Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
 <!-- END_TF_DOCS -->

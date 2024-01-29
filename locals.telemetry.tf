@@ -1,4 +1,5 @@
 locals {
+
   # This is the unique id AVM Terraform modules that is supplied by the AVM team.
   # See https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-sfr3---category-telemetry---deploymentusage-telemetry
   telem_puid = "46d3xgtf"
@@ -14,6 +15,7 @@ locals {
 
   # This constructs the ARM deployment name that is used for the telemetry.
   # We shouldn't ever hit the 64 character limit but use substr just in case.
+
   telem_arm_deployment_name = substr(
     format(
       "%s.%s.%s.v%s.%s",
@@ -27,7 +29,9 @@ locals {
     64
   )
 
+
   # This is an empty ARM deployment template.
+
   telem_arm_template_content = <<TEMPLATE
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -38,9 +42,16 @@ locals {
   "outputs": {
     "telemetry": {
       "type": "String",
-      "value": "Azure Verified Modules. For more information, see https://aka.ms/avm/telemetryinfo"
+
+
+      "value": "For more information, see https://aka.ms/avm/telemetry"
+
     }
   }
 }
 TEMPLATE
+
+  telem_puid                 = "46d3xgtf"
+  telem_random_hex           = can(random_id.telem[0].hex) ? random_id.telem[0].hex : ""
 }
+

@@ -1,63 +1,58 @@
-terraform {
-  required_version = ">= 1.3.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0"
-    }
-  }
-}
-provider "azurerm" {
-  features {
-  }
+resource "random_pet" "vvan_name" {
+  length    = 2
+  separator = "-"
 }
 
+locals {
+  firewall_key        = "aue-vhub-fw"
+  firewall_name       = "fw-avm-vwan-${random_pet.vvan_name.id}"
+  location            = "australiaeast"
+  resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
+  tags = {
+    environment = "avm-vwan-testing"
+    deployment  = "terraform"
+  }
+  virtual_hub_key  = "aue-vhub"
+  virtual_hub_name = "vhub-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+}
 
 module "vwan_with_vhub" {
   source                         = "../../"
   create_resource_group          = true
-  resource_group_name            = "tvmVwanRg"
-  location                       = "australiaeast"
-  virtual_wan_name               = "tvmVwan"
+  resource_group_name            = local.resource_group_name
+  location                       = local.location
+  virtual_wan_name               = local.virtual_wan_name
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
   type                           = "Standard"
-  virtual_wan_tags = {
-    environment = "dev"
-    deployment  = "terraform"
-  }
+  virtual_wan_tags               = local.tags
   virtual_hubs = {
-    aue-vhub = {
-      name           = "aue_vhub"
-      location       = "australiaeast"
-      resource_group = "demo-vwan-rsg"
+    (local.virtual_hub_key) = {
+      name           = local.virtual_hub_name
+      location       = local.location
+      resource_group = local.resource_group_name
       address_prefix = "10.0.0.0/24"
-      tags = {
-        "location" = "AUE"
-      }
+      tags           = local.tags
     }
   }
   firewalls = {
-    "aue-vhub-fw" = {
-      sku_name         = "AZFW_Hub"
-      sku_tier         = "Standard"
-      name             = "aue-hub-fw"
-      virtual_hub_name = "aue-vhub"
+    (local.firewall_key) = {
+      sku_name        = "AZFW_Hub"
+      sku_tier        = "Standard"
+      name            = local.firewall_name
+      virtual_hub_key = local.virtual_hub_key
     }
   }
   routing_intents = {
     "aue-vhub-routing-intent" = {
-      name             = "private-routing-intent"
-      virtual_hub_name = "aue-vhub"
+      name            = "private-routing-intent"
+      virtual_hub_key = local.virtual_hub_key
       routing_policies = [{
-        name         = "aue-vhub-routing-policy-private"
-        destinations = ["PrivateTraffic"]
-        next_hop     = "aue-vhub-fw"
+        name                  = "aue-vhub-routing-policy-private"
+        destinations          = ["PrivateTraffic"]
+        next_hop_firewall_key = local.firewall_key
       }]
     }
   }
 }
-
-
-# Create 4 VNETs (vnet-a, vnet-b, vnet-c, vnet-d)
-# Create Firewall Policies to allow traffic between vnets a and b, and c and d. Anyother traffic should be blocked.

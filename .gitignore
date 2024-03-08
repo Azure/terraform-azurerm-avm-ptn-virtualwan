@@ -65,3 +65,5 @@ avm.tflint.merged.hcl
 avm.tflint_example.hcl
 avm.tflint_example.merged.hcl
 avmmakefile
+*.md.tmp
+.DS_Store

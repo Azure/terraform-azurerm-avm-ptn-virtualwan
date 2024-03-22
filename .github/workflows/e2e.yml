@@ -39,6 +39,7 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 #v4.1.2
+
       - name: Test example
         shell: bash
         run: |
@@ -55,7 +56,6 @@ jobs:
             echo "Failed to login after $MAX_RETRIES attempts."
             exit 1
           fi
-          az login --identity --username $MSI_ID > /dev/null
           export ARM_SUBSCRIPTION_ID=$(az login --identity --username $MSI_ID | jq -r '.[0] | .id')
           export ARM_TENANT_ID=$(az login --identity --username $MSI_ID | jq -r '.[0] | .tenantId')
           export ARM_CLIENT_ID=$(az identity list | jq -r --arg MSI_ID "$MSI_ID" '.[] | select(.principalId == $MSI_ID) | .clientId')

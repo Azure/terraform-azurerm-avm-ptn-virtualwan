@@ -8,7 +8,7 @@ locals {
       enable_internet_security             = try(er_conn.enable_internet_security, null)
       express_route_gateway_bypass_enabled = try(er_conn.express_route_gateway_bypass_enabled, null)
       routing_weight                       = try(er_conn.routing_weight, null)
-      routing                              = try(er_conn.routing, {})
+      routing                              = try(er_conn.routing, null)
     }
   } : null
   expressroute_gateways = var.expressroute_gateways != null ? {

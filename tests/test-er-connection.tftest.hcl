@@ -11,7 +11,7 @@ mock_provider "azurerm" {
   }
   mock_resource "azurerm_express_route_gateway" {
     defaults = {
-        id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vwantest/providers/Microsoft.Network/expressRouteGateways/tester"
+      id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vwantest/providers/Microsoft.Network/expressRouteGateways/tester"
     }
   }
 }
@@ -102,9 +102,9 @@ run "express_route_connection_with_routing_is_successful" {
         express_route_gateway_key        = "aue-vhub-er-gw"
         express_route_circuit_peering_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vwantest/providers/Microsoft.Network/expressRouteCircuits/tester/peerings/AzurePrivatePeering"
         routing = {
-            associated_route_table_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vwantest/providers/Microsoft.Network/virtualHubs/tester/hubRouteTables/tester"
+          associated_route_table_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/vwantest/providers/Microsoft.Network/virtualHubs/tester/hubRouteTables/tester"
         }
-        routing_weight                   = 1
+        routing_weight = 1
       }
     }
   }

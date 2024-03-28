@@ -22,14 +22,14 @@ resource "azurerm_express_route_connection" "er_connection" {
   routing_weight                   = try(each.value.routing_weight, null)
 
   dynamic "routing" {
-    for_each = each.value.routing != null || length(each.value.routing) > 0 ? [each.value.routing] : []
+    for_each = each.value.routing != null ? [each.value.routing] : []
     content {
       associated_route_table_id = routing.value.associated_route_table_id
       inbound_route_map_id      = try(routing.value.inbound_route_map_id, null)
       outbound_route_map_id     = try(routing.value.outbound_route_map_id, null)
 
       dynamic "propagated_route_table" {
-        for_each = routing.value.propagated_route_table != null && length(routing.value.propagated_route_table) > 0 ? [routing.value.propagated_route_table] : []
+        for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
         content {
           labels          = try(propagated_route_tables.value.labels, [])
           route_table_ids = try(propagated_route_tables.value.route_table_ids, [])

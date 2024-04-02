@@ -6,6 +6,7 @@ resource "azurerm_firewall" "fw" {
   resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
   sku_name            = each.value.sku_name
   sku_tier            = each.value.sku_tier
+  firewall_policy_id  = each.value.firewall_policy_id
   tags                = try(each.value.tags, {})
 
   virtual_hub {

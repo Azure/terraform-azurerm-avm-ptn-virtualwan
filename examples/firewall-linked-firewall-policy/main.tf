@@ -17,11 +17,11 @@ locals {
   virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
 }
 
-module "firewall_policy" {
-  source             = "Azure/avm-res-network-firewallpolicy/azurerm"
-  name                = module.naming.firewall_policy.name_unique
+
+resource "azurerm_firewall_policy" "this" {
   location            = local.location
-  resource_group_name = local.resource_group_name
+  name                = "vhub-avm-vwan-${random_pet.vvan_name.id}-fw-policy"
+  resource_group_name = module.vwan_with_vhub.resource_group_name
 }
 
 module "vwan_with_vhub" {
@@ -45,11 +45,11 @@ module "vwan_with_vhub" {
   }
   firewalls = {
     (local.firewall_key) = {
-      sku_name        = "AZFW_Hub"
-      sku_tier        = "Standard"
-      name            = local.firewall_name
-      virtual_hub_key = local.virtual_hub_key
-      firewall_policy_id = module.firewall_policy.id
+      sku_name           = "AZFW_Hub"
+      sku_tier           = "Standard"
+      name               = local.firewall_name
+      virtual_hub_key    = local.virtual_hub_key
+      firewall_policy_id = azurerm_firewall_policy.this.id
     }
   }
   routing_intents = {

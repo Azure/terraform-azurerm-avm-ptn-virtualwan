@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # VNET Firewall Routing Intent example
 
-This is the VNET Firewall Routing Intent example.
+This is the frewall linked to a firewall policy example
 
 ```hcl
 resource "random_pet" "vvan_name" {
@@ -21,6 +21,13 @@ locals {
   virtual_hub_key  = "aue-vhub"
   virtual_hub_name = "vhub-avm-vwan-${random_pet.vvan_name.id}"
   virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+}
+
+
+resource "azurerm_firewall_policy" "this" {
+  location            = local.location
+  name                = "vhub-avm-vwan-${random_pet.vvan_name.id}-fw-policy"
+  resource_group_name = module.vwan_with_vhub.resource_group_name
 }
 
 module "vwan_with_vhub" {
@@ -44,10 +51,11 @@ module "vwan_with_vhub" {
   }
   firewalls = {
     (local.firewall_key) = {
-      sku_name        = "AZFW_Hub"
-      sku_tier        = "Standard"
-      name            = local.firewall_name
-      virtual_hub_key = local.virtual_hub_key
+      sku_name           = "AZFW_Hub"
+      sku_tier           = "Standard"
+      name               = local.firewall_name
+      virtual_hub_key    = local.virtual_hub_key
+      firewall_policy_id = azurerm_firewall_policy.this.id
     }
   }
   routing_intents = {
@@ -79,12 +87,15 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.7)
+
 - <a name="provider_random"></a> [random](#provider\_random) (~> 3.5)
 
 ## Resources
 
 The following resources are used by this module:
 
+- [azurerm_firewall_policy.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall_policy) (resource)
 - [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
 
 <!-- markdownlint-disable MD013 -->

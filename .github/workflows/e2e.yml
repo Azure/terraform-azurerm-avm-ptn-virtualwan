@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          MAX_RETRIES=10
+           MAX_RETRIES=10
           RETRY_COUNT=0
           until [ $RETRY_COUNT -ge $MAX_RETRIES ]
           do

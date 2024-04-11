@@ -37,4 +37,5 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   address_prefix      = each.value.address_prefix
   tags                = try(each.value.tags, {})
   virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
+  hub_routing_preference = each.value.hub_routing_preference
 }

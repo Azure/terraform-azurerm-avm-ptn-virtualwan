@@ -213,6 +213,7 @@ variable "virtual_hubs" {
     resource_group = optional(string, null)
     address_prefix = string
     tags           = optional(map(string))
+    hub_routing_preference = optional(string)
   }))
   default     = {}
   description = "Virtual Hub parameters"

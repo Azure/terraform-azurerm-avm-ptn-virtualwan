@@ -31,11 +31,11 @@ resource "azurerm_virtual_wan" "virtual_wan" {
 resource "azurerm_virtual_hub" "virtual_hub" {
   for_each = local.virtual_hubs != null && length(local.virtual_hubs) > 0 ? local.virtual_hubs : {}
 
-  location            = each.value.location
-  name                = each.value.name
-  resource_group_name = local.resource_group_name
-  address_prefix      = each.value.address_prefix
-  tags                = try(each.value.tags, {})
-  virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
+  location               = each.value.location
+  name                   = each.value.name
+  resource_group_name    = local.resource_group_name
+  address_prefix         = each.value.address_prefix
+  tags                   = try(each.value.tags, {})
+  virtual_wan_id         = azurerm_virtual_wan.virtual_wan.id
   hub_routing_preference = each.value.hub_routing_preference
 }

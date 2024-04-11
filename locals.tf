@@ -49,12 +49,12 @@ locals {
   }
   virtual_hubs = {
     for key, vhub in var.virtual_hubs : key => {
-      name           = vhub.name
-      location       = vhub.location
-      resource_group = try(vhub.resource_group, "")
-      address_prefix = vhub.address_prefix
+      name                   = vhub.name
+      location               = vhub.location
+      resource_group         = try(vhub.resource_group, "")
+      address_prefix         = vhub.address_prefix
       hub_routing_preference = try(vhub.hub_routing_preference, "")
-      tags           = try(vhub.tags, {})
+      tags                   = try(vhub.tags, {})
     }
   }
   virtual_network_connections = {

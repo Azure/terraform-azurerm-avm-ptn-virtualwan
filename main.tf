@@ -35,7 +35,7 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   name                   = each.value.name
   resource_group_name    = local.resource_group_name
   address_prefix         = each.value.address_prefix
+  hub_routing_preference = each.value.hub_routing_preference
   tags                   = try(each.value.tags, {})
   virtual_wan_id         = azurerm_virtual_wan.virtual_wan.id
-  hub_routing_preference = each.value.hub_routing_preference
 }

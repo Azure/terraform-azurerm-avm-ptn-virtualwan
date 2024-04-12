@@ -195,10 +195,10 @@ variable "routing_intents" {
 
 # General tags for all resources
 variable "tags" {
-    type     = map(string)
-    default  = null
-    description = "(Optional) Tags of the resource."
-  }
+  type        = map(string)
+  default     = null
+  description = "(Optional) Tags of the resource."
+}
 
 variable "type" {
   type        = string

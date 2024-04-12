@@ -49,7 +49,7 @@ resource "azurerm_virtual_network_gateway" "gw" {
   location            = azurerm_resource_group.rg.location
   name                = local.on_prem_vnet_gateway_name
   resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "AzVpnGw1"
+  sku                 = "VpnGw1AZ"
   type                = "Vpn"
   active_active       = false
   enable_bgp          = true

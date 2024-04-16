@@ -193,7 +193,7 @@ variable "routing_intents" {
   nullable    = false
 }
 
-# General tags for all resources
+# General tags for all resources in pattern
 variable "tags" {
   type        = map(string)
   default     = null

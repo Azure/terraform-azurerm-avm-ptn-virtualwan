@@ -24,8 +24,8 @@ jobs:
         uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 #v4.1.2
 
       - name: check docs
-        uses: Azure/terraform-azurerm-avm-template/.github/actions/docs-check@main
-
+        uses: lonegunmanb/terraform-azurerm-avm-template/.github/actions/docs-check@debug
+        
   terraform:
     if: github.event.repository.name != 'terraform-azurerm-avm-template'
     name: terraform

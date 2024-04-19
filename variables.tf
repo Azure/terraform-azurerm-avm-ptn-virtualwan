@@ -193,11 +193,11 @@ variable "routing_intents" {
   nullable    = false
 }
 
-# General tags for all resources
+# General tags for all resources in pattern
 variable "tags" {
   type        = map(string)
-  default     = {}
-  description = "Overall tags"
+  default     = null
+  description = "(Optional) Tags of the resource."
 }
 
 variable "type" {
@@ -208,11 +208,12 @@ variable "type" {
 
 variable "virtual_hubs" {
   type = map(object({
-    name           = string
-    location       = string
-    resource_group = optional(string, null)
-    address_prefix = string
-    tags           = optional(map(string))
+    name                   = string
+    location               = string
+    resource_group         = optional(string, null)
+    address_prefix         = string
+    tags                   = optional(map(string))
+    hub_routing_preference = optional(string)
   }))
   default     = {}
   description = "Virtual Hub parameters"

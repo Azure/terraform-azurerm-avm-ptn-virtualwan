@@ -391,11 +391,11 @@ Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: Overall tags
+Description: (Optional) Tags of the resource.
 
 Type: `map(string)`
 
-Default: `{}`
+Default: `null`
 
 ### <a name="input_telemetry_resource_group_name"></a> [telemetry\_resource\_group\_name](#input\_telemetry\_resource\_group\_name)
 
@@ -421,11 +421,12 @@ Type:
 
 ```hcl
 map(object({
-    name           = string
-    location       = string
-    resource_group = optional(string, null)
-    address_prefix = string
-    tags           = optional(map(string))
+    name                   = string
+    location               = string
+    resource_group         = optional(string, null)
+    address_prefix         = string
+    tags                   = optional(map(string))
+    hub_routing_preference = optional(string)
   }))
 ```
 

@@ -33,7 +33,7 @@ resource "azurerm_virtual_hub" "virtual_hub" {
 
   location               = each.value.location
   name                   = each.value.name
-  resource_group_name    = local.resource_group_name
+  resource_group_name    = coalesce(each.value.resource_group, local.resource_group_name)
   address_prefix         = each.value.address_prefix
   hub_routing_preference = each.value.hub_routing_preference
   tags                   = try(each.value.tags, {})

@@ -8,14 +8,6 @@ resource "azurerm_vpn_server_configuration" "p2s_gateway_vpn_server_configuratio
   vpn_authentication_types = each.value.vpn_authentication_types
   tags                     = try(each.value.tags, {})
 
-  dynamic "client_root_certificate" {
-    for_each = each.value.client_root_certificate != null ? [each.value.client_root_certificate] : []
-
-    content {
-      name             = each.value.client_root_certificate.name
-      public_cert_data = each.value.client_root_certificate.public_cert_data
-    }
-  }
   dynamic "azure_active_directory_authentication" {
     for_each = each.value.azure_active_directory_authentication != null ? [each.value.azure_active_directory_authentication] : []
 
@@ -23,6 +15,14 @@ resource "azurerm_vpn_server_configuration" "p2s_gateway_vpn_server_configuratio
       audience = each.value.azure_active_directory_authentication.audience
       issuer   = each.value.azure_active_directory_authentication.issuer
       tenant   = each.value.azure_active_directory_authentication.tenant
+    }
+  }
+  dynamic "client_root_certificate" {
+    for_each = each.value.client_root_certificate != null ? [each.value.client_root_certificate] : []
+
+    content {
+      name             = each.value.client_root_certificate.name
+      public_cert_data = each.value.client_root_certificate.public_cert_data
     }
   }
 }

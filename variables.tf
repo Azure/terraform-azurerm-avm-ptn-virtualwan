@@ -129,10 +129,15 @@ variable "p2s_gateway_vpn_server_configurations" {
     virtual_hub_key          = string
     vpn_authentication_types = list(string)
     tags                     = optional(map(string))
-    client_root_certificate = object({
+    client_root_certificate = optional(object({
       name             = string
       public_cert_data = string
-    })
+    }))
+    azure_active_directory_authentication = optional(object({
+      audience = string
+      issuer   = string
+      tenant   = string
+    }))
     ipsec_policy = optional(object({
       dh_group               = string
       ike_encryption         = string

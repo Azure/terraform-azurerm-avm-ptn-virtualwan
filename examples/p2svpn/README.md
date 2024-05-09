@@ -93,6 +93,28 @@ EOF
 }
 ```
 
+## P2S VPN with Azure Entra ID authentication
+
+`p2s_gateway_vpn_server_configurations` to configure Azure Entra ID authentication. Refer to [documentation](https://learn.microsoft.com/en-us/azure/vpn-gateway/openvpn-azure-ad-tenant)
+
+```hcl
+module "vwan_with_vhub" {
+  ...
+  p2s_gateway_vpn_server_configurations = {
+    (local.p2s_gateway_vpn_server_configuration_key) = {
+      name                     = local.p2s_gateway_vpn_server_configuration_name
+      virtual_hub_key          = local.virtual_hub_key
+      vpn_authentication_types = ["AAD"]
+      azure_active_directory_authentication = {
+        audience = "<Azure VPN Application ID>"
+        issuer   = "https://sts.windows.net/<Azure Tenant ID>/"
+        tenant   = "https://login.microsoftonline.com/<Azure Tenant ID>/"
+      }
+    }
+  }
+}
+```
+
 <!-- markdownlint-disable MD033 -->
 ## Requirements
 

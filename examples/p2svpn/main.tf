@@ -3,6 +3,8 @@ resource "random_pet" "vvan_name" {
   separator = "-"
 }
 
+data "azurerm_subscription" "current" {}
+
 locals {
   location                                             = "australiaeast"
   p2s_gateway_name                                     = "p2s-avm-vwan-${random_pet.vvan_name.id}"
@@ -56,7 +58,12 @@ module "vwan_with_vhub" {
     (local.p2s_gateway_vpn_server_configuration_key) = {
       name                     = local.p2s_gateway_vpn_server_configuration_name
       virtual_hub_key          = local.virtual_hub_key
-      vpn_authentication_types = ["Certificate"]
+      vpn_authentication_types = ["Certificate", "AAD"]
+      azure_active_directory_authentication = {
+        audience = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+        issuer   = "https://sts.windows.net/${data.azurerm_subscription.current.tenant_id}/"
+        tenant   = "https://login.microsoftonline.com/${data.azurerm_subscription.current.tenant_id}/"
+      }
       client_root_certificate = {
         name             = "DigiCert-Federated-ID-Root-CA"
         public_cert_data = <<EOF

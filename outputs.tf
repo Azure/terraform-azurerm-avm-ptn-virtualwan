@@ -25,7 +25,7 @@ output "resource_group_name" {
 
 output "resource_id" {
   description = "Virtual WAN ID"
-  value       = azurerm_virtual_wan.virtual_wan != null ? azurerm_virtual_wan.virtual_wan.id : var.virtual_hubs != null ? [for hub in azurerm_virtual_hub.virtual_hub : hub.id] : null
+  value       = azurerm_virtual_wan.virtual_wan != null ? [azurerm_virtual_wan.virtual_wan.id] : var.virtual_hubs != null ? [for hub in azurerm_virtual_hub.virtual_hub : hub.id] : []
 }
 
 output "s2s_vpn_gw" {

@@ -43,6 +43,7 @@ resource "azurerm_public_ip" "gw_ip" {
   name                = local.on_prem_public_ip_name
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "Standard"
+  zones               = ["1"]
 }
 
 # Create virtual network gateway

@@ -20,10 +20,11 @@ locals {
   } : null
   p2s_gateway_vpn_server_configurations = var.p2s_gateway_vpn_server_configurations != null ? {
     for key, svr in var.p2s_gateway_vpn_server_configurations : key => {
-      name                     = svr.name
-      virtual_hub_key          = svr.virtual_hub_key
-      vpn_authentication_types = svr.vpn_authentication_types
-      client_root_certificate  = svr.client_root_certificate
+      name                                  = svr.name
+      virtual_hub_key                       = svr.virtual_hub_key
+      vpn_authentication_types              = svr.vpn_authentication_types
+      client_root_certificate               = svr.client_root_certificate
+      azure_active_directory_authentication = svr.azure_active_directory_authentication
     }
   } : null
   p2s_gateways = var.p2s_gateways != null ? {

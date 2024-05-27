@@ -9,6 +9,8 @@ resource "random_pet" "vvan_name" {
   separator = "-"
 }
 
+data "azurerm_subscription" "current" {}
+
 locals {
   location                                             = "australiaeast"
   p2s_gateway_name                                     = "p2s-avm-vwan-${random_pet.vvan_name.id}"
@@ -62,7 +64,12 @@ module "vwan_with_vhub" {
     (local.p2s_gateway_vpn_server_configuration_key) = {
       name                     = local.p2s_gateway_vpn_server_configuration_name
       virtual_hub_key          = local.virtual_hub_key
-      vpn_authentication_types = ["Certificate"]
+      vpn_authentication_types = ["Certificate", "AAD"]
+      azure_active_directory_authentication = {
+        audience = "41b23e61-6c1e-4545-b367-cd054e0ed4b4"
+        issuer   = "https://sts.windows.net/${data.azurerm_subscription.current.tenant_id}/"
+        tenant   = "https://login.microsoftonline.com/${data.azurerm_subscription.current.tenant_id}/"
+      }
       client_root_certificate = {
         name             = "DigiCert-Federated-ID-Root-CA"
         public_cert_data = <<EOF
@@ -108,6 +115,8 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.7)
+
 - <a name="provider_random"></a> [random](#provider\_random) (~> 3.5)
 
 ## Resources
@@ -115,6 +124,7 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
+- [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

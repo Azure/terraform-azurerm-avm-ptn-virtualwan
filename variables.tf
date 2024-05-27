@@ -7,6 +7,7 @@ variable "allow_branch_to_branch_traffic" {
 variable "location" {
   type        = string
   description = "Virtual WAN location"
+  nullable    = false
 }
 
 variable "resource_group_name" {

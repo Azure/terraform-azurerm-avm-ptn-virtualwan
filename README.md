@@ -397,14 +397,6 @@ Type: `map(string)`
 
 Default: `null`
 
-### <a name="input_telemetry_resource_group_name"></a> [telemetry\_resource\_group\_name](#input\_telemetry\_resource\_group\_name)
-
-Description: The resource group where the telemetry will be deployed.
-
-Type: `string`
-
-Default: `""`
-
 ### <a name="input_type"></a> [type](#input\_type)
 
 Description: Type of the virtual WAN
@@ -610,9 +602,17 @@ Description: Firewall Name
 
 Description: P2S VPN Gateway ID
 
+### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: The full resource outputs.
+
 ### <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name)
 
 Description: Resource Group Name
+
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
+
+Description: Virtual WAN ID
 
 ### <a name="output_s2s_vpn_gw"></a> [s2s\_vpn\_gw](#output\_s2s\_vpn\_gw)
 

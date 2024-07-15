@@ -83,8 +83,8 @@ resource "azurerm_local_network_gateway" "onpremiseslocalgw" {
   gateway_address     = tolist(module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].instance_0_bgp_peering_address[0].tunnel_ips)[1]
 
   bgp_settings {
-    asn                 = module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].asn
-    bgp_peering_address = tolist(module.vwan_with_vhub.s2s_vpn_gw[0].bgp_settings[0].instance_0_bgp_peering_address[0].default_ips)[0]
+    asn                 = module.vwan_with_vhub.vpn_gateway_resource_ids["aue-vhub-vpn-gw"].bgp_settings[0].asn
+    bgp_peering_address = tolist(module.vwan_with_vhub.vpn_gateway_resource_ids["aue-vhub-vpn-gw"].bgp_settings[0].instance_0_bgp_peering_address[0].default_ips)[0]
     peer_weight         = 0
   }
 }

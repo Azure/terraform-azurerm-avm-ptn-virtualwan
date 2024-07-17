@@ -18,8 +18,8 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
         for_each = routing.value.propagated_route_table
 
         content {
-          labels          = propagated_route_tables.value.labels
-          route_table_ids = propagated_route_tables.value.route_table_ids
+          labels          = propagated_route_table.value.labels
+          route_table_ids = propagated_route_table.value.route_table_ids
         }
       }
       dynamic "static_vnet_route" {

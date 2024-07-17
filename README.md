@@ -110,19 +110,23 @@ module "vwan_with_vhub" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.3)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.7)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.7)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
+- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.7)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.108)
 
-- <a name="provider_random"></a> [random](#provider\_random) (~> 3.5)
+- <a name="provider_modtm"></a> [modtm](#provider\_modtm) (~> 0.3)
+
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.6)
 
 ## Resources
 
@@ -133,7 +137,6 @@ The following resources are used by this module:
 - [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) (resource)
 - [azurerm_point_to_site_vpn_gateway.p2s_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/point_to_site_vpn_gateway) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_resource_group_template_deployment.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group_template_deployment) (resource)
 - [azurerm_virtual_hub.virtual_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub) (resource)
 - [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
 - [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
@@ -142,8 +145,11 @@ The following resources are used by this module:
 - [azurerm_vpn_gateway_connection.vpn_site_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway_connection) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
 - [azurerm_vpn_site.vpn_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_site) (resource)
-- [random_id.telem](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) (resource)
+- [modtm_telemetry.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
+- [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
+- [azurerm_client_config.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) (data source)
+- [modtm_module_source.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/data-sources/module_source) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -595,9 +601,25 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_azure_firewall_resource_ids"></a> [azure\_firewall\_resource\_ids](#output\_azure\_firewall\_resource\_ids)
+
+Description: A map of Azure Firewall resource IDs with the map keys of the `firewalls` variable.
+
+### <a name="output_azure_firewall_resource_names"></a> [azure\_firewall\_resource\_names](#output\_azure\_firewall\_resource\_names)
+
+Description: A map of Azure Firewall resource names with the map keys of the `firewalls` variable.
+
 ### <a name="output_er_gw_id"></a> [er\_gw\_id](#output\_er\_gw\_id)
 
 Description: ExpressRoute Gateway ID
+
+### <a name="output_expressroute_gateway_resource_ids"></a> [expressroute\_gateway\_resource\_ids](#output\_expressroute\_gateway\_resource\_ids)
+
+Description: A map of expressRoute Gateway IDs with the map keys of the `expressroute_gateways` variable.
+
+### <a name="output_expressroute_gateway_resource_names"></a> [expressroute\_gateway\_resource\_names](#output\_expressroute\_gateway\_resource\_names)
+
+Description: A map of expressRoute Gateway names with the map keys of the `expressroute_gateways` variable.
 
 ### <a name="output_fw"></a> [fw](#output\_fw)
 
@@ -606,6 +628,14 @@ Description: Firewall Name
 ### <a name="output_p2s_vpn_gw_id"></a> [p2s\_vpn\_gw\_id](#output\_p2s\_vpn\_gw\_id)
 
 Description: P2S VPN Gateway ID
+
+### <a name="output_p2s_vpn_gw_resource_ids"></a> [p2s\_vpn\_gw\_resource\_ids](#output\_p2s\_vpn\_gw\_resource\_ids)
+
+Description: A map of point to site VPN gateway names with the map keys of the `p2s_gateways` variable.
+
+### <a name="output_p2s_vpn_gw_resource_names"></a> [p2s\_vpn\_gw\_resource\_names](#output\_p2s\_vpn\_gw\_resource\_names)
+
+Description: A map of point to site VPN gateway names with the map keys of the `p2s_gateways` variable.
 
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
@@ -631,9 +661,25 @@ Description: S2S VPN Gateway ID
 
 Description: Virtual Hub ID
 
+### <a name="output_virtual_hub_resource_ids"></a> [virtual\_hub\_resource\_ids](#output\_virtual\_hub\_resource\_ids)
+
+Description: A map of Azure Virtual Hub resource IDs with the map keys of the `virtual_hubs` variable.
+
+### <a name="output_virtual_hub_resource_names"></a> [virtual\_hub\_resource\_names](#output\_virtual\_hub\_resource\_names)
+
+Description: A map of Azure Virtual Hub resource names with the map keys of the `virtual_hubs` variable.
+
 ### <a name="output_virtual_wan_id"></a> [virtual\_wan\_id](#output\_virtual\_wan\_id)
 
 Description: Virtual WAN ID
+
+### <a name="output_vpn_gateway_resource_ids"></a> [vpn\_gateway\_resource\_ids](#output\_vpn\_gateway\_resource\_ids)
+
+Description: A map of Azure VPN Gateway resource IDs with the map keys of the `vpn_gateways` variable.
+
+### <a name="output_vpn_gateway_resource_names"></a> [vpn\_gateway\_resource\_names](#output\_vpn\_gateway\_resource\_names)
+
+Description: A map of Azure VPN Gateway resource names with the map keys of the `vpn_gateways` variable.
 
 ## Modules
 

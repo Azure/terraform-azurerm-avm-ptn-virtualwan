@@ -53,7 +53,7 @@ resource "azurerm_virtual_network_gateway" "gw" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "VpnGw1AZ"
   type                = "Vpn"
-  active_active       = false
+  active_active       = true
   enable_bgp          = true
   vpn_type            = "RouteBased"
 

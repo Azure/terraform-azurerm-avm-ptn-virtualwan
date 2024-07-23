@@ -50,4 +50,6 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
       next_hop     = azurerm_firewall.fw[routing_policy.value.next_hop_firewall_key].id
     }
   }
+
+  depends_on = [azurerm_virtual_wan.virtual_wan, azurerm_virtual_hub.virtual_hub, azurerm_vpn_gateway.vpn_gateway, azurerm_express_route_gateway.express_route_gateway, azurerm_firewall.fw]
 }

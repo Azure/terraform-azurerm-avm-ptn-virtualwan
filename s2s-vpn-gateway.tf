@@ -6,6 +6,8 @@ resource "azurerm_vpn_gateway" "vpn_gateway" {
   resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
   virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   tags                = try(each.value.tags, {})
+
+  depends_on = [azurerm_virtual_wan.virtual_wan, azurerm_virtual_hub.virtual_hub]
 }
 
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.

@@ -12,4 +12,6 @@ resource "azurerm_firewall" "fw" {
   virtual_hub {
     virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   }
+
+  depends_on = [azurerm_virtual_wan.virtual_wan, azurerm_virtual_hub.virtual_hub, azurerm_vpn_gateway.vpn_gateway, azurerm_express_route_gateway.express_route_gateway]
 }

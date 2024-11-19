@@ -44,6 +44,7 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
 
   dynamic "routing_policy" {
     for_each = each.value.routing_policies
+
     content {
       destinations = routing_policy.value.destinations
       name         = routing_policy.value.name

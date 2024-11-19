@@ -23,6 +23,7 @@ resource "azurerm_express_route_connection" "er_connection" {
 
   dynamic "routing" {
     for_each = each.value.routing != null ? [each.value.routing] : []
+
     content {
       associated_route_table_id = routing.value.associated_route_table_id
       inbound_route_map_id      = try(routing.value.inbound_route_map_id, null)
@@ -30,9 +31,10 @@ resource "azurerm_express_route_connection" "er_connection" {
 
       dynamic "propagated_route_table" {
         for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
+
         content {
-          labels          = try(propagated_route_tables.value.labels, [])
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
+          labels          = try(propagated_route_table.value.labels, [])
+          route_table_ids = try(propagated_route_table.value.route_table_ids, [])
         }
       }
     }

@@ -13,9 +13,10 @@ locals {
   } : null
   expressroute_gateways = var.expressroute_gateways != null ? {
     for key, gw in var.expressroute_gateways : key => {
-      name            = gw.name
-      virtual_hub_key = gw.virtual_hub_key
-      scale_units     = gw.scale_units
+      name                          = gw.name
+      virtual_hub_key               = gw.virtual_hub_key
+      scale_units                   = gw.scale_units
+      allow_non_virtual_wan_traffic = gw.allow_non_virtual_wan_traffic
     }
   } : null
   p2s_gateway_vpn_server_configurations = var.p2s_gateway_vpn_server_configurations != null ? {
@@ -80,8 +81,12 @@ locals {
   }
   vpn_gateways = var.vpn_gateways != null ? {
     for key, gw in var.vpn_gateways : key => {
-      name            = gw.name
-      virtual_hub_key = gw.virtual_hub_key
+      name                                  = gw.name
+      virtual_hub_key                       = gw.virtual_hub_key
+      bgp_route_translation_for_nat_enabled = gw.bgp_route_translation_for_nat_enabled
+      bgp_settings                          = gw.bgp_settings
+      routing_preference                    = gw.routing_preference
+      scale_unit                            = gw.scale_unit
     }
   } : null
   vpn_site_connections = var.vpn_site_connections != null ? {

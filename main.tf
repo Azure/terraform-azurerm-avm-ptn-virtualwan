@@ -1,10 +1,3 @@
-data "azurerm_resource_group" "rg" {
-  count = var.create_resource_group ? 0 : 1
-
-  name = var.resource_group_name
-}
-
-# Create rgs as defined by var.virtual_wan
 resource "azurerm_resource_group" "rg" {
   count = var.create_resource_group ? 1 : 0
 
@@ -14,7 +7,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 locals {
-  resource_group_name = var.create_resource_group ? azurerm_resource_group.rg[0].name : data.azurerm_resource_group.rg[0].name
+  resource_group_name = var.create_resource_group ? azurerm_resource_group.rg[0].name : var.resource_group_name
 }
 
 resource "azurerm_virtual_wan" "virtual_wan" {

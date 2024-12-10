@@ -264,10 +264,14 @@ variable "vpn_gateways" {
     tags                                  = optional(map(string))
     bgp_route_translation_for_nat_enabled = optional(bool)
     bgp_settings = optional(object({
-      asn                            = number
-      instance_0_bgp_peering_address = optional(string)
-      instance_1_bgp_peering_address = optional(string)
-      peer_weight                    = number
+      asn = number
+      instance_0_bgp_peering_address = optional(object({
+        custom_ips = list(string)
+      }))
+      instance_1_bgp_peering_address = optional(object({
+        custom_ips = list(string)
+      }))
+      peer_weight = number
     }))
     routing_preference = optional(string)
     scale_unit         = optional(number)

@@ -614,6 +614,14 @@ Description: A map of expressRoute Gateway IDs with the map keys of the `express
 
 Description: A map of expressRoute Gateway names with the map keys of the `expressroute_gateways` variable.
 
+### <a name="output_firewall_ip_addresses_by_firewall_key"></a> [firewall\_ip\_addresses\_by\_firewall\_key](#output\_firewall\_ip\_addresses\_by\_firewall\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the `firewalls` variable.
+
+### <a name="output_firewall_ip_addresses_by_hub_key"></a> [firewall\_ip\_addresses\_by\_hub\_key](#output\_firewall\_ip\_addresses\_by\_hub\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the `firewalls` variable.
+
 ### <a name="output_fw"></a> [fw](#output\_fw)
 
 Description: Firewall Name

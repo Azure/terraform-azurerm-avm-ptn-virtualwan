@@ -3,11 +3,6 @@ output "azure_firewall_resource_ids" {
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.id } : null
 }
 
-output "firewall_ip_addresses" {
-  description = "A map of Azure Firewall IP addresses with the map keys of the `firewalls` variable."
-  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].private_ip_address } : null
-}
-
 output "azure_firewall_resource_names" {
   description = "A map of Azure Firewall resource names with the map keys of the `firewalls` variable."
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.id } : null
@@ -26,6 +21,22 @@ output "expressroute_gateway_resource_ids" {
 output "expressroute_gateway_resource_names" {
   description = "A map of expressRoute Gateway names with the map keys of the `expressroute_gateways` variable."
   value       = var.expressroute_gateways != null ? { for key, value in azurerm_express_route_gateway.express_route_gateway : key => value.id } : null
+}
+
+output "firewall_ip_addresses_by_firewall_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the firewalls."
+  value = var.firewalls != null ? { for key, value in var.firewalls : key => {
+    virtual_hub_key    = value.virtual_hub_key
+    private_ip_address = azurerm_firewall.fw[key].virtual_hub[0].private_ip_address
+  } } : null
+}
+
+output "firewall_ip_addresses_by_hub_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the hubs."
+  value = var.firewalls != null ? { for key, value in var.firewalls : value.virtual_hub_key => {
+    firewall_key       = key
+    private_ip_address = azurerm_firewall.fw[key].virtual_hub[0].private_ip_address
+  } } : null
 }
 
 output "fw" {

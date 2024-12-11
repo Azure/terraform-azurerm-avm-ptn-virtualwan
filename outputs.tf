@@ -3,6 +3,11 @@ output "azure_firewall_resource_ids" {
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.id } : null
 }
 
+output "firewall_ip_addresses" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the `firewalls` variable."
+  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].private_ip_address } : null
+}
+
 output "azure_firewall_resource_names" {
   description = "A map of Azure Firewall resource names with the map keys of the `firewalls` variable."
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.id } : null

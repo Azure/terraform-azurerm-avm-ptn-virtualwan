@@ -23,6 +23,22 @@ output "expressroute_gateway_resource_names" {
   value       = var.expressroute_gateways != null ? { for key, value in azurerm_express_route_gateway.express_route_gateway : key => value.id } : null
 }
 
+output "firewall_ip_addresses_by_firewall_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the firewalls."
+  value = var.firewalls != null ? { for key, value in var.firewalls : key => {
+    virtual_hub_key    = value.virtual_hub_key
+    private_ip_address = azurerm_firewall.fw[key].virtual_hub[0].private_ip_address
+  } } : null
+}
+
+output "firewall_ip_addresses_by_hub_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the hubs."
+  value = var.firewalls != null ? { for key, value in var.firewalls : value.virtual_hub_key => {
+    firewall_key       = key
+    private_ip_address = azurerm_firewall.fw[key].virtual_hub[0].private_ip_address
+  } } : null
+}
+
 output "fw" {
   description = "Firewall Name"
   value       = var.firewalls != null ? [for firewall in azurerm_firewall.fw : firewall.name] : null

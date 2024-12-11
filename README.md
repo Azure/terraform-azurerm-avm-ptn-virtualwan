@@ -240,7 +240,7 @@ map(object({
     virtual_hub_key               = string
     tags                          = optional(map(string))
     allow_non_virtual_wan_traffic = optional(bool)
-    scale_units                   = number
+    scale_units                   = optional(number, 1)
   }))
 ```
 
@@ -613,6 +613,14 @@ Description: A map of expressRoute Gateway IDs with the map keys of the `express
 ### <a name="output_expressroute_gateway_resource_names"></a> [expressroute\_gateway\_resource\_names](#output\_expressroute\_gateway\_resource\_names)
 
 Description: A map of expressRoute Gateway names with the map keys of the `expressroute_gateways` variable.
+
+### <a name="output_firewall_ip_addresses_by_firewall_key"></a> [firewall\_ip\_addresses\_by\_firewall\_key](#output\_firewall\_ip\_addresses\_by\_firewall\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the firewalls.
+
+### <a name="output_firewall_ip_addresses_by_hub_key"></a> [firewall\_ip\_addresses\_by\_hub\_key](#output\_firewall\_ip\_addresses\_by\_hub\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the hubs.
 
 ### <a name="output_fw"></a> [fw](#output\_fw)
 

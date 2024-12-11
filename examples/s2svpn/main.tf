@@ -81,7 +81,7 @@ module "vwan_with_vhub" {
         policy_based_traffic_selector_enabled = false
         ratelimit_enabled                     = false
         route_weight                          = 1
-        shared_key                            = random_password.shared_key.result
+        shared_key                            = nonsensitive(random_password.shared_key.result)
         vpn_site_link_number                  = 0
       }]
     }

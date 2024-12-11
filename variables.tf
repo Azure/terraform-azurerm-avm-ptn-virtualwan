@@ -74,7 +74,7 @@ variable "expressroute_gateways" {
     virtual_hub_key               = string
     tags                          = optional(map(string))
     allow_non_virtual_wan_traffic = optional(bool)
-    scale_units                   = number
+    scale_units                   = optional(number, 1)
   }))
   default     = {}
   description = "Express Route Gateway parameters"

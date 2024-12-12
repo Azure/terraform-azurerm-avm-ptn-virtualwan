@@ -34,10 +34,10 @@ resource "azurerm_express_route_connection" "er_connection" {
         for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
 
         content {
-          labels          = try(propagated_route_table.value.labels, [])
+          labels = try(propagated_route_table.value.labels, [])
           route_table_ids = coalesce(
             compact(flatten([
-              for route_table_key in try(propagated_route_table.value.route_table_keys, []) : 
+              for route_table_key in try(propagated_route_table.value.route_table_keys, []) :
               azurerm_virtual_hub_route_table.virtual_hub_route_table[route_table_key].id
             ])),
             try(propagated_route_table.value.route_table_ids, [])

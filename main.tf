@@ -35,6 +35,7 @@ resource "azurerm_virtual_hub" "virtual_hub" {
 
 resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
   for_each = var.virtual_hub_route_tables
+
   name           = each.value.name
   virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
   labels         = each.value.labels
@@ -43,11 +44,11 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
     for_each = each.value.routes
 
     content {
-      name              = route.value.name
-      destinations_type = route.value.destinations_type
       destinations      = route.value.destinations
-      next_hop_type     = route.value.next_hop_type
+      destinations_type = route.value.destinations_type
+      name              = route.value.name
       next_hop          = route.value.next_hop
+      next_hop_type     = route.value.next_hop_type
     }
   }
 }

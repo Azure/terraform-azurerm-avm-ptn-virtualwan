@@ -1,47 +1,64 @@
-variable "allow_branch_to_branch_traffic" {
-  type        = bool
-  description = "Switch to flip VWAN branch to branch traffic"
-}
-
 # Resource group parameters
 variable "location" {
   type        = string
-  description = "Virtual WAN location"
+  description = <<DESCRIPTION
+  The Virtual WAN location. 
+  
+  > Note: This is not the location for the Virtual WAN Hubs, these are defined within the `virtual_hubs` variable in their own `location` property of each object.
+  DESCRIPTION
   nullable    = false
 }
 
 variable "resource_group_name" {
   type        = string
-  description = "Virtual WAN Resource group name"
+  description = <<DESCRIPTION
+  Name of the Resource Group where the Virtual WAN and it's child resources, e.g. Virtual WAN Hubs, Gateways etc., will be created. 
+
+  The Resource Group will be created if the variable `create_resource_group` is set to `true`. If it is set to `false` the resource group must already exist.
+  
+  > Note: Each Virtual WAN Hub can be configured to deploy into different resource groups, that must already exist or be created outside of this module, by specifying the `resource_group` property in each object in the `virtual_hubs` variable map input. If you do not do this, the same resource group will be used for all Virtual WAN resources as specified in this variable.
+  DESCRIPTION
 
   validation {
-    condition     = length(var.resource_group_name) > 0
-    error_message = "Resource group name must be specified."
+    condition     = length(var.resource_group_name) >= 1 && length(var.resource_group_name) <= 90
+    error_message = "Resource group name must be specified. It must be between 1 and 90 characters. Underscores, hyphens, periods, parentheses, and letters or digits are allowed."
   }
 }
 
-# Virtual Wan parameters
 variable "virtual_wan_name" {
   type        = string
-  description = "Virtual WAN name"
+  description = "Name of the Virtual WAN resource itself."
   nullable    = false
 
   validation {
-    condition     = length(var.virtual_wan_name) > 3
-    error_message = "At least one virtual wan must be defined."
+    condition     = length(var.virtual_wan_name) >= 1 && length(var.virtual_wan_name) <= 80
+    error_message = "Virtual WAN name must be specified. It must be between 1 and 80 characters. Alphanumerics, underscores, periods, and hyphens are allowed. It must start with alphanumeric and end with alphanumeric or underscore."
   }
+}
+
+variable "allow_branch_to_branch_traffic" {
+  type        = bool
+  default     = true
+  description = <<DESCRIPTION
+  Boolean toggle to toggle support for VWAN branch to branch traffic. Branches are locations connected over ExpressRoute or Site-to-Site VPNs to a Virtual WAN Hub. Defaults to true.
+
+  For more information review: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-global-transit-network-architecture
+  DESCRIPTION
 }
 
 variable "create_resource_group" {
   type        = bool
   default     = false
-  description = "If true will create a resource group, otherwise will use the existing resource group supplied in resource_group_name"
+  description = "If `true` will create a resource group, otherwise (`false`) will use an existing resource group specified in the variable `resource_group_name`"
 }
 
 variable "disable_vpn_encryption" {
   type        = bool
   default     = false
-  description = "Switch to flip VWAN vpn encryption"
+  description = <<DESCRIPTION
+  Boolean toggle to disable VPN encryption. Defaults to `false` (VPN encryption enabled). 
+
+  DESCRIPTION
 }
 
 variable "er_circuit_connections" {
@@ -64,7 +81,29 @@ variable "er_circuit_connections" {
     routing_weight = optional(number)
   }))
   default     = {}
-  description = "Mapping object to link ER circuits to ER Gateways for the creation of connection"
+  description = <<DESCRIPTION
+  Map of objects for Express Route Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object:
+
+    - `name`: Name for the Express Route Circuit connection.
+    - `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the Express Route Gateway you wish to connect this circuit to.
+    - `express_route_circuit_peering_id`: The Resource ID of the Express Route Circuit Peering to connect to.
+    - `authorization_key`: Optional authorization key for the connection.
+    - `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
+    - `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the Express Route Gateway, a.k.a. Fast Path.
+    - `routing`: Optional routing configuration object for the connection, which includes:
+      - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+      - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+        - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connection to. ()
+        - `labels`: Optional list of labels you wish to propagate this connection to.
+      - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
+      - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
+    - `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
+
+  > Note: There can be multiple objects in this map, one for each Express Route Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
+  
+  DESCRIPTION
 }
 
 # Express Route Gateway parameters
@@ -121,7 +160,12 @@ variable "firewalls" {
 variable "office365_local_breakout_category" {
   type        = string
   default     = "None"
-  description = "Specifies the Office365 local breakout category. Possible values include: Optimize, OptimizeAndAllow, All, None. Defaults to None "
+  description = "Specifies the Office 365 local breakout category. Possible values include: `Optimize`, `OptimizeAndAllow`, `All`, `None`. Defaults to `None`."
+
+  validation {
+    condition     = contains(["Optimize", "OptimizeAndAllow", "All", "None"], var.office365_local_breakout_category)
+    error_message = "The Office 365 local breakout category must be one of the following: `Optimize`, `OptimizeAndAllow`, `All`, `None`."
+  }
 }
 
 variable "p2s_gateway_vpn_server_configurations" {
@@ -180,7 +224,7 @@ variable "p2s_gateways" {
 variable "resource_group_tags" {
   type        = map(string)
   default     = {}
-  description = "Virtual WAN Resource group tags"
+  description = "(Optional) Resource group tags to assign, if created by module controlled by variable `create_resource_group`."
 }
 
 # Routing intent for virutal hubs
@@ -203,13 +247,18 @@ variable "routing_intents" {
 variable "tags" {
   type        = map(string)
   default     = null
-  description = "(Optional) Tags of the resource."
+  description = "(Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only."
 }
 
 variable "type" {
   type        = string
   default     = "Standard"
-  description = "Type of the virtual WAN"
+  description = "Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended."
+
+  validation {
+    condition     = contains(["Basic", "Standard"], var.type)
+    error_message = "The Virtual WAN type must be one of the following: `Basic`, `Standard`. `Standard` is the default and recommended."
+  }
 }
 
 variable "virtual_hubs" {
@@ -253,7 +302,7 @@ variable "virtual_network_connections" {
 variable "virtual_wan_tags" {
   type        = map(string)
   default     = {}
-  description = "Virtual WAN tags"
+  description = "(Optional) Tags to apply to the Virtual WAN resource only."
 }
 
 # VPN Gateway parameters

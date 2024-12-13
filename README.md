@@ -145,27 +145,27 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_allow_branch_to_branch_traffic"></a> [allow\_branch\_to\_branch\_traffic](#input\_allow\_branch\_to\_branch\_traffic)
-
-Description: Switch to flip VWAN branch to branch traffic
-
-Type: `bool`
-
 ### <a name="input_location"></a> [location](#input\_location)
 
-Description: Virtual WAN location
+Description:   The Virtual WAN location.
+
+  > Note: This is not the location for the Virtual WAN Hubs, these are defined within the `virtual_hubs` variable in their own `location` property of each object.
 
 Type: `string`
 
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
-Description: Virtual WAN Resource group name
+Description:   Name of the Resource Group where the Virtual WAN and it's child resources, e.g. Virtual WAN Hubs, Gateways etc., will be created.
+
+  The Resource Group will be created if the variable `create_resource_group` is set to `true`. If it is set to `false` the resource group must already exist.
+
+  > Note: Each Virtual WAN Hub can be configured to deploy into different resource groups, that must already exist or be created outside of this module, by specifying the `resource_group` property in each object in the `virtual_hubs` variable map input. If you do not do this, the same resource group will be used for all Virtual WAN resources as specified in this variable.
 
 Type: `string`
 
 ### <a name="input_virtual_wan_name"></a> [virtual\_wan\_name](#input\_virtual\_wan\_name)
 
-Description: Virtual WAN name
+Description: Name of the Virtual WAN resource itself.
 
 Type: `string`
 
@@ -173,9 +173,19 @@ Type: `string`
 
 The following input variables are optional (have default values):
 
+### <a name="input_allow_branch_to_branch_traffic"></a> [allow\_branch\_to\_branch\_traffic](#input\_allow\_branch\_to\_branch\_traffic)
+
+Description:   Boolean toggle to toggle support for VWAN branch to branch traffic. Branches are locations connected over ExpressRoute or Site-to-Site VPNs to a Virtual WAN Hub. Defaults to true.
+
+  For more information review: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-global-transit-network-architecture
+
+Type: `bool`
+
+Default: `true`
+
 ### <a name="input_create_resource_group"></a> [create\_resource\_group](#input\_create\_resource\_group)
 
-Description: If true will create a resource group, otherwise will use the existing resource group supplied in resource\_group\_name
+Description: If `true` will create a resource group, otherwise (`false`) will use an existing resource group specified in the variable `resource_group_name`
 
 Type: `bool`
 
@@ -183,7 +193,7 @@ Default: `false`
 
 ### <a name="input_disable_vpn_encryption"></a> [disable\_vpn\_encryption](#input\_disable\_vpn\_encryption)
 
-Description: Switch to flip VWAN vpn encryption
+Description:   Boolean toggle to disable VPN encryption. Defaults to `false` (VPN encryption enabled).
 
 Type: `bool`
 
@@ -193,7 +203,7 @@ Default: `false`
 
 Description: This variable controls whether or not telemetry is enabled for the module.  
 For more information see https://aka.ms/avm/telemetryinfo.  
-If it is set to false, then no telemetry will be collected.
+If it is set to `false`, then no telemetry will be collected.
 
 Type: `bool`
 
@@ -201,7 +211,26 @@ Default: `true`
 
 ### <a name="input_er_circuit_connections"></a> [er\_circuit\_connections](#input\_er\_circuit\_connections)
 
-Description: Mapping object to link ER circuits to ER Gateways for the creation of connection
+Description:   Map of objects for Express Route Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object:
+
+    - `name`: Name for the Express Route Circuit connection.
+    - `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the Express Route Gateway you wish to connect this circuit to.
+    - `express_route_circuit_peering_id`: The Resource ID of the Express Route Circuit Peering to connect to.
+    - `authorization_key`: Optional authorization key for the connection.
+    - `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
+    - `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the Express Route Gateway, a.k.a. Fast Path.
+    - `routing`: Optional routing configuration object for the connection, which includes:
+      - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+      - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+        - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connection to. ()
+        - `labels`: Optional list of labels you wish to propagate this connection to.
+      - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
+      - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
+    - `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
+
+  > Note: There can be multiple objects in this map, one for each Express Route Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
 
 Type:
 
@@ -291,7 +320,7 @@ Default: `{}`
 
 ### <a name="input_office365_local_breakout_category"></a> [office365\_local\_breakout\_category](#input\_office365\_local\_breakout\_category)
 
-Description: Specifies the Office365 local breakout category. Possible values include: Optimize, OptimizeAndAllow, All, None. Defaults to None
+Description: Specifies the Office 365 local breakout category. Possible values include: `Optimize`, `OptimizeAndAllow`, `All`, `None`. Defaults to `None`.
 
 Type: `string`
 
@@ -363,7 +392,7 @@ Default: `{}`
 
 ### <a name="input_resource_group_tags"></a> [resource\_group\_tags](#input\_resource\_group\_tags)
 
-Description: Virtual WAN Resource group tags
+Description: (Optional) Resource group tags to assign, if created by module controlled by variable `create_resource_group`.
 
 Type: `map(string)`
 
@@ -391,7 +420,7 @@ Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: (Optional) Tags of the resource.
+Description: (Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only.
 
 Type: `map(string)`
 
@@ -399,7 +428,7 @@ Default: `null`
 
 ### <a name="input_type"></a> [type](#input\_type)
 
-Description: Type of the virtual WAN
+Description: Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended.
 
 Type: `string`
 
@@ -455,7 +484,7 @@ Default: `{}`
 
 ### <a name="input_virtual_wan_tags"></a> [virtual\_wan\_tags](#input\_virtual\_wan\_tags)
 
-Description: Virtual WAN tags
+Description: (Optional) Tags to apply to the Virtual WAN resource only.
 
 Type: `map(string)`
 

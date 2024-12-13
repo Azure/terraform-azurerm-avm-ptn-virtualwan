@@ -220,11 +220,12 @@ variable "virtual_hub_route_tables" {
     virtual_hub_key = string
     labels          = optional(list(string))
     routes = optional(map(object({
-      name              = string
-      destinations      = list(string)
-      destinations_type = string
-      next_hop          = string
-      next_hop_type     = string
+      name                = string
+      destinations        = list(string)
+      destinations_type   = string
+      next_hop            = optional(string)
+      vnet_connection_key = optional(string)
+      next_hop_type       = string
     })))
   }))
   default     = {}
@@ -236,7 +237,8 @@ variable "virtual_hub_route_tables" {
   - `name` - (Required) The name which should be used for this route.
   - `destinations` - (Required) A list of destination addresses for this route.
   - `destinations_type` - (Required) The type of destinations. Possible values are CIDR, ResourceId and Service.
-  - `next_hop` - (Required) The next hop's resource ID.
+  - `next_hop` - (Optional) The next hop's resource ID. Required if `vnet_connection_key` is not defined.
+  - `vnet_connection_key` - (Optional) The next hop vnet connection's key. Required if `next_hop` is not defined.
   - `next_hop_type` - (Optional) The type of next hop. Currently the only possible value is ResourceId. Defaults to ResourceId.
 EOT
 }

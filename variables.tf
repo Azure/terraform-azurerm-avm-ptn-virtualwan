@@ -82,26 +82,26 @@ variable "er_circuit_connections" {
   }))
   default     = {}
   description = <<DESCRIPTION
-  Map of objects for Express Route Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
+Map of objects for Express Route Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
 
-  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object:
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object:
 
-  - `name`: Name for the Express Route Circuit connection.
-  - `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the Express Route Gateway you wish to connect this circuit to.
-  - `express_route_circuit_peering_id`: The Resource ID of the Express Route Circuit Peering to connect to.
-  - `authorization_key`: Optional authorization key for the connection.
-  - `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
-  - `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the Express Route Gateway, a.k.a. Fast Path.
-  - `routing`: Optional routing configuration object for the connection, which includes:
-    - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
-    - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
-      - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connection to. ()
-      - `labels`: Optional list of labels you wish to propagate this connection to.
-    - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
-    - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
-  - `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
+- `name`: Name for the Express Route Circuit connection.
+- `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the Express Route Gateway you wish to connect this circuit to.
+- `express_route_circuit_peering_id`: The Resource ID of the Express Route Circuit Peering to connect to.
+- `authorization_key`: Optional authorization key for the connection.
+- `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
+- `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the Express Route Gateway, a.k.a. Fast Path.
+- `routing`: Optional routing configuration object for the connection, which includes:
+  - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+  - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+    - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connection to. ()
+    - `labels`: Optional list of labels you wish to propagate this connection to.
+  - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
+  - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
+- `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
 
-  > Note: There can be multiple objects in this map, one for each Express Route Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
+> Note: There can be multiple objects in this map, one for each Express Route Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
   
   DESCRIPTION
 }

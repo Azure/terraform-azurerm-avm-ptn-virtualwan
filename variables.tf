@@ -1,8 +1,7 @@
-# Resource group parameters
 variable "location" {
   type        = string
   description = <<DESCRIPTION
-  The Virtual WAN location. 
+  The Virtual WAN location.
   
   > Note: This is not the location for the Virtual WAN Hubs, these are defined within the `virtual_hubs` variable in their own `location` property of each object.
   DESCRIPTION
@@ -49,7 +48,10 @@ variable "allow_branch_to_branch_traffic" {
 variable "create_resource_group" {
   type        = bool
   default     = false
-  description = "If `true` will create a resource group, otherwise (`false`) will use an existing resource group specified in the variable `resource_group_name`"
+  description = <<DESCRIPTION
+  If `true` will create a resource group, otherwise (`false`) will use an existing resource group specified in the variable `resource_group_name`"
+
+  DESCRIPTION
 }
 
 variable "disable_vpn_encryption" {
@@ -82,16 +84,16 @@ variable "er_circuit_connections" {
   }))
   default     = {}
   description = <<DESCRIPTION
-Map of objects for Express Route Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
+Map of objects for ExpressRoute Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
 
-The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object:
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-- `name`: Name for the Express Route Circuit connection.
-- `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the Express Route Gateway you wish to connect this circuit to.
-- `express_route_circuit_peering_id`: The Resource ID of the Express Route Circuit Peering to connect to.
+- `name`: Name for the ExpressRoute Circuit connection.
+- `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the ExpressRoute Gateway you wish to connect this circuit to.
+- `express_route_circuit_peering_id`: The Resource ID of the ExpressRoute Circuit Peering to connect to.
 - `authorization_key`: Optional authorization key for the connection.
 - `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
-- `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the Express Route Gateway, a.k.a. Fast Path.
+- `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the ExpressRoute Gateway, a.k.a. Fast Path.
 - `routing`: Optional routing configuration object for the connection, which includes:
   - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
   - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
@@ -101,66 +103,82 @@ The key is deliberately arbitrary to avoid issues with known after apply values.
   - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
 - `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
 
-> Note: There can be multiple objects in this map, one for each Express Route Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
+> Note: There can be multiple objects in this map, one for each ExpressRoute Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
   
   DESCRIPTION
 }
 
-# Express Route Gateway parameters
 variable "expressroute_gateways" {
   type = map(object({
     name                          = string
     virtual_hub_key               = string
     tags                          = optional(map(string))
-    allow_non_virtual_wan_traffic = optional(bool)
+    allow_non_virtual_wan_traffic = optional(bool, false)
     scale_units                   = optional(number, 1)
   }))
   default     = {}
-  description = "Express Route Gateway parameters"
+  description = <<DESCRIPTION
+
+Map of objects for Express Route Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+- `name`: Name for the ExpressRoute Gateway to deploy in the Virtual WAN Virtual Hub.
+- `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this ExpressRoute Gateway into.
+- `tags`: Optional tags to apply to the ExpressRoute Gateway resource.
+- `allow_non_virtual_wan_traffic`: Optional boolean to configures this gateway to accept traffic from non Virtual WAN networks. Defaults to `false`.
+- `scale_units`: Optional number of scale units for the ExpressRoute Gateway. Defaults to `1`. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-about#expressroute-gateway-performance for more information on scale units.
+
+> Note: There can be multiple objects in this map, one for each ExpressRoute Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  DESCRIPTION
 }
 
 # Azure Firewall
 variable "firewalls" {
   type = map(object({
     virtual_hub_key      = string
-    sku_name             = string
+    sku_name             = optional(string, "AZFW_Hub")
     sku_tier             = string
-    name                 = optional(string)
-    dns_servers          = optional(list(string))
+    name                 = string
+    zones                = optional(list(number), [1, 2, 3])
     firewall_policy_id   = optional(string)
-    private_ip_ranges    = optional(list(string))
-    threat_intel_mode    = optional(string, "Alert")
-    zones                = optional(list(string))
     vhub_public_ip_count = optional(string)
     tags                 = optional(map(string))
-    default_ip_configuration = optional(object({
-      name = optional(string)
-      public_ip_config = optional(object({
-        name       = optional(set(string))
-        zones      = optional(set(string))
-        ip_version = optional(string)
-        sku_tier   = optional(string, "Regional")
-      }))
-    }))
-    management_ip_configuration = optional(object({
-      name                 = string
-      subnet_id            = string
-      public_ip_address_id = string
-    }))
-    ip_configuration = optional(object({
-      name                 = string
-      subnet_id            = string
-      public_ip_address_id = string
-    }))
   }))
   default     = {}
-  description = "Azure Firewall parameters"
+  description = <<DESCRIPTION
+
+Map of objects for Azure Firewall resources to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+- `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this Azure Firewall into.
+- `sku_name`: The SKU name for the Azure Firewall. Possible values are: `AZFW_VNet`, `AZFW_Hub`. Defaults to `AZFW_Hub`.
+- `sku_tier`: The SKU tier for the Azure Firewall. Possible values are: `Basic`, `Standard`, `Premium`.
+- `name`: The name for the Azure Firewall resource.
+- `zones`: Optional list of zones to deploy the Azure Firewall into. Defaults to `[1, 2, 3]`.
+- `firewall_policy_id`: Optional Azure Firewall Policy Resource ID to associate with the Azure Firewall.
+- `vhub_public_ip_count`: Optional number of public IP addresses to associate with the Azure Firewall.
+- `tags`: Optional tags to apply to the Azure Firewall resource.
+
+  DESCRIPTION
 }
 
 variable "office365_local_breakout_category" {
   type        = string
   default     = "None"
-  description = "Specifies the Office 365 local breakout category. Possible values include: `Optimize`, `OptimizeAndAllow`, `All`, `None`. Defaults to `None`."
+  description = <<DESCRIPTION
+  Specifies the Office 365 local breakout category. Possible values are:
+  
+  - `Optimize`
+  - `OptimizeAndAllow`
+  - `All`
+  - `None`
+  
+  Defaults to `None`.
+
+  DESCRIPTION
 
   validation {
     condition     = contains(["Optimize", "OptimizeAndAllow", "All", "None"], var.office365_local_breakout_category)
@@ -183,20 +201,28 @@ variable "p2s_gateway_vpn_server_configurations" {
       issuer   = string
       tenant   = string
     }))
-    ipsec_policy = optional(object({
-      dh_group               = string
-      ike_encryption         = string
-      ike_integrity          = string
-      ipsec_encryption       = string
-      ipsec_integrity        = string
-      pfs_group              = string
-      sa_lifetime_seconds    = string
-      sa_data_size_kilobytes = string
-    }))
-    vpn_protocols = optional(list(string))
   }))
   default     = {}
-  description = "P2S VPN Gateway server configuration parameters"
+  description = <<DESCRIPTION
+  Map of objects for Point-to-Site VPN Gateway VPN Server Configurations to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  > You must use this variable in conjunction with the `p2s_gateways` variable to deploy Point-to-Site VPN Gateways and specify the key of the VPN Server Configuration you wish to use for each Point-to-Site VPN Gateway in the `p2s_gateways` variable, in the `p2s_gateway_vpn_server_configuration_key` property of each object.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Point-to-Site VPN Gateway VPN Server Configuration.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this VPN Server Configuration into.
+  - `vpn_authentication_types`: List of VPN authentication types to support. Possible values are: `AAD`, `Certificate`, `Radius`.
+  - `tags`: Optional tags to apply to the VPN Server Configuration resource.
+  - `client_root_certificate`: Optional object for the client root certificate configuration, which includes:
+    - `name`: Name for the client root certificate.
+    - `public_cert_data`: Public certificate data for the client root certificate.
+  - `azure_active_directory_authentication`: Optional object for the Azure Active Directory (Entra ID) authentication configuration, which includes:
+    - `audience`: Audience for the Azure Active Directory (Entra ID) authentication.
+    - `issuer`: Issuer for the Azure Active Directory (Entra ID) authentication.
+    - `tenant`: Tenant for the Azure Active Directory (Entra ID)authentication.
+
+  DESCRIPTION
 }
 
 # P2S gateway parameters
@@ -224,7 +250,10 @@ variable "p2s_gateways" {
 variable "resource_group_tags" {
   type        = map(string)
   default     = {}
-  description = "(Optional) Resource group tags to assign, if created by module controlled by variable `create_resource_group`."
+  description = <<DESCRIPTION
+  (Optional) Resource group tags to assign, if created by module controlled by variable `create_resource_group`.
+
+  DESCRIPTION
 }
 
 # Routing intent for virutal hubs

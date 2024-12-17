@@ -331,7 +331,10 @@ variable "virtual_network_connections" {
 variable "virtual_wan_tags" {
   type        = map(string)
   default     = {}
-  description = "(Optional) Tags to apply to the Virtual WAN resource only."
+  description = <<DESCRIPTION
+  (Optional) Tags to apply to the Virtual WAN resource only.
+
+  DESCRIPTION
 }
 
 # VPN Gateway parameters

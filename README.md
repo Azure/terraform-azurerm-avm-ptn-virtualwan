@@ -497,7 +497,7 @@ Default: `{}`
 
 ### <a name="input_virtual_wan_tags"></a> [virtual\_wan\_tags](#input\_virtual\_wan\_tags)
 
-Description: (Optional) Tags to apply to the Virtual WAN resource only.
+Description:   (Optional) Tags to apply to the Virtual WAN resource only.
 
 Type: `map(string)`
 

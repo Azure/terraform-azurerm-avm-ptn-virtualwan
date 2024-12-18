@@ -162,6 +162,8 @@ The key is deliberately arbitrary to avoid issues with known after apply values.
 - `vhub_public_ip_count`: Optional number of public IP addresses to associate with the Azure Firewall.
 - `tags`: Optional tags to apply to the Azure Firewall resource.
 
+> Note: There can be multiple objects in this map, one for each Azure Firewall you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
   DESCRIPTION
 }
 
@@ -222,6 +224,8 @@ variable "p2s_gateway_vpn_server_configurations" {
     - `issuer`: Issuer for the Azure Active Directory (Entra ID) authentication.
     - `tenant`: Tenant for the Azure Active Directory (Entra ID)authentication.
 
+  > Note: There can be multiple objects in this map, one for each Point-to-Site VPN Gateway VPN Server Configuration you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
   DESCRIPTION
 }
 
@@ -238,13 +242,29 @@ variable "p2s_gateways" {
         address_prefixes = list(string)
       })
     })
-    routing_preference                  = optional(string)
-    scale_unit                          = number
-    dns_servers                         = optional(list(string))
-    routing_preference_internet_enabled = optional(bool)
+    scale_unit = number
   }))
   default     = {}
-  description = "P2S VPN Gateway parameters"
+  description = <<DESCRIPTION
+  Map of objects for Point-to-Site VPN Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  > You must use this variable in conjunction with the `p2s_gateway_vpn_server_configurations` variable to deploy Point-to-Site VPN Gateway VPN Server Configurations and specify the key of the VPN Server Configuration you wish to use for each Point-to-Site VPN Gateway in the `p2s_gateway_vpn_server_configuration_key` property of each object.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Point-to-Site VPN Gateway.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this Point-to-Site VPN Gateway into.
+  - `tags`: Optional tags to apply to the Point-to-Site VPN Gateway resource.
+  - `p2s_gateway_vpn_server_configuration_key`: The key of the VPN Server Configuration you wish to use for this Point-to-Site VPN Gateway from the `p2s_gateway_vpn_server_configurations` variable.
+  - `connection_configuration`: Object for the connection configuration, which includes:
+    - `name`: Name for the connection configuration.
+    - `vpn_client_address_pool`: Object for the VPN client address pool configuration, which includes:
+      - `address_prefixes`: List of address prefixes for the VPN client address pool.
+  - `scale_unit`: Number of scale units for the Point-to-Site VPN Gateway. See: https://learn.microsoft.com/azure/virtual-wan/gateway-settings#p2s for more information on scale units.
+
+  > Note: There can be multiple objects in this map, one for each Point-to-Site VPN Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  DESCRIPTION
 }
 
 variable "resource_group_tags" {
@@ -268,7 +288,12 @@ variable "routing_intents" {
     }))
   }))
   default     = {}
-  description = "Routing intent for virutal hubs"
+  description = <<DESCRIPTION
+  Map of objects for routing intents to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  DESCRIPTION
   nullable    = false
 }
 

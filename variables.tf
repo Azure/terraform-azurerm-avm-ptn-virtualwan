@@ -92,7 +92,7 @@ The key is deliberately arbitrary to avoid issues with known after apply values.
 - `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the ExpressRoute Gateway you wish to connect this circuit to.
 - `express_route_circuit_peering_id`: The Resource ID of the ExpressRoute Circuit Peering to connect to.
 - `authorization_key`: Optional authorization key for the connection.
-- `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0./0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
+- `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
 - `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the ExpressRoute Gateway, a.k.a. Fast Path.
 - `routing`: Optional routing configuration object for the connection, which includes:
   - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
@@ -318,7 +318,12 @@ variable "type" {
   type        = string
   default     = "Standard"
   description = <<DESCRIPTION
-  Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended.
+  Type of the Virtual WAN to create. Possible values include:
+  
+  - `Basic`
+  - `Standard`
+  
+  Defaults to `Standard` and is recommended.
 
   DESCRIPTION
 
@@ -378,7 +383,28 @@ variable "virtual_network_connections" {
     }))
   }))
   default     = {}
-  description = "Azure virtual network connections"
+  description = <<DESCRIPTION
+  Map of objects for Virtual Network connections to connect Virtual Networks to the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Virtual Network connection.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to connect this Virtual Network to.
+  - `remote_virtual_network_id`: The Resource ID of the Virtual Network you wish to connect to the Virtual Hub.
+  - `internet_security_enabled`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection.
+  - `routing`: Optional routing configuration object for the connection, which includes:
+    - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+    - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+      - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connections routes to.
+      - `labels`: Optional list of labels you wish to propagate this connections routes to.
+    - `static_vnet_route`: Optional configuration object for static VNet route configuration, which includes:
+      - `name`: Optional name for the static VNet route.
+      - `address_prefixes`: Optional list of address prefixes for the static VNet route.
+      - `next_hop_ip_address`: Optional next hop IP address for the static VNet route.
+
+  > Note: There can be multiple objects in this map, one for each Virtual Network connection you wish to connect to the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  DESCRIPTION
   nullable    = false
 }
 
@@ -399,7 +425,6 @@ variable "vpn_gateways" {
     tags                                  = optional(map(string))
     bgp_route_translation_for_nat_enabled = optional(bool)
     bgp_settings = optional(object({
-      asn = number
       instance_0_bgp_peering_address = optional(object({
         custom_ips = list(string)
       }))
@@ -407,12 +432,34 @@ variable "vpn_gateways" {
         custom_ips = list(string)
       }))
       peer_weight = number
+      asn         = number
     }))
     routing_preference = optional(string)
     scale_unit         = optional(number)
   }))
   default     = {}
-  description = "S2S VPN Gateway parameters"
+  description = <<DESCRIPTION
+  Map of objects for S2S VPN Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the S2S VPN Gateway resource.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this S2S VPN Gateway into.
+  - `tags`: Optional tags to apply to the S2S VPN Gateway resource.
+  - `bgp_route_translation_for_nat_enabled`: Optional boolean to enable BGP route translation for NAT.
+  - `bgp_settings`: Optional BGP settings object for the S2S VPN Gateway, which includes:
+    - `instance_0_bgp_peering_address`: Optional object for the instance 0 BGP peering address, which includes:
+      - `custom_ips`: List of custom IPs for the instance 0 BGP peering address.
+    - `instance_1_bgp_peering_address`: Optional object for the instance 1 BGP peering address, which includes:
+      - `custom_ips`: List of custom IPs for the instance 1 BGP peering address.
+    - `peer_weight`: BGP peer weight for the S2S VPN Gateway.
+    - `asn`: BGP ASN for the BGP Speaker.
+  - `routing_preference`: Optional Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, `Microsoft Network`), or via the ISP network (public internet, set to `Internet`). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Defaults to `Microsoft Network` if not set. Changing this forces a new resource to be created.
+  - `scale_unit`: Optional number of scale units for the S2S VPN Gateway. See https://learn.microsoft.com/azure/virtual-wan/gateway-settings#s2s for more information on scale units.
+
+  > Note: There can be multiple objects in this map, one for each S2S VPN Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  DESCRIPTION
 }
 
 variable "vpn_site_connections" {
@@ -428,7 +475,7 @@ variable "vpn_site_connections" {
       vpn_site_link_number = number
       bandwidth_mbps       = optional(number)
       bgp_enabled          = optional(bool)
-      connection_mode      = optional(string)
+      connection_mode      = optional(string, "Default")
 
       ipsec_policy = optional(object({
         dh_group                 = string
@@ -440,8 +487,8 @@ variable "vpn_site_connections" {
         sa_data_size_kb          = string
         sa_lifetime_sec          = string
       }))
-      protocol                              = optional(string)
-      ratelimit_enabled                     = optional(bool)
+      protocol                              = optional(string, "IKEv2")
+      ratelimit_enabled                     = optional(bool, false)
       route_weight                          = optional(number)
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
@@ -467,7 +514,55 @@ variable "vpn_site_connections" {
     }))
   }))
   default     = {}
-  description = "S2S VPN Site Connections parameter"
+  description = <<DESCRIPTION
+  Map of objects for VPN Site connections to connect VPN Sites to the Virtual WAN VPN Gateways that have been defined in the variable `vpn_gateways`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the VPN Site connection.
+  - `vpn_gateway_key`: The arbitrary key specified in the map of objects variable called `vpn_gateways` for the object specifying the VPN Gateway you wish to connect this VPN Site to.
+  - `remote_vpn_site_key`: The arbitrary key specified in the map of objects variable called `vpn_sites` for the object specifying the VPN Site you wish to connect this VPN Site connection to.
+  - `vpn_links`: List of VPN links for the VPN Site connection, which includes:
+    - `name`: Name for the VPN link.
+    - `egress_nat_rule_ids`: Optional list of egress NAT rule IDs.
+    - `ingress_nat_rule_ids`: Optional list of ingress NAT rule IDs.
+    - `vpn_site_link_number`: Index of the link on the VPN Gateway.
+    - `bandwidth_mbps`: Optional bandwidth in Mbps for the VPN link.
+    - `bgp_enabled`: Optional boolean to enable BGP for the VPN link.
+    - `connection_mode`: Optional connection mode for the VPN link. Allowed values are: `Default`, `InitiatorOnly`, `ResponderOnly`. Defaults to `Default`.
+    - `ipsec_policy`: Optional IPsec policy object for the VPN link, which includes:
+      - `dh_group`: DH group for the IPsec policy. Allowed values are: `DHGroup1`, `DHGroup2`, `DHGroup14`, `DHGroup24`, `DHGroup2048`, `ECP256`, `ECP384`.
+      - `ike_encryption_algorithm`: IKE encryption algorithm for the IPsec policy. Allowed values are: `AES128`, `AES192`, `AES256`, `DES`, `DES3`, `GCMAES128`, `GCMAES256`.
+      - `ike_integrity_algorithm`: IKE integrity algorithm for the IPsec policy. Allowed values are: `MD5`, `SHA1`, `SHA256`, `SHA384`, `SHA512`, `GCMAES128`, `GCMAES256`.
+      - `encryption_algorithm`: Encryption algorithm for the IPsec policy. Allowed values are: `AES128`, `AES192`, `AES256`, `DES`, `DES3`, `GCMAES128`, `GCMAES192`, `GCMAES256`, `None`.
+      - `integrity_algorithm`: Integrity algorithm for the IPsec policy. Allowed values are: `MD5`, `SHA1`, `SHA256`, `GCMAES128`, `GCMAES192`, `GCMAES256`.
+      - `pfs_group`: PFS group for the IPsec policy. Allowed values are: `None`, `PFS1`, `PFS2`, `PFS14`, `PFS24`, `PFS2048`, `PFSMM`, `ECP256`, `ECP384`.
+      - `sa_data_size_kb`: SA data size in KB for the IPsec policy.
+      - `sa_lifetime_sec`: SA lifetime in seconds for the IPsec policy.
+    - `protocol`: Optional protocol for the VPN link. Allowed values are: `IKEv2`, `IKEv1`. Defaults to `IKEv2`.
+    - `ratelimit_enabled`: Optional boolean to enable rate limiting for the VPN link. Defaults to `false`.
+    - `route_weight`: Optional route weight for the VPN link.
+    - `shared_key`: Optional shared key for the VPN link.
+    - `local_azure_ip_address_enabled`: Optional boolean to enable local Azure IP address for the VPN link.
+    - `policy_based_traffic_selector_enabled`: Optional boolean to enable policy based traffic selector for the VPN link.
+    - `custom_bgp_address`: Optional list of custom BGP addresses for the VPN link, which includes:
+      - `ip_address`: IP address for the custom BGP address.
+      - `ip_configuration_id`: IP configuration ID for the custom BGP address.
+  - `internet_security_enabled`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection to a branch/VPN site.
+  - `routing`: Optional routing configuration object for the connection, which includes:
+    - `associated_route_table`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+    - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+      - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connections routes to.
+      - `labels`: Optional list of labels you wish to propagate this connections routes to.
+    - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
+    - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
+  - `traffic_selector_policy`: Optional traffic selector policy object for the connection, which includes:
+    - `local_address_ranges`: Local address ranges (CIDR) for the traffic selector policy.
+    - `remote_address_ranges`: Remote address ranges (CIDR) for the traffic selector policy.
+
+  > Note: There can be multiple objects in this map, one for each VPN Site connection you wish to connect to the Virtual WAN VPN Gateways that have been defined in the variable `vpn_gateways`.
+
+  DESCRIPTION
 }
 
 variable "vpn_sites" {
@@ -500,5 +595,33 @@ variable "vpn_sites" {
     tags = optional(map(string))
   }))
   default     = {}
-  description = "S2S VPN Sites parameter"
+  description = <<DESCRIPTION
+  Map of objects for VPN Sites to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the VPN Site resource.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this VPN Site into.
+  - `links`: List of links for the VPN Site, which includes:
+    - `name`: Name for the link.
+    - `bgp`: Optional BGP object for the link, which includes:
+      - `asn`: ASN for the BGP.
+      - `peering_address`: Peering address for the BGP.
+    - `fqdn`: Optional FQDN for the link.
+    - `ip_address`: Optional IP address for the link.
+    - `provider_name`: Optional provider name for the link.
+    - `speed_in_mbps`: Optional speed in Mbps for the link.
+  - `address_cidrs`: Optional list of address CIDRs for the VPN Site. Must be set if `links.bgp` is not set.
+  - `device_model`: Optional device model for the VPN Site.
+  - `device_vendor`: Optional device vendor for the VPN Site.
+  - `o365_policy`: Optional O365 policy object for the VPN Site, which includes:
+    - `traffic_category`: Optional traffic category object for the O365 policy, which includes:
+      - `allow_endpoint_enabled`: Optional boolean. Is allow endpoint enabled? The `Allow` endpoint is required for connectivity to specific O365 services and features, but are not as sensitive to network performance and latency as other endpoint types.
+      - `default_endpoint_enabled`: Optional boolean. Is default endpoint enabled? The `Default` endpoint represents O365 services and dependencies that do not require any optimization, and can be treated by customer networks as normal Internet bound traffic.
+      - `optimize_endpoint_enabled`: Optional boolean. Is optimize endpoint enabled? The `Optimize` endpoint is required for connectivity to every O365 service and represents the O365 scenario that is the most sensitive to network performance, latency, and availability.
+  - `tags`: Optional tags to apply to the VPN Site resource.
+
+  > Note: There can be multiple objects in this map, one for each VPN Site you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  DESCRIPTION
 }

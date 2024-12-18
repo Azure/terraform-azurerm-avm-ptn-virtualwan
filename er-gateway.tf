@@ -34,8 +34,8 @@ resource "azurerm_express_route_connection" "er_connection" {
         for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
 
         content {
-          labels          = try(propagated_route_tables.value.labels, [])
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
+          labels          = try(propagated_route_table.value.labels, [])
+          route_table_ids = try(propagated_route_table.value.route_table_ids, [])
         }
       }
     }

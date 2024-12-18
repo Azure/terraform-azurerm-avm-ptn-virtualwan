@@ -57,6 +57,7 @@ locals {
       address_prefix         = vhub.address_prefix
       hub_routing_preference = try(vhub.hub_routing_preference, "")
       tags                   = try(vhub.tags, {})
+      virtual_router_auto_scale_min_capacity = vhub.virtual_router_auto_scale_min_capacity
     }
   }
   virtual_network_connections = {

@@ -302,6 +302,8 @@ The key is deliberately arbitrary to avoid issues with known after apply values.
 - `vhub_public_ip_count`: Optional number of public IP addresses to associate with the Azure Firewall.
 - `tags`: Optional tags to apply to the Azure Firewall resource.
 
+> Note: There can be multiple objects in this map, one for each Azure Firewall you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
 Type:
 
 ```hcl
@@ -354,6 +356,8 @@ Description:   Map of objects for Point-to-Site VPN Gateway VPN Server Configura
     - `issuer`: Issuer for the Azure Active Directory (Entra ID) authentication.
     - `tenant`: Tenant for the Azure Active Directory (Entra ID)authentication.
 
+  > Note: There can be multiple objects in this map, one for each Point-to-Site VPN Gateway VPN Server Configuration you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
 Type:
 
 ```hcl
@@ -378,7 +382,23 @@ Default: `{}`
 
 ### <a name="input_p2s_gateways"></a> [p2s\_gateways](#input\_p2s\_gateways)
 
-Description: P2S VPN Gateway parameters
+Description:   Map of objects for Point-to-Site VPN Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  > You must use this variable in conjunction with the `p2s_gateway_vpn_server_configurations` variable to deploy Point-to-Site VPN Gateway VPN Server Configurations and specify the key of the VPN Server Configuration you wish to use for each Point-to-Site VPN Gateway in the `p2s_gateway_vpn_server_configuration_key` property of each object.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Point-to-Site VPN Gateway.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this Point-to-Site VPN Gateway into.
+  - `tags`: Optional tags to apply to the Point-to-Site VPN Gateway resource.
+  - `p2s_gateway_vpn_server_configuration_key`: The key of the VPN Server Configuration you wish to use for this Point-to-Site VPN Gateway from the `p2s_gateway_vpn_server_configurations` variable.
+  - `connection_configuration`: Object for the connection configuration, which includes:
+    - `name`: Name for the connection configuration.
+    - `vpn_client_address_pool`: Object for the VPN client address pool configuration, which includes:
+      - `address_prefixes`: List of address prefixes for the VPN client address pool.
+  - `scale_unit`: Number of scale units for the Point-to-Site VPN Gateway. See: https://learn.microsoft.com/azure/virtual-wan/gateway-settings#p2s for more information on scale units.
+
+  > Note: There can be multiple objects in this map, one for each Point-to-Site VPN Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
 Type:
 
@@ -394,10 +414,7 @@ map(object({
         address_prefixes = list(string)
       })
     })
-    routing_preference                  = optional(string)
-    scale_unit                          = number
-    dns_servers                         = optional(list(string))
-    routing_preference_internet_enabled = optional(bool)
+    scale_unit = number
   }))
 ```
 
@@ -413,7 +430,16 @@ Default: `{}`
 
 ### <a name="input_routing_intents"></a> [routing\_intents](#input\_routing\_intents)
 
-Description: Routing intent for virutal hubs
+Description:   Map of objects for routing intents to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the routing intent resource.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this routing intent into.
+  - `routing_policies`: List of routing policies for the routing intent, which includes:
+    - `name`: Name for the routing policy.
+    - `destinations`: List of destinations for the routing policy. Allowed values are: `Internet`, `PrivateTraffic`.
+    - `next_hop_firewall_key`: The arbitrary key specified in the map of objects variable called `firewalls` for the object specifying the Azure Firewall you wish to use as the next hop for the routing policy. This is used to get the correct resource ID for the corresponding Azure Firewall.
 
 Type:
 
@@ -433,7 +459,7 @@ Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: (Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only.
+Description:   (Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only.
 
 Type: `map(string)`
 
@@ -441,7 +467,7 @@ Default: `null`
 
 ### <a name="input_type"></a> [type](#input\_type)
 
-Description: Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended.
+Description:   Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended.
 
 Type: `string`
 
@@ -449,18 +475,31 @@ Default: `"Standard"`
 
 ### <a name="input_virtual_hubs"></a> [virtual\_hubs](#input\_virtual\_hubs)
 
-Description: Virtual Hub parameters
+Description:   Map of objects for Virtual Hubs to deploy into the Virtual WAN.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Virtual Hub resource.
+  - `location`: Location for the Virtual Hub resource.
+  - `resource_group`: Optional resource group name to deploy the Virtual Hub into. If not specified, the Virtual Hub will be deployed into the resource group specified in the variable `resource_group_name`, e.g. the same as the Virtual WAN itself.
+  - `address_prefix`: Address prefix for the Virtual Hub. Recommend using a `/23` CIDR block.
+  - `tags`: Optional tags to apply to the Virtual Hub resource.
+  - `hub_routing_preference`: Optional hub routing preference for the Virtual Hub. Possible values are: `ExpressRoute`, `ASPath`, `VpnGateway`. Defaults to `ExpressRoute`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#routing-preference for more information.
+  - `virtual_router_auto_scale_min_capacity`: Optional minimum capacity for the Virtual Router auto scale. Defaults to `2`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity for more information.
+
+  > Note: There can be multiple objects in this map, one for each Virtual Hub you wish to deploy into the Virtual WAN. Multiple Virtual Hubs in the same region/location can be deployed into the same Virtual WAN also.
 
 Type:
 
 ```hcl
 map(object({
-    name                   = string
-    location               = string
-    resource_group         = optional(string, null)
-    address_prefix         = string
-    tags                   = optional(map(string))
-    hub_routing_preference = optional(string)
+    name                                   = string
+    location                               = string
+    resource_group                         = optional(string, null)
+    address_prefix                         = string
+    tags                                   = optional(map(string))
+    hub_routing_preference                 = optional(string, "ExpressRoute")
+    virtual_router_auto_scale_min_capacity = optional(number, 2)
   }))
 ```
 

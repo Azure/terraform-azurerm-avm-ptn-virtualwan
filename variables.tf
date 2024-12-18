@@ -293,6 +293,13 @@ variable "routing_intents" {
 
   The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
+  - `name`: Name for the routing intent resource.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this routing intent into.
+  - `routing_policies`: List of routing policies for the routing intent, which includes:
+    - `name`: Name for the routing policy.
+    - `destinations`: List of destinations for the routing policy. Allowed values are: `Internet`, `PrivateTraffic`.
+    - `next_hop_firewall_key`: The arbitrary key specified in the map of objects variable called `firewalls` for the object specifying the Azure Firewall you wish to use as the next hop for the routing policy. This is used to get the correct resource ID for the corresponding Azure Firewall.
+
   DESCRIPTION
   nullable    = false
 }
@@ -301,13 +308,19 @@ variable "routing_intents" {
 variable "tags" {
   type        = map(string)
   default     = null
-  description = "(Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only."
+  description = <<DESCRIPTION
+  (Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only.
+  
+  DESCRIPTION
 }
 
 variable "type" {
   type        = string
   default     = "Standard"
-  description = "Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended."
+  description = <<DESCRIPTION
+  Type of the Virtual WAN to create. Possible values include: `Basic`, `Standard`. Defaults to `Standard` and is recommended.
+
+  DESCRIPTION
 
   validation {
     condition     = contains(["Basic", "Standard"], var.type)
@@ -317,15 +330,31 @@ variable "type" {
 
 variable "virtual_hubs" {
   type = map(object({
-    name                   = string
-    location               = string
-    resource_group         = optional(string, null)
-    address_prefix         = string
-    tags                   = optional(map(string))
-    hub_routing_preference = optional(string)
+    name                                   = string
+    location                               = string
+    resource_group                         = optional(string, null)
+    address_prefix                         = string
+    tags                                   = optional(map(string))
+    hub_routing_preference                 = optional(string, "ExpressRoute")
+    virtual_router_auto_scale_min_capacity = optional(number, 2)
   }))
   default     = {}
-  description = "Virtual Hub parameters"
+  description = <<DESCRIPTION
+  Map of objects for Virtual Hubs to deploy into the Virtual WAN.
+
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
+
+  - `name`: Name for the Virtual Hub resource.
+  - `location`: Location for the Virtual Hub resource.
+  - `resource_group`: Optional resource group name to deploy the Virtual Hub into. If not specified, the Virtual Hub will be deployed into the resource group specified in the variable `resource_group_name`, e.g. the same as the Virtual WAN itself.
+  - `address_prefix`: Address prefix for the Virtual Hub. Recommend using a `/23` CIDR block.
+  - `tags`: Optional tags to apply to the Virtual Hub resource.
+  - `hub_routing_preference`: Optional hub routing preference for the Virtual Hub. Possible values are: `ExpressRoute`, `ASPath`, `VpnGateway`. Defaults to `ExpressRoute`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#routing-preference for more information.
+  - `virtual_router_auto_scale_min_capacity`: Optional minimum capacity for the Virtual Router auto scale. Defaults to `2`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity for more information.
+
+  > Note: There can be multiple objects in this map, one for each Virtual Hub you wish to deploy into the Virtual WAN. Multiple Virtual Hubs in the same region/location can be deployed into the same Virtual WAN also.
+
+  DESCRIPTION
 }
 
 # Azure virtual network connections

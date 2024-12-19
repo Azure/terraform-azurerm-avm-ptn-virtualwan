@@ -10,6 +10,7 @@ resource "azurerm_firewall" "fw" {
   tags                = try(each.value.tags, {})
 
   virtual_hub {
-    virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
+    virtual_hub_id  = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
+    public_ip_count = each.value.vhub_public_ip_count
   }
 }

@@ -28,9 +28,11 @@ resource "azurerm_virtual_wan" "virtual_wan" {
   type                              = var.type
 }
 
-resource "azurerm_virtual_hub" "virtual_hub" {
+module "virtual_hubs" {
+  source = "./modules/virtualhub"
+  
   for_each = local.virtual_hubs != null && length(local.virtual_hubs) > 0 ? local.virtual_hubs : {}
-
+  
   location               = each.value.location
   name                   = each.value.name
   resource_group_name    = coalesce(each.value.resource_group, local.resource_group_name)
@@ -38,4 +40,5 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   hub_routing_preference = each.value.hub_routing_preference
   tags                   = try(each.value.tags, {})
   virtual_wan_id         = azurerm_virtual_wan.virtual_wan.id
+  
 }

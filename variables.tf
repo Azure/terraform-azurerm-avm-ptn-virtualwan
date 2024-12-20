@@ -287,6 +287,7 @@ variable "vpn_site_connections" {
       ingress_nat_rule_ids = optional(list(string))
       # Index of the link on the vpn gateway
       vpn_site_link_number = number
+      vpn_site_key         = string
       bandwidth_mbps       = optional(number)
       bgp_enabled          = optional(bool)
       connection_mode      = optional(string)

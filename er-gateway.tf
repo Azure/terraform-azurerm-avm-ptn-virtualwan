@@ -1,40 +1,27 @@
-resource "azurerm_express_route_gateway" "express_route_gateway" {
+module "express_route_gateways" {
+  source = "./modules/expressroute-gateway"
+
   for_each = local.expressroute_gateways != null && length(local.expressroute_gateways) > 0 ? local.expressroute_gateways : {}
 
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
+  location            = module.virtual_hubs[each.value.virtual_hub_key].location
   name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
+  resource_group_name = module.virtual_hubs[each.value.virtual_hub_key].resource_group_name
   scale_units         = each.value.scale_units
-  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
+  virtual_hub_id      = module.virtual_hubs[each.value.virtual_hub_key].virtual_hub_id
   tags                = try(each.value.tags, {})
 }
 
 
 # Create the Express Route Connection
-resource "azurerm_express_route_connection" "er_connection" {
+module "er_connections" {
+  source   = "./modules/expressroute-gateway-conn"
   for_each = local.er_circuit_connections != null && length(local.er_circuit_connections) > 0 ? local.er_circuit_connections : {}
 
   express_route_circuit_peering_id = each.value.express_route_circuit_peering_id
-  express_route_gateway_id         = azurerm_express_route_gateway.express_route_gateway[each.value.express_route_gateway_key].id
+  express_route_gateway_id         = module.express_route_gateways[each.value.express_route_gateway_key].er_gateway_id
   name                             = each.value.name
   authorization_key                = try(each.value.authorization_key, null)
   enable_internet_security         = try(each.value.enable_internet_security, null)
   routing_weight                   = try(each.value.routing_weight, null)
-
-  dynamic "routing" {
-    for_each = each.value.routing != null ? [each.value.routing] : []
-    content {
-      associated_route_table_id = routing.value.associated_route_table_id
-      inbound_route_map_id      = try(routing.value.inbound_route_map_id, null)
-      outbound_route_map_id     = try(routing.value.outbound_route_map_id, null)
-
-      dynamic "propagated_route_table" {
-        for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
-        content {
-          labels          = try(propagated_route_tables.value.labels, [])
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
-        }
-      }
-    }
-  }
+  routing                          = try(each.value.routing, [])
 }

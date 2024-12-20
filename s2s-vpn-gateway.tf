@@ -1,129 +1,67 @@
-resource "azurerm_vpn_gateway" "vpn_gateway" {
+module "vpn_gateway" {
+  source = "./modules/site-to-site-gateway"
+
   for_each = local.vpn_gateways != null && length(local.vpn_gateways) > 0 ? local.vpn_gateways : {}
 
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
-  name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
-  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
-  tags                = try(each.value.tags, {})
+  location                              = module.virtual_hubs[each.value.virtual_hub_key].location
+  name                                  = each.value.name
+  resource_group_name                   = module.virtual_hubs[each.value.virtual_hub_key].resource_group_name
+  virtual_hub_id                        = module.virtual_hubs[each.value.virtual_hub_key].virtual_hub_id
+  bgp_route_translation_for_nat_enabled = try(each.value.bgp_route_translation_for_nat_enabled, null)
+  bgp_settings                          = try(each.value.bgp_settings, null)
+  routing_preference                    = try(each.value.routing_preference, null)
+  scale_unit                            = try(each.value.scale_unit, null)
+  tags                                  = try(each.value.tags, {})
 }
-
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.
-resource "azurerm_vpn_site" "vpn_site" {
+module "vpn_site" {
+  source = "./modules/site-to-site-vpn-site"
+
   for_each = local.vpn_sites != null ? local.vpn_sites : {}
-
-  location            = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].location
-  name                = each.value.name
-  resource_group_name = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].resource_group_name
-  virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
-  address_cidrs       = try(each.value.address_cidrs, null)
-  device_model        = try(each.value.device_model, null)
-  device_vendor       = try(each.value.device_vendor, null)
-  tags                = try(each.value.tags, {})
-
-  dynamic "link" {
-    for_each = each.value.links != null && length(each.value.links) > 0 ? each.value.links : []
-
-    content {
-      name          = link.value.name
-      fqdn          = try(link.value.fqdn, null)
-      ip_address    = try(link.value.ip_address, null)
-      provider_name = try(link.value.provider_name, null)
-      speed_in_mbps = link.value.speed_in_mbps
-
-      dynamic "bgp" {
-        for_each = link.value.bgp != null ? [link.value.bgp] : []
-
-        content {
-          asn             = bgp.value.asn
-          peering_address = bgp.value.peering_address
-        }
-      }
-    }
-  }
-  o365_policy {
-    traffic_category {
-      allow_endpoint_enabled    = try(each.value.o365_policy.traffic_category.allow_endpoint_enabled, null)
-      default_endpoint_enabled  = try(each.value.o365_policy.traffic_category.default_endpoint_enabled, null)
-      optimize_endpoint_enabled = try(each.value.o365_policy.traffic_category.optimize_endpoint_enabled, null)
-    }
+  vpn_sites = {
+    location            = module.virtual_hubs[each.value.virtual_hub_key].location
+    name                = each.value.name
+    resource_group_name = module.virtual_hubs[each.value.virtual_hub_key].resource_group_name
+    virtual_wan_id      = azurerm_virtual_wan.virtual_wan.id
+    address_cidrs       = try(each.value.address_cidrs, null)
+    device_model        = try(each.value.device_model, null)
+    device_vendor       = try(each.value.device_vendor, null)
+    tags                = try(each.value.tags, {})
+    links               = try(each.value.links, null)
+    o365_policy         = try(each.value.o365_policy, null)
   }
 }
-
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
-resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
+module "vpn_site_connection" {
+  source = "./modules/site-to-site-gateway-conn"
+
   for_each = local.vpn_site_connections != null && length(local.vpn_site_connections) > 0 ? local.vpn_site_connections : {}
-
-  name                      = each.value.name
-  remote_vpn_site_id        = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_key].id
-  vpn_gateway_id            = azurerm_vpn_gateway.vpn_gateway[each.value.vpn_gateway_key].id
-  internet_security_enabled = try(each.value.internet_security_enabled, null)
-
-  dynamic "vpn_link" {
-    for_each = each.value.vpn_links != null && length(each.value.vpn_links) > 0 ? each.value.vpn_links : []
-
-    content {
-      name                                  = vpn_link.value.name
-      vpn_site_link_id                      = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_key].link[vpn_link.value.vpn_site_link_number].id
-      bandwidth_mbps                        = try(vpn_link.value.bandwidth_mbps, null)
-      bgp_enabled                           = try(vpn_link.value.bgp_enabled, null)
-      connection_mode                       = try(vpn_link.value.connection_mode, null)
-      egress_nat_rule_ids                   = try(vpn_link.value.egress_nat_rule_ids, null)
-      ingress_nat_rule_ids                  = try(vpn_link.value.ingress_nat_rule_ids, null)
-      local_azure_ip_address_enabled        = try(vpn_link.value.local_azure_ip_address_enabled, null)
-      policy_based_traffic_selector_enabled = try(vpn_link.value.policy_based_traffic_selector_enabled, null)
-      protocol                              = try(vpn_link.value.protocol, null)
-      ratelimit_enabled                     = try(vpn_link.value.ratelimit_enabled, null)
-      route_weight                          = try(vpn_link.value.route_weight, null)
-      shared_key                            = try(vpn_link.value.shared_key, null)
-
-      dynamic "custom_bgp_address" {
-        for_each = vpn_link.value.custom_bgp_address != null ? [vpn_link.value.custom_bgp_address] : []
-
-        content {
-          ip_address          = custom_bgp_address.value.ip_address
-          ip_configuration_id = custom_bgp_address.value.ip_configuration_id
-        }
+  vpn_site_connection = {
+    name                      = each.value.name
+    remote_vpn_site_id        = module.vpn_site[each.value.remote_vpn_site_key].vpn_site_id
+    vpn_gateway_id            = module.vpn_gateway[each.value.vpn_gateway_key].id
+    internet_security_enabled = try(each.value.internet_security_enabled, null)
+    vpn_links                 = [
+      for link in each.value.vpn_links : {
+        name                 = link.name
+        vpn_site_link_id     = module.vpn_site[link.vpn_site_key].links[link.vpn_site_link_number].id
+        bandwidth_mbps       = try(link.bandwidth_mbps, null)
+        bgp_enabled          = try(link.bgp_enabled, null)
+        connection_mode      = try(link.connection_mode, null)
+        egress_nat_rule_ids  = try(link.egress_nat_rule_ids, null)
+        ingress_nat_rule_ids = try(link.ingress_nat_rule_ids, null)
+        ipsec_policy         = try(link.ipsec_policy, null)
+        protocol             = try(link.protocol, null)
+        ratelimit_enabled    = try(link.ratelimit_enabled, null)
+        route_weight         = try(link.route_weight, null)
+        shared_key           = try(link.shared_key, null)
+        local_azure_ip_address_enabled = try(link.local_azure_ip_address_enabled, null)
+        policy_based_traffic_selector_enabled = try(link.policy_based_traffic_selector_enabled, null)
+        custom_bgp_address   = try(link.custom_bgp_address, null)
       }
-      dynamic "ipsec_policy" {
-        for_each = vpn_link.value.ipsec_policy != null ? [vpn_link.value.ipsec_policy] : []
-
-        content {
-          dh_group                 = ipsec_policy.value.dh_group
-          encryption_algorithm     = ipsec_policy.value.encryption_algorithm
-          ike_encryption_algorithm = ipsec_policy.value.ike_encryption_algorithm
-          ike_integrity_algorithm  = ipsec_policy.value.ike_integrity_algorithm
-          integrity_algorithm      = ipsec_policy.value.integrity_algorithm
-          pfs_group                = ipsec_policy.value.pfs_group
-          sa_data_size_kb          = ipsec_policy.value.sa_data_size_kb
-          sa_lifetime_sec          = ipsec_policy.value.sa_lifetime_sec
-        }
-      }
-    }
+    ]
+    routing                   = try(each.value.routing, null)
+    traffic_selector_policy   = try(each.value.traffic_selector_policy, null)
   }
-  dynamic "routing" {
-    for_each = each.value.routing != null ? [each.value.routing] : []
-
-    content {
-      associated_route_table = routing.value.associated_route_table
-
-      dynamic "propagated_route_table" {
-        for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
-
-        content {
-          route_table_ids = propagated_route_table.value.route_table_ids
-          labels          = propagated_route_table.value.labels
-        }
-      }
-    }
-  }
-  dynamic "traffic_selector_policy" {
-    for_each = each.value.traffic_selector_policy != null ? [each.value.traffic_selector_policy] : []
-
-    content {
-      local_address_ranges  = traffic_selector_policy.value.local_address_ranges
-      remote_address_ranges = traffic_selector_policy.value.remote_address_ranges
-    }
-  }
+  depends_on = [ module.vpn_site, module.vpn_gateway ]
 }
-

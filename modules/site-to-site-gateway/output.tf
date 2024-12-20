@@ -17,3 +17,13 @@ output "id" {
   description = "Azure VPN Gateway ID"
   value       = azurerm_vpn_gateway.vpn_gateway.id
 }
+
+output "resource_id" {
+  description = "Azure VPN Gateway ID"
+  value       = azurerm_vpn_gateway.vpn_gateway.id
+}
+
+output "resource" {
+  description = "Azure VPN Gateway"
+  value       = azurerm_vpn_gateway.vpn_gateway
+}

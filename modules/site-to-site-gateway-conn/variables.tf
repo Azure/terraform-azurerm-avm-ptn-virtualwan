@@ -1,17 +1,17 @@
 variable "vpn_site_connection" {
   type = object({
-    name                = string
+    name               = string
     remote_vpn_site_id = string
-    vpn_gateway_id    = string
+    vpn_gateway_id     = string
     vpn_links = list(object({
       name                 = string
       egress_nat_rule_ids  = optional(list(string))
       ingress_nat_rule_ids = optional(list(string))
       # ID of the link to VPN site. Links are created in the VPN site module.
       vpn_site_link_id = string
-      bandwidth_mbps       = optional(number)
-      bgp_enabled          = optional(bool)
-      connection_mode      = optional(string)
+      bandwidth_mbps   = optional(number)
+      bgp_enabled      = optional(bool)
+      connection_mode  = optional(string)
 
       ipsec_policy = optional(object({
         dh_group                 = string

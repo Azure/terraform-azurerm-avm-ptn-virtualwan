@@ -1,6 +1,5 @@
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
 resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
- 
   name                      = var.vpn_site_connection.name
   remote_vpn_site_id        = var.vpn_site_connection.remote_vpn_site_id
   vpn_gateway_id            = var.vpn_site_connection.vpn_gateway_id

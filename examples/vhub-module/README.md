@@ -1,45 +1,35 @@
 <!-- BEGIN_TF_DOCS -->
 # VHUB example
 
-This is the VHUB example.
+This is the VHUB using sub module example.
 
 ```hcl
-resource "random_pet" "vvan_name" {
-  length    = 2
-  separator = "-"
-}
-
 locals {
-  location            = "australiaeast"
-  resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
+  address_prefix         = "10.100.0.0/24"
+  hub_routing_preference = "ExpressRoute"
+  location               = "australiaeast"
+  resource_group_name    = "rg-avm-vwan-enabling-bull"
   tags = {
-    environment = "avm-vwan-testing"
+    environment = "avm-vwan-staging"
     deployment  = "terraform"
   }
-  virtual_hub_key  = "aue-vhub"
-  virtual_hub_name = "vhub-avm-vwan-${random_pet.vvan_name.id}"
-  virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+  virtual_hub_name = "vhub-avm-vwan-enabling-bull-stg"
+  vwan_name        = "vwan-avm-vwan-enabling-bull"
 }
+data "azurerm_virtual_wan" "vwan" {
+  name                = local.vwan_name
+  resource_group_name = local.resource_group_name
+}
+module "vhub" {
+  source = "../../modules/virtualhub"
 
-module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = true
-  resource_group_name            = local.resource_group_name
-  location                       = local.location
-  virtual_wan_name               = local.virtual_wan_name
-  disable_vpn_encryption         = false
-  allow_branch_to_branch_traffic = true
-  type                           = "Standard"
-  virtual_wan_tags               = local.tags
-  virtual_hubs = {
-    (local.virtual_hub_key) = {
-      name           = local.virtual_hub_name
-      location       = local.location
-      resource_group = local.resource_group_name
-      address_prefix = "10.0.0.0/24"
-      tags           = local.tags
-    }
-  }
+  location               = local.location
+  name                   = local.virtual_hub_name
+  resource_group_name    = local.resource_group_name
+  address_prefix         = local.address_prefix
+  hub_routing_preference = local.hub_routing_preference
+  tags                   = local.tags
+  virtual_wan_id         = data.azurerm_virtual_wan.vwan.id
 }
 ```
 
@@ -52,19 +42,17 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
-
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_random"></a> [random](#provider\_random) (~> 3.6)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.108)
 
 ## Resources
 
 The following resources are used by this module:
 
-- [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
+- [azurerm_virtual_wan.vwan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_wan) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -83,9 +71,9 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_vwan_with_vhub"></a> [vwan\_with\_vhub](#module\_vwan\_with\_vhub)
+### <a name="module_vhub"></a> [vhub](#module\_vhub)
 
-Source: ../../
+Source: ../../modules/virtualhub
 
 Version:
 

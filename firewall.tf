@@ -10,5 +10,5 @@ module "firewalls" {
   sku_tier            = each.value.sku_tier
   firewall_policy_id  = each.value.firewall_policy_id
   tags                = try(each.value.tags, {})
-  virtual_hub_id      = module.virtual_hubs[each.value.virtual_hub_key].virtual_hub_id
+  virtual_hub_id      = module.virtual_hubs[each.value.virtual_hub_key].resource_id
 }

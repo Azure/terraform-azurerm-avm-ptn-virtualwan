@@ -1,4 +1,4 @@
-output "vpn_site_id" {
+output "resource_id" {
   description = "Azure VPN Site ID"
   value       = azurerm_vpn_site.vpn_site.id
 }

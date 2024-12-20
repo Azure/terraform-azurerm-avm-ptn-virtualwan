@@ -1,5 +1,4 @@
 resource "azurerm_express_route_gateway" "express_route_gateway" {
-
   location            = var.location
   name                = var.name
   resource_group_name = var.resource_group_name

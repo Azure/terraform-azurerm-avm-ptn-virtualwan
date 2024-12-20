@@ -132,19 +132,12 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
-- [azurerm_express_route_connection.er_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_connection) (resource)
-- [azurerm_express_route_gateway.express_route_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/express_route_gateway) (resource)
-- [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) (resource)
 - [azurerm_point_to_site_vpn_gateway.p2s_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/point_to_site_vpn_gateway) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_virtual_hub.virtual_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub) (resource)
 - [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
 - [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
 - [azurerm_virtual_wan.virtual_wan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_wan) (resource)
-- [azurerm_vpn_gateway.vpn_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway) (resource)
-- [azurerm_vpn_gateway_connection.vpn_site_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_gateway_connection) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
-- [azurerm_vpn_site.vpn_site](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_site) (resource)
 - [modtm_telemetry.telemetry](https://registry.terraform.io/providers/Azure/modtm/latest/docs/resources/telemetry) (resource)
 - [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
 - [azurerm_client_config.telemetry](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
@@ -514,6 +507,7 @@ map(object({
       ingress_nat_rule_ids = optional(list(string))
       # Index of the link on the vpn gateway
       vpn_site_link_number = number
+      vpn_site_key         = string
       bandwidth_mbps       = optional(number)
       bgp_enabled          = optional(bool)
       connection_mode      = optional(string)
@@ -601,30 +595,6 @@ Default: `{}`
 
 The following outputs are exported:
 
-### <a name="output_azure_firewall_resource_ids"></a> [azure\_firewall\_resource\_ids](#output\_azure\_firewall\_resource\_ids)
-
-Description: A map of Azure Firewall resource IDs with the map keys of the `firewalls` variable.
-
-### <a name="output_azure_firewall_resource_names"></a> [azure\_firewall\_resource\_names](#output\_azure\_firewall\_resource\_names)
-
-Description: A map of Azure Firewall resource names with the map keys of the `firewalls` variable.
-
-### <a name="output_er_gw_id"></a> [er\_gw\_id](#output\_er\_gw\_id)
-
-Description: ExpressRoute Gateway ID
-
-### <a name="output_expressroute_gateway_resource_ids"></a> [expressroute\_gateway\_resource\_ids](#output\_expressroute\_gateway\_resource\_ids)
-
-Description: A map of expressRoute Gateway IDs with the map keys of the `expressroute_gateways` variable.
-
-### <a name="output_expressroute_gateway_resource_names"></a> [expressroute\_gateway\_resource\_names](#output\_expressroute\_gateway\_resource\_names)
-
-Description: A map of expressRoute Gateway names with the map keys of the `expressroute_gateways` variable.
-
-### <a name="output_fw"></a> [fw](#output\_fw)
-
-Description: Firewall Name
-
 ### <a name="output_p2s_vpn_gw_id"></a> [p2s\_vpn\_gw\_id](#output\_p2s\_vpn\_gw\_id)
 
 Description: P2S VPN Gateway ID
@@ -657,18 +627,6 @@ Description: S2S VPN Gateway Objects
 
 Description: S2S VPN Gateway ID
 
-### <a name="output_virtual_hub_id"></a> [virtual\_hub\_id](#output\_virtual\_hub\_id)
-
-Description: Virtual Hub ID
-
-### <a name="output_virtual_hub_resource_ids"></a> [virtual\_hub\_resource\_ids](#output\_virtual\_hub\_resource\_ids)
-
-Description: A map of Azure Virtual Hub resource IDs with the map keys of the `virtual_hubs` variable.
-
-### <a name="output_virtual_hub_resource_names"></a> [virtual\_hub\_resource\_names](#output\_virtual\_hub\_resource\_names)
-
-Description: A map of Azure Virtual Hub resource names with the map keys of the `virtual_hubs` variable.
-
 ### <a name="output_virtual_wan_id"></a> [virtual\_wan\_id](#output\_virtual\_wan\_id)
 
 Description: Virtual WAN ID
@@ -683,7 +641,49 @@ Description: A map of Azure VPN Gateway resource names with the map keys of the 
 
 ## Modules
 
-No modules.
+The following Modules are called:
+
+### <a name="module_er_connections"></a> [er\_connections](#module\_er\_connections)
+
+Source: ./modules/expressroute-gateway-conn
+
+Version:
+
+### <a name="module_express_route_gateways"></a> [express\_route\_gateways](#module\_express\_route\_gateways)
+
+Source: ./modules/expressroute-gateway
+
+Version:
+
+### <a name="module_firewalls"></a> [firewalls](#module\_firewalls)
+
+Source: ./modules/firewall
+
+Version:
+
+### <a name="module_virtual_hubs"></a> [virtual\_hubs](#module\_virtual\_hubs)
+
+Source: ./modules/virtualhub
+
+Version:
+
+### <a name="module_vpn_gateway"></a> [vpn\_gateway](#module\_vpn\_gateway)
+
+Source: ./modules/site-to-site-gateway
+
+Version:
+
+### <a name="module_vpn_site"></a> [vpn\_site](#module\_vpn\_site)
+
+Source: ./modules/site-to-site-vpn-site
+
+Version:
+
+### <a name="module_vpn_site_connection"></a> [vpn\_site\_connection](#module\_vpn\_site\_connection)
+
+Source: ./modules/site-to-site-gateway-conn
+
+Version:
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

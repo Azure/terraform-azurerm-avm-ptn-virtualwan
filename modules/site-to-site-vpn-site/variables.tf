@@ -1,13 +1,13 @@
 variable "vpn_sites" {
   type = object({
-    location = string
-    name = string
+    location            = string
+    name                = string
     resource_group_name = string
-    virtual_wan_id = string
-    address_cidrs = optional(list(string))
-    device_model  = optional(string)
-    device_vendor = optional(string)
-    tags = optional(map(string))
+    virtual_wan_id      = string
+    address_cidrs       = optional(list(string))
+    device_model        = optional(string)
+    device_vendor       = optional(string)
+    tags                = optional(map(string))
     links = list(object({
       name = string
       bgp = optional(object({
@@ -27,4 +27,5 @@ variable "vpn_sites" {
       })
     }))
   })
+  description = "Azure Virtual WAN vpn sites"
 }

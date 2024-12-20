@@ -1,7 +1,5 @@
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.
 resource "azurerm_vpn_site" "vpn_site" {
-
-
   location            = var.vpn_sites.location
   name                = var.vpn_sites.name
   resource_group_name = var.vpn_sites.resource_group_name
@@ -31,7 +29,6 @@ resource "azurerm_vpn_site" "vpn_site" {
       }
     }
   }
-
   dynamic "o365_policy" {
     for_each = var.vpn_sites.o365_policy != null ? [var.vpn_sites.o365_policy] : []
 

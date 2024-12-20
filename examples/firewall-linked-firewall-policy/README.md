@@ -70,6 +70,16 @@ module "vwan_with_vhub" {
     }
   }
 }
+
+output "firewall_private_ip_address_by_hub" {
+  description = "Private IP Address of the Azure Firewall by Hub"
+  value       = module.vwan_with_vhub.firewall_ip_addresses_by_hub_key[local.virtual_hub_key].private_ip_address
+}
+
+output "firewall_private_ip_address_by_firewall" {
+  description = "Private IP Address of the Azure Firewall by Firewall"
+  value       = module.vwan_with_vhub.firewall_ip_addresses_by_firewall_key[local.firewall_key].private_ip_address
+}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -82,14 +92,6 @@ The following requirements are needed by this module:
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
-
-## Providers
-
-The following providers are used by this module:
-
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.108)
-
-- <a name="provider_random"></a> [random](#provider\_random) (~> 3.6)
 
 ## Resources
 
@@ -109,7 +111,15 @@ No optional inputs.
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_firewall_private_ip_address_by_firewall"></a> [firewall\_private\_ip\_address\_by\_firewall](#output\_firewall\_private\_ip\_address\_by\_firewall)
+
+Description: Private IP Address of the Azure Firewall by Firewall
+
+### <a name="output_firewall_private_ip_address_by_hub"></a> [firewall\_private\_ip\_address\_by\_hub](#output\_firewall\_private\_ip\_address\_by\_hub)
+
+Description: Private IP Address of the Azure Firewall by Hub
 
 ## Modules
 

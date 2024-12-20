@@ -87,7 +87,7 @@ module "vwan_with_vhub" {
         policy_based_traffic_selector_enabled = false
         ratelimit_enabled                     = false
         route_weight                          = 1
-        shared_key                            = random_password.shared_key.result
+        shared_key                            = nonsensitive(random_password.shared_key.result)
         vpn_site_link_number                  = 0
         vpn_site_key                          = local.vpn_sites_key
       }]
@@ -106,14 +106,6 @@ The following requirements are needed by this module:
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
-
-## Providers
-
-The following providers are used by this module:
-
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.108)
-
-- <a name="provider_random"></a> [random](#provider\_random) (~> 3.6)
 
 ## Resources
 

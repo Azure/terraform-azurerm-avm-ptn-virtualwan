@@ -3,6 +3,7 @@ module "express_route_gateways" {
 
   for_each = local.expressroute_gateways != null && length(local.expressroute_gateways) > 0 ? local.expressroute_gateways : {}
 
+
   location            = module.virtual_hubs[each.value.virtual_hub_key].location
   name                = each.value.name
   resource_group_name = module.virtual_hubs[each.value.virtual_hub_key].resource_group_name
@@ -25,3 +26,4 @@ module "er_connections" {
   routing_weight                   = try(each.value.routing_weight, null)
   routing                          = try(each.value.routing, [])
 }
+

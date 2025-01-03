@@ -779,6 +779,15 @@ Default: `{}`
 ## Outputs
 
 The following outputs are exported:
+
+### <a name="output_firewall_ip_addresses_by_firewall_key"></a> [firewall\_ip\_addresses\_by\_firewall\_key](#output\_firewall\_ip\_addresses\_by\_firewall\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the firewalls.
+
+### <a name="output_firewall_ip_addresses_by_hub_key"></a> [firewall\_ip\_addresses\_by\_hub\_key](#output\_firewall\_ip\_addresses\_by\_hub\_key)
+
+Description: A map of Azure Firewall IP addresses with the map keys of the hubs.
+
 ### <a name="output_p2s_vpn_gw_id"></a> [p2s\_vpn\_gw\_id](#output\_p2s\_vpn\_gw\_id)
 
 Description: P2S VPN Gateway ID

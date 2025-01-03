@@ -12,6 +12,11 @@ module "express_route_gateways" {
   tags                = try(each.value.tags, {})
 }
 
+moved {
+  from = azurerm_express_route_gateway.express_route_gateway
+  to   = module.express_route_gateways.azurerm_express_route_gateway.express_route_gateway
+}
+
 
 # Create the Express Route Connection
 module "er_connections" {
@@ -27,3 +32,7 @@ module "er_connections" {
   routing                          = try(each.value.routing, [])
 }
 
+moved {
+  from = azurerm_express_route_connection.er_connection
+  to   = module.er_connections.azurerm_express_route_connection.er_connection
+}

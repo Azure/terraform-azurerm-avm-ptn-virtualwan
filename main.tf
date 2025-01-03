@@ -36,3 +36,8 @@ module "virtual_hubs" {
 
 }
 
+moved {
+  from = azurerm_virtual_hub.virtual_hub
+  to   = module.virtual_hubs.azurerm_virtual_hub.virtual_hub
+}
+

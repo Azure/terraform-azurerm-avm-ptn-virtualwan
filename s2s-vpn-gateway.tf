@@ -13,6 +13,12 @@ module "vpn_gateway" {
   scale_unit                            = try(each.value.scale_unit, null)
   tags                                  = try(each.value.tags, {})
 }
+
+moved {
+  from = azurerm_vpn_gateway.vpn_gateway
+  to   = module.vpn_gateway.azurerm_vpn_gateway.vpn_gateway
+}
+
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.
 module "vpn_site" {
   source = "./modules/site-to-site-vpn-site"
@@ -31,6 +37,12 @@ module "vpn_site" {
     o365_policy         = try(each.value.o365_policy, null)
   }
 }
+
+moved {
+  from = azurerm_vpn_site.vpn_site
+  to   = module.vpn_site.azurerm_vpn_site.vpn_site
+}
+
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
 module "vpn_site_connection" {
   source = "./modules/site-to-site-gateway-conn"
@@ -64,4 +76,9 @@ module "vpn_site_connection" {
     traffic_selector_policy = try(each.value.traffic_selector_policy, null)
   }
   depends_on = [module.vpn_site, module.vpn_gateway]
+}
+
+moved {
+  from = azurerm_vpn_gateway_connection.vpn_site_connection
+  to   = module.vpn_site_connection.azurerm_vpn_gateway_connection.vpn_site_connection
 }

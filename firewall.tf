@@ -13,3 +13,7 @@ module "firewalls" {
   virtual_hub_id      = module.virtual_hubs[each.value.virtual_hub_key].resource_id
 }
 
+moved {
+  from = azurerm_firewall.fw
+  to   = module.firewalls.azurerm_firewall.fw
+}

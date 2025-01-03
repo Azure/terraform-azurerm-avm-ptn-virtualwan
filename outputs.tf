@@ -1,3 +1,19 @@
+output "firewall_ip_addresses_by_firewall_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the firewalls."
+  value = var.firewalls != null ? { for key, value in module.firewalls : key => {
+    virtual_hub_key    = value.virtual_hub_key
+    private_ip_address = module.firewalls[key].resource.virtual_hub[0].private_ip_address
+  } } : null
+}
+
+output "firewall_ip_addresses_by_hub_key" {
+  description = "A map of Azure Firewall IP addresses with the map keys of the hubs."
+  value = var.firewalls != null ? { for key, value in module.firewalls : value.virtual_hub_key => {
+    firewall_key       = key
+    private_ip_address = module.firewalls[key].resource.virtual_hub[0].private_ip_address
+  } } : null
+}
+
 output "p2s_vpn_gw_id" {
   description = "P2S VPN Gateway ID"
   value       = var.p2s_gateways != null ? [for gw in azurerm_point_to_site_vpn_gateway.p2s_gateway : gw.id] : null

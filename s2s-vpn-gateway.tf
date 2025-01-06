@@ -50,13 +50,13 @@ module "vpn_site_connection" {
   for_each = local.vpn_site_connections != null && length(local.vpn_site_connections) > 0 ? local.vpn_site_connections : {}
   vpn_site_connection = {
     name                      = each.value.name
-    remote_vpn_site_id        = module.vpn_site[each.value.remote_vpn_site_key].vpn_site_id
+    remote_vpn_site_id        = module.vpn_site[each.value.remote_vpn_site_key].resource.id
     vpn_gateway_id            = module.vpn_gateway[each.value.vpn_gateway_key].id
     internet_security_enabled = try(each.value.internet_security_enabled, null)
     vpn_links = [
       for link in each.value.vpn_links : {
         name                                  = link.name
-        vpn_site_link_id                      = module.vpn_site[link.vpn_site_key].links[link.vpn_site_link_number].id
+        vpn_site_link_id                      = module.vpn_site[link.vpn_site_key].resource.link[link.vpn_site_link_number].id
         bandwidth_mbps                        = try(link.bandwidth_mbps, null)
         bgp_enabled                           = try(link.bgp_enabled, null)
         connection_mode                       = try(link.connection_mode, null)

@@ -1,15 +1,7 @@
-output "firewall_ip_addresses_by_firewall_key" {
-  description = "A map of Azure Firewall IP addresses with the map keys of the firewalls."
+output "firewall_ip_addresses" {
+  description = "Azure Firewall IP addresses."
   value = var.firewalls != null ? { for key, value in module.firewalls : key => {
-    virtual_hub_key    = value.virtual_hub_key
-    private_ip_address = module.firewalls[key].resource.virtual_hub[0].private_ip_address
-  } } : null
-}
-
-output "firewall_ip_addresses_by_hub_key" {
-  description = "A map of Azure Firewall IP addresses with the map keys of the hubs."
-  value = var.firewalls != null ? { for key, value in module.firewalls : value.virtual_hub_key => {
-    firewall_key       = key
+    firewall_key = key
     private_ip_address = module.firewalls[key].resource.virtual_hub[0].private_ip_address
   } } : null
 }

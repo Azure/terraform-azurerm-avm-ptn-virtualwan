@@ -1,11 +1,11 @@
 # Virtual network connection from virtual hub
 # Create a hub connection
 resource "azurerm_virtual_hub_connection" "hub_connection" {
-  for_each = local.virtual_network_connections
+  for_each = local.virtual_network_connections != null ? local.virtual_network_connections : {}
 
   name                      = each.value.name
   remote_virtual_network_id = each.value.remote_virtual_network_id
-  virtual_hub_id            = module.virtual_hubs[each.value.virtual_hub_key].id
+  virtual_hub_id            = module.virtual_hubs[each.value.virtual_hub_key].resource.id
   internet_security_enabled = each.value.internet_security_enabled
 
   dynamic "routing" {
@@ -37,10 +37,10 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
 
 # Routing intent
 resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
-  for_each = local.routing_intents
+  for_each = local.routing_intents != null ? local.routing_intents : {}
 
   name           = each.value.name
-  virtual_hub_id = module.virtual_hubs[each.value.virtual_hub_key].virtual_hub_id
+  virtual_hub_id = module.virtual_hubs[each.value.virtual_hub_key].resource.id
 
   dynamic "routing_policy" {
     for_each = each.value.routing_policies

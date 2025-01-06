@@ -15,5 +15,5 @@ output "links" {
 
 output "resource" {
   description = "Azure VPN Site resource"
-  value       = azurerm_vpn_site.vpn_site  
+  value       = azurerm_vpn_site.vpn_site
 }

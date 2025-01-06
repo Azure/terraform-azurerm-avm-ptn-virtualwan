@@ -124,6 +124,10 @@ The following outputs are exported:
 
 Description: Azure VPN Site links
 
+### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: Azure VPN Site resource
+
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: Azure VPN Site ID

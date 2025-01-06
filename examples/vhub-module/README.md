@@ -4,22 +4,44 @@
 This is the VHUB using submodule example.
 
 ```hcl
+
+resource "random_pet" "vvan_name" {
+  length    = 2
+  separator = "-"
+}
+
 locals {
   address_prefix         = "10.100.0.0/24"
   hub_routing_preference = "ExpressRoute"
   location               = "australiaeast"
-  resource_group_name    = "rg-avm-vwan-enabling-bull"
+  resource_group_name    = "rg-avm-vwan-${random_pet.vvan_name.id}"
   tags = {
-    environment = "avm-vwan-staging"
+    environment = "avm-vwan-testing"
     deployment  = "terraform"
   }
-  virtual_hub_name = "vhub-avm-vwan-enabling-bull-stg"
-  vwan_name        = "vwan-avm-vwan-enabling-bull"
+  virtual_hub_name = "vwan-avm-vwan-${random_pet.vvan_name.id}-vhub-02"
+  virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
 }
+
+module "vwan_with_vhub" {
+  source                         = "../../"
+  resource_group_name            = local.resource_group_name
+  create_resource_group          = true
+  location                       = local.location
+  virtual_wan_name               = local.virtual_wan_name
+  allow_branch_to_branch_traffic = true
+  type                           = "Standard"
+  virtual_wan_tags               = local.tags
+}
+
 data "azurerm_virtual_wan" "vwan" {
-  name                = local.vwan_name
+  name                = local.virtual_wan_name
   resource_group_name = local.resource_group_name
+
+  depends_on = [module.vwan_with_vhub]
 }
+
+
 module "vhub" {
   source = "../../modules/virtualhub"
 
@@ -30,6 +52,7 @@ module "vhub" {
   hub_routing_preference = local.hub_routing_preference
   tags                   = local.tags
   virtual_wan_id         = data.azurerm_virtual_wan.vwan.id
+  depends_on             = [data.azurerm_virtual_wan.vwan]
 }
 ```
 
@@ -42,10 +65,13 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
 
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
+
 ## Resources
 
 The following resources are used by this module:
 
+- [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
 - [azurerm_virtual_wan.vwan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_wan) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -68,6 +94,12 @@ The following Modules are called:
 ### <a name="module_vhub"></a> [vhub](#module\_vhub)
 
 Source: ../../modules/virtualhub
+
+Version:
+
+### <a name="module_vwan_with_vhub"></a> [vwan\_with\_vhub](#module\_vwan\_with\_vhub)
+
+Source: ../../
 
 Version:
 

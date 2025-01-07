@@ -6,13 +6,16 @@ This submodule deploys an Azure virtual wan virtual hub
 ```hcl
 
 resource "azurerm_virtual_hub" "virtual_hub" {
-  location               = var.location
-  name                   = var.name
-  resource_group_name    = var.resource_group_name
-  address_prefix         = var.address_prefix
-  hub_routing_preference = var.hub_routing_preference
-  tags                   = try(var.tags, {})
-  virtual_wan_id         = var.virtual_wan_id
+  for_each = var.virtual_hubs != null ? var.virtual_hubs : {}
+
+  location                               = each.value.location
+  name                                   = each.value.name
+  resource_group_name                    = each.value.resource_group
+  address_prefix                         = each.value.address_prefix
+  hub_routing_preference                 = each.value.hub_routing_preference
+  tags                                   = each.value.tags
+  virtual_router_auto_scale_min_capacity = each.value.virtual_router_auto_scale_min_capacity
+  virtual_wan_id                         = each.value.virtual_wan_id
 }
 ```
 
@@ -40,57 +43,44 @@ The following resources are used by this module:
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
 
-The following input variables are required:
-
-### <a name="input_address_prefix"></a> [address\_prefix](#input\_address\_prefix)
-
-Description: Address prefix of the Virtual Hub
-
-Type: `string`
-
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: Virtual Hub location
-
-Type: `string`
-
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: Virtual Hub name
-
-Type: `string`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: Virtual HUB Resource group name
-
-Type: `string`
-
-### <a name="input_virtual_wan_id"></a> [virtual\_wan\_id](#input\_virtual\_wan\_id)
-
-Description: Virtual WAN ID
-
-Type: `string`
+No required inputs.
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
 
-### <a name="input_hub_routing_preference"></a> [hub\_routing\_preference](#input\_hub\_routing\_preference)
+### <a name="input_virtual_hubs"></a> [virtual\_hubs](#input\_virtual\_hubs)
 
-Description: Hub routing preference
+Description:   Map of objects for Virtual Hubs to deploy into the Virtual WAN.
 
-Type: `string`
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-Default: `"None"`
+  - `name`: Name for the Virtual Hub resource.
+  - `location`: Location for the Virtual Hub resource.
+  - `resource_group`: Optional resource group name to deploy the Virtual Hub into. If not specified, the Virtual Hub will be deployed into the resource group specified in the variable `resource_group_name`, e.g. the same as the Virtual WAN itself.
+  - `address_prefix`: Address prefix for the Virtual Hub. Recommend using a `/23` CIDR block.
+  - `tags`: Optional tags to apply to the Virtual Hub resource.
+  - `hub_routing_preference`: Optional hub routing preference for the Virtual Hub. Possible values are: `ExpressRoute`, `ASPath`, `VpnGateway`. Defaults to `ExpressRoute`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#routing-preference for more information.
+  - `virtual_router_auto_scale_min_capacity`: Optional minimum capacity for the Virtual Router auto scale. Defaults to `2`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity for more information.
 
-### <a name="input_tags"></a> [tags](#input\_tags)
+  > Note: There can be multiple objects in this map, one for each Virtual Hub you wish to deploy into the Virtual WAN. Multiple Virtual Hubs in the same region/location can be deployed into the same Virtual WAN also.
 
-Description: (Optional) Tags of the resource.
+Type:
 
-Type: `map(string)`
+```hcl
+map(object({
+    name                                   = string
+    location                               = string
+    resource_group                         = optional(string, null)
+    address_prefix                         = string
+    tags                                   = optional(map(string))
+    virtual_wan_id                         = string
+    hub_routing_preference                 = optional(string, "ExpressRoute")
+    virtual_router_auto_scale_min_capacity = optional(number, 2)
+  }))
+```
 
-Default: `null`
+Default: `{}`
 
 ## Outputs
 

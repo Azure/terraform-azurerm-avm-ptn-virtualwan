@@ -1,50 +1,29 @@
-variable "address_prefix" {
-  type        = string
-  description = "Address prefix of the Virtual Hub"
-  nullable    = false
-}
+variable "virtual_hubs" {
+  type = map(object({
+    name                                   = string
+    location                               = string
+    resource_group                         = optional(string, null)
+    address_prefix                         = string
+    tags                                   = optional(map(string))
+    virtual_wan_id                         = string
+    hub_routing_preference                 = optional(string, "ExpressRoute")
+    virtual_router_auto_scale_min_capacity = optional(number, 2)
+  }))
+  default     = {}
+  description = <<DESCRIPTION
+  Map of objects for Virtual Hubs to deploy into the Virtual WAN.
 
-variable "location" {
-  type        = string
-  description = "Virtual Hub location"
-  nullable    = false
-}
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-variable "name" {
-  type        = string
-  description = "Virtual Hub name"
-  nullable    = false
-}
+  - `name`: Name for the Virtual Hub resource.
+  - `location`: Location for the Virtual Hub resource.
+  - `resource_group`: Optional resource group name to deploy the Virtual Hub into. If not specified, the Virtual Hub will be deployed into the resource group specified in the variable `resource_group_name`, e.g. the same as the Virtual WAN itself.
+  - `address_prefix`: Address prefix for the Virtual Hub. Recommend using a `/23` CIDR block.
+  - `tags`: Optional tags to apply to the Virtual Hub resource.
+  - `hub_routing_preference`: Optional hub routing preference for the Virtual Hub. Possible values are: `ExpressRoute`, `ASPath`, `VpnGateway`. Defaults to `ExpressRoute`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#routing-preference for more information.
+  - `virtual_router_auto_scale_min_capacity`: Optional minimum capacity for the Virtual Router auto scale. Defaults to `2`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity for more information.
 
-variable "resource_group_name" {
-  type        = string
-  description = "Virtual HUB Resource group name"
+  > Note: There can be multiple objects in this map, one for each Virtual Hub you wish to deploy into the Virtual WAN. Multiple Virtual Hubs in the same region/location can be deployed into the same Virtual WAN also.
 
-  validation {
-    condition     = length(var.resource_group_name) > 0
-    error_message = "Resource group name must be specified."
-  }
-}
-
-variable "virtual_wan_id" {
-  type        = string
-  description = "Virtual WAN ID"
-  nullable    = false
-
-  validation {
-    condition     = length(var.virtual_wan_id) > 3
-    error_message = "Virtual wan ID must be supplied."
-  }
-}
-
-variable "hub_routing_preference" {
-  type        = string
-  default     = "None"
-  description = "Hub routing preference"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = null
-  description = "(Optional) Tags of the resource."
+  DESCRIPTION
 }

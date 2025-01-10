@@ -49,5 +49,4 @@ module "vhub" {
       virtual_wan_id = data.azurerm_virtual_wan.vwan.id
     }
   }
-  depends_on = [data.azurerm_virtual_wan.vwan]
 }

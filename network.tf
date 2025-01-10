@@ -4,23 +4,23 @@ module "virtual_network_connections" {
   source = "./modules/vnet-conn"
 
   virtual_network_connections = {
-    for key, connection in var.virtual_network_connections : key => {
-      name                      = connection.name
-      virtual_hub_id            = module.virtual_hubs.resource_object[connection.virtual_hub_key].id
-      remote_virtual_network_id = connection.remote_virtual_network_id
-      internet_security_enabled = connection.internet_security_enabled
-      routing = connection.routing != null ? {
-        associated_route_table_id = connection.routing.associated_route_table_id
-        propagated_route_table = connection.routing.propagated_route_table != null ? {
-          route_table_ids = connection.routing.propagated_route_table.route_table_ids
-          labels          = connection.routing.propagated_route_table.labels
-        } : null
-        static_vnet_route = connection.routing.static_vnet_route != null ? {
-          name                = connection.routing.static_vnet_route.name
-          address_prefixes    = connection.routing.static_vnet_route.address_prefixes
-          next_hop_ip_address = connection.routing.static_vnet_route.next_hop_ip_address
-        } : null
-      } : null
+    for key, vnet_conn in var.virtual_network_connections : key => {
+      name                      = vnet_conn.name
+      virtual_hub_key           = vnet_conn.virtual_hub_key
+      remote_virtual_network_id = vnet_conn.remote_virtual_network_id
+      internet_security_enabled = lookup(vnet_conn, "internet_security_enabled", false)
+      routing = lookup(vnet_conn, "routing", null) == null ? null : {
+        associated_route_table_id = vnet_conn.routing.associated_route_table_id
+        propagated_route_table = lookup(vnet_conn.routing, "propagated_route_table", null) == null ? null : {
+          route_table_ids = lookup(vnet_conn.routing.propagated_route_table, "route_table_ids", [])
+          labels          = lookup(vnet_conn.routing.propagated_route_table, "labels", [])
+        }
+        static_vnet_route = lookup(vnet_conn.routing, "static_vnet_route", null) == null ? null : {
+          name                = lookup(vnet_conn.routing.static_vnet_route, "name", null)
+          address_prefixes    = lookup(vnet_conn.routing.static_vnet_route, "address_prefixes", [])
+          next_hop_ip_address = lookup(vnet_conn.routing.static_vnet_route, "next_hop_ip_address", null)
+        }
+      }
     }
   }
 }

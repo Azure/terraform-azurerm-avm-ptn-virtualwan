@@ -102,6 +102,10 @@ Description: Resource Group Name
 
 Description: Virtual Hub ID
 
+### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
+
+Description: Virtual Hub Object
+
 ## Modules
 
 No modules.

@@ -17,8 +17,8 @@ output "resource_object" {
   description = "Azure Firewall resource object"
   value = var.firewalls != null ? {
     for key, fw in azurerm_firewall.fw : key => {
-      id   = fw.id
-      name = fw.name
+      id          = fw.id
+      name        = fw.name
       virtual_hub = fw.virtual_hub
     }
   } : {}

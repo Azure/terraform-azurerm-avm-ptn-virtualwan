@@ -10,10 +10,10 @@ output "resource" {
 
 output "resource_object" {
   description = "Virtual Hub Object"
-  value       = var.virtual_network_connections != null ? {
+  value = var.virtual_network_connections != null ? {
     for key, hub in azurerm_virtual_hub_connection.hub_connection : key => {
-      id               = hub.id
-      name             = hub.name
+      id   = hub.id
+      name = hub.name
     }
-  } : {} 
+  } : {}
 }

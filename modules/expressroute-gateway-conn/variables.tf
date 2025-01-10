@@ -1,7 +1,7 @@
 variable "er_circuit_connections" {
   type = map(object({
     name                                 = string
-    express_route_gateway_id            = string
+    express_route_gateway_id             = string
     express_route_circuit_peering_id     = string
     authorization_key                    = optional(string)
     enable_internet_security             = optional(bool)

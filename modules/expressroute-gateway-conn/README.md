@@ -6,15 +6,17 @@ This submodule deploys an Azure ExpressRoute Connection between ExpressRoute Gat
 ```hcl
 # Create the Express Route Connection
 resource "azurerm_express_route_connection" "er_connection" {
-  express_route_circuit_peering_id = var.express_route_circuit_peering_id
-  express_route_gateway_id         = var.express_route_gateway_id
-  name                             = var.name
-  authorization_key                = try(var.authorization_key, null)
-  enable_internet_security         = try(var.enable_internet_security, null)
-  routing_weight                   = try(var.routing_weight, null)
+  for_each = var.er_circuit_connections != null && length(var.er_circuit_connections) > 0 ? var.er_circuit_connections : {}
+
+  express_route_circuit_peering_id = each.value.express_route_circuit_peering_id
+  express_route_gateway_id         = each.value.express_route_gateway_id
+  name                             = each.value.name
+  authorization_key                = try(each.value.authorization_key, null)
+  enable_internet_security         = try(each.value.enable_internet_security, null)
+  routing_weight                   = try(each.value.routing_weight, null)
 
   dynamic "routing" {
-    for_each = var.routing != null && length(var.routing) > 0 ? [var.routing] : []
+    for_each = each.value.routing != null ? [each.value.routing] : []
 
     content {
       associated_route_table_id = routing.value.associated_route_table_id
@@ -25,8 +27,8 @@ resource "azurerm_express_route_connection" "er_connection" {
         for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
 
         content {
-          labels          = try(propagated_route_tables.value.labels, [])
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
+          labels          = try(propagated_route_table.value.labels, [])
+          route_table_ids = try(propagated_route_table.value.route_table_ids, [])
         }
       }
     }
@@ -58,73 +60,59 @@ The following resources are used by this module:
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
 
-The following input variables are required:
-
-### <a name="input_express_route_circuit_peering_id"></a> [express\_route\_circuit\_peering\_id](#input\_express\_route\_circuit\_peering\_id)
-
-Description: Express Route Circuit Peering ID
-
-Type: `string`
-
-### <a name="input_express_route_gateway_id"></a> [express\_route\_gateway\_id](#input\_express\_route\_gateway\_id)
-
-Description: Express Route Gateway ID
-
-Type: `string`
-
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: ExpressRoute Gateway Connection name
-
-Type: `string`
+No required inputs.
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
 
-### <a name="input_authorization_key"></a> [authorization\_key](#input\_authorization\_key)
+### <a name="input_er_circuit_connections"></a> [er\_circuit\_connections](#input\_er\_circuit\_connections)
 
-Description: Authorization key for the Express Route Connection
+Description: Map of objects for ExpressRoute Circuit connections to connect to the Virtual WAN ExpressRoute Gateways.
 
-Type: `string`
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-Default: `null`
+- `name`: Name for the ExpressRoute Circuit connection.
+- `express_route_gateway_key`: The arbitrary key specified in the map of objects variable called `expressroute_gateways` for the object specifying the ExpressRoute Gateway you wish to connect this circuit to.
+- `express_route_circuit_peering_id`: The Resource ID of the ExpressRoute Circuit Peering to connect to.
+- `authorization_key`: Optional authorization key for the connection.
+- `enable_internet_security`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-portal#to-advertise-default-route-00000-to-endpoints
+- `express_route_gateway_bypass_enabled`: Optional boolean to enable bypass for the ExpressRoute Gateway, a.k.a. Fast Path.
+- `routing`: Optional routing configuration object for the connection, which includes:
+  - `associated_route_table_id`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
+  - `propagated_route_table`: Optional configuration objection of propagated route table configuration, which includes:
+    - `route_table_ids`: Optional list of resource IDs of the Virtual Hub Route Tables you wish to propagate this connection to. ()
+    - `labels`: Optional list of labels you wish to propagate this connection to.
+  - `inbound_route_map_id`: Optional resource ID of the Virtual Hub inbound route map.
+  - `outbound_route_map_id`: Optional resource ID of the Virtual Hub outbound route map.
+- `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
 
-### <a name="input_enable_internet_security"></a> [enable\_internet\_security](#input\_enable\_internet\_security)
-
-Description: Enable internet security for the Express Route Connection
-
-Type: `bool`
-
-Default: `false`
-
-### <a name="input_routing"></a> [routing](#input\_routing)
-
-Description: Routing configuration for the Express Route Connection
+> Note: There can be multiple objects in this map, one for each ExpressRoute Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
 
 Type:
 
 ```hcl
 map(object({
-    associated_route_table_id = string
-    inbound_route_map_id      = string
-    outbound_route_map_id     = string
-    propagated_route_table = map(object({
-      labels          = list(string)
-      route_table_ids = list(string)
+    name                                 = string
+    express_route_gateway_id             = string
+    express_route_circuit_peering_id     = string
+    authorization_key                    = optional(string)
+    enable_internet_security             = optional(bool)
+    express_route_gateway_bypass_enabled = optional(bool)
+    routing = optional(object({
+      associated_route_table_id = string
+      propagated_route_table = optional(object({
+        route_table_ids = optional(list(string))
+        labels          = optional(list(string))
+      }))
+      inbound_route_map_id  = optional(string)
+      outbound_route_map_id = optional(string)
     }))
+    routing_weight = optional(number)
   }))
 ```
 
-Default: `null`
-
-### <a name="input_routing_weight"></a> [routing\_weight](#input\_routing\_weight)
-
-Description: Routing weight for the Express Route Connection
-
-Type: `number`
-
-Default: `0`
+Default: `{}`
 
 ## Outputs
 

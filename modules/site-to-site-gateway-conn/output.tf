@@ -10,11 +10,11 @@ output "resource" {
 
 output "resource_object" {
   description = "Azure VPN Connection resource object"
-  value       = var.vpn_site_connection != null ? {
+  value = var.vpn_site_connection != null ? {
     for key, value in azurerm_vpn_gateway_connection.vpn_site_connection : key => {
-      id               = value.id
-      name             = value.name
-      link             = value.vpn_link
+      id   = value.id
+      name = value.name
+      link = value.vpn_link
     }
   } : {}
 }

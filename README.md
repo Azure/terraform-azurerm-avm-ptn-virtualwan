@@ -124,7 +124,6 @@ The following resources are used by this module:
 
 - [azurerm_point_to_site_vpn_gateway.p2s_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/point_to_site_vpn_gateway) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
 - [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
 - [azurerm_virtual_wan.virtual_wan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_wan) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
@@ -853,6 +852,12 @@ Version:
 ### <a name="module_virtual_hubs"></a> [virtual\_hubs](#module\_virtual\_hubs)
 
 Source: ./modules/virtualhub
+
+Version:
+
+### <a name="module_virtual_network_connections"></a> [virtual\_network\_connections](#module\_virtual\_network\_connections)
+
+Source: ./modules/vnet-conn
 
 Version:
 

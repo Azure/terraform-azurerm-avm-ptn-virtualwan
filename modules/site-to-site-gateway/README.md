@@ -5,17 +5,19 @@ This submodule deploys an Azure site-to-site Gateway in the Virtual Hub
 
 ```hcl
 resource "azurerm_vpn_gateway" "vpn_gateway" {
-  location                              = var.location
-  name                                  = var.name
-  resource_group_name                   = var.resource_group_name
-  virtual_hub_id                        = var.virtual_hub_id
-  bgp_route_translation_for_nat_enabled = try(var.bgp_route_translation_for_nat_enabled, false)
-  routing_preference                    = try(var.routing_preference, null)
-  scale_unit                            = try(var.scale_unit, null)
-  tags                                  = try(var.tags, {})
+  for_each = var.vpn_gateways != null ? var.vpn_gateways : {}
+
+  location                              = each.value.location
+  name                                  = each.value.name
+  resource_group_name                   = each.value.resource_group_name
+  virtual_hub_id                        = each.value.virtual_hub_id
+  bgp_route_translation_for_nat_enabled = try(each.value.bgp_route_translation_for_nat_enabled, false)
+  routing_preference                    = try(each.value.routing_preference, null)
+  scale_unit                            = try(each.value.scale_unit, null)
+  tags                                  = try(each.value.tags, {})
 
   dynamic "bgp_settings" {
-    for_each = var.bgp_settings != null ? [var.bgp_settings] : []
+    for_each = each.value.bgp_settings != null ? [each.value.bgp_settings] : []
 
     content {
       asn         = bgp_settings.value.asn
@@ -64,80 +66,60 @@ The following resources are used by this module:
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
 
-The following input variables are required:
-
-### <a name="input_bgp_route_translation_for_nat_enabled"></a> [bgp\_route\_translation\_for\_nat\_enabled](#input\_bgp\_route\_translation\_for\_nat\_enabled)
-
-Description: BGP route translation for NAT enabled
-
-Type: `bool`
-
-### <a name="input_bgp_settings"></a> [bgp\_settings](#input\_bgp\_settings)
-
-Description: BGP settings of the VPN Gateway
-
-Type:
-
-```hcl
-object({
-    asn = number
-    instance_0_bgp_peering_address = optional(object({
-      custom_ips = optional(list(string))
-    }))
-    instance_1_bgp_peering_address = optional(object({
-      custom_ips = optional(list(string))
-    }))
-    peer_weight = number
-  })
-```
-
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: Location of the VPN Gateway
-
-Type: `string`
-
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: Name of the VPN Gateway
-
-Type: `string`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: Resource Group name of the VPN Gateway
-
-Type: `string`
-
-### <a name="input_routing_preference"></a> [routing\_preference](#input\_routing\_preference)
-
-Description: Routing preference of the VPN Gateway
-
-Type: `string`
-
-### <a name="input_scale_unit"></a> [scale\_unit](#input\_scale\_unit)
-
-Description: Scale unit of the VPN Gateway
-
-Type: `number`
-
-### <a name="input_virtual_hub_id"></a> [virtual\_hub\_id](#input\_virtual\_hub\_id)
-
-Description: Virtual Hub ID of the VPN Gateway
-
-Type: `string`
+No required inputs.
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
 
-### <a name="input_tags"></a> [tags](#input\_tags)
+### <a name="input_vpn_gateways"></a> [vpn\_gateways](#input\_vpn\_gateways)
 
-Description: (optional) Tags of the VPN Gateway
+Description:   Map of objects for S2S VPN Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
-Type: `map(string)`
+  The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-Default: `null`
+  - `name`: Name for the S2S VPN Gateway resource.
+  - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this S2S VPN Gateway into.
+  - `tags`: Optional tags to apply to the S2S VPN Gateway resource.
+  - `bgp_route_translation_for_nat_enabled`: Optional boolean to enable BGP route translation for NAT.
+  - `bgp_settings`: Optional BGP settings object for the S2S VPN Gateway, which includes:
+    - `instance_0_bgp_peering_address`: Optional object for the instance 0 BGP peering address, which includes:
+      - `custom_ips`: List of custom IPs for the instance 0 BGP peering address.
+    - `instance_1_bgp_peering_address`: Optional object for the instance 1 BGP peering address, which includes:
+      - `custom_ips`: List of custom IPs for the instance 1 BGP peering address.
+    - `peer_weight`: BGP peer weight for the S2S VPN Gateway.
+    - `asn`: BGP ASN for the BGP Speaker.
+  - `routing_preference`: Optional Azure routing preference lets you to choose how your traffic routes between Azure and the internet. You can choose to route traffic either via the Microsoft network (default value, `Microsoft Network`), or via the ISP network (public internet, set to `Internet`). More context of the configuration can be found in the Microsoft Docs to create a VPN Gateway. Defaults to `Microsoft Network` if not set. Changing this forces a new resource to be created.
+  - `scale_unit`: Optional number of scale units for the S2S VPN Gateway. See https://learn.microsoft.com/azure/virtual-wan/gateway-settings#s2s for more information on scale units.
+
+  > Note: There can be multiple objects in this map, one for each S2S VPN Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+Type:
+
+```hcl
+map(object({
+    name                                  = string
+    location                              = string
+    resource_group_name                   = string
+    virtual_hub_id                        = string
+    tags                                  = optional(map(string))
+    bgp_route_translation_for_nat_enabled = optional(bool)
+    bgp_settings = optional(object({
+      instance_0_bgp_peering_address = optional(object({
+        custom_ips = list(string)
+      }))
+      instance_1_bgp_peering_address = optional(object({
+        custom_ips = list(string)
+      }))
+      peer_weight = number
+      asn         = number
+    }))
+    routing_preference = optional(string)
+    scale_unit         = optional(number)
+  }))
+```
+
+Default: `{}`
 
 ## Outputs
 
@@ -158,6 +140,10 @@ Description: Azure VPN Gateway
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: Azure VPN Gateway ID
+
+### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
+
+Description: Azure VPN Gateway object
 
 ### <a name="output_vpn_gateway_id"></a> [vpn\_gateway\_id](#output\_vpn\_gateway\_id)
 

@@ -6,13 +6,15 @@ This submodule deploys an Azure site-to-site connection between site-to-site Gat
 ```hcl
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
 resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
-  name                      = var.vpn_site_connection.name
-  remote_vpn_site_id        = var.vpn_site_connection.remote_vpn_site_id
-  vpn_gateway_id            = var.vpn_site_connection.vpn_gateway_id
-  internet_security_enabled = try(var.vpn_site_connection.internet_security_enabled, null)
+  for_each = var.vpn_site_connection != null ? var.vpn_site_connection : {}
+
+  name                      = each.value.name
+  remote_vpn_site_id        = each.value.remote_vpn_site_id
+  vpn_gateway_id            = each.value.vpn_gateway_id
+  internet_security_enabled = try(each.value.internet_security_enabled, null)
 
   dynamic "vpn_link" {
-    for_each = var.vpn_site_connection.vpn_links != null && length(var.vpn_site_connection.vpn_links) > 0 ? var.vpn_site_connection.vpn_links : []
+    for_each = each.value.vpn_links != null && length(each.value.vpn_links) > 0 ? each.value.vpn_links : []
 
     content {
       name                                  = vpn_link.value.name
@@ -54,7 +56,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
     }
   }
   dynamic "routing" {
-    for_each = var.vpn_site_connection.routing != null ? [var.vpn_site_connection.routing] : []
+    for_each = each.value.routing != null ? [each.value.routing] : []
 
     content {
       associated_route_table = routing.value.associated_route_table
@@ -70,7 +72,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
     }
   }
   dynamic "traffic_selector_policy" {
-    for_each = var.vpn_site_connection.traffic_selector_policy != null ? [var.vpn_site_connection.traffic_selector_policy] : []
+    for_each = each.value.traffic_selector_policy != null ? [each.value.traffic_selector_policy] : []
 
     content {
       local_address_ranges  = traffic_selector_policy.value.local_address_ranges
@@ -114,7 +116,7 @@ Description: S2S VPN Site Connections parameter
 Type:
 
 ```hcl
-object({
+map(object({
     name               = string
     remote_vpn_site_id = string
     vpn_gateway_id     = string
@@ -163,7 +165,7 @@ object({
       local_address_ranges  = string
       remote_address_ranges = string
     }))
-  })
+  }))
 ```
 
 ## Optional Inputs
@@ -181,6 +183,10 @@ Description: Azure VPN Connection resource
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: Azure VPN Connection resource ID
+
+### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
+
+Description: Azure VPN Connection resource object
 
 ## Modules
 

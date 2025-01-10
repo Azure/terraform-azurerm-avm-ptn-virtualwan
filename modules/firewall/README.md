@@ -5,16 +5,19 @@ This submodule deploys an Azure Firewall in the Virtual Hub to make it secured v
 
 ```hcl
 resource "azurerm_firewall" "fw" {
-  location            = var.location
-  name                = var.name
-  resource_group_name = var.resource_group_name
-  sku_name            = var.sku_name
-  sku_tier            = var.sku_tier
-  firewall_policy_id  = var.firewall_policy_id
-  tags                = try(var.tags, {})
+  for_each = var.firewalls != null ? var.firewalls : {}
+
+  location            = each.value.location
+  name                = each.value.name
+  resource_group_name = each.value.resource_group_name
+  sku_name            = each.value.sku_name
+  sku_tier            = each.value.sku_tier
+  firewall_policy_id  = each.value.firewall_policy_id
+  tags                = try(each.value.tags, {})
 
   virtual_hub {
-    virtual_hub_id = var.virtual_hub_id
+    virtual_hub_id  = each.value.virtual_hub_id
+    public_ip_count = each.value.vhub_public_ip_count
   }
 }
 ```
@@ -43,61 +46,48 @@ The following resources are used by this module:
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
 
-The following input variables are required:
-
-### <a name="input_firewall_policy_id"></a> [firewall\_policy\_id](#input\_firewall\_policy\_id)
-
-Description: Firewall policy ID
-
-Type: `string`
-
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: Virtual Hub location
-
-Type: `string`
-
-### <a name="input_name"></a> [name](#input\_name)
-
-Description: Firewall name
-
-Type: `string`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: Virtual HUB Resource group name
-
-Type: `string`
-
-### <a name="input_sku_name"></a> [sku\_name](#input\_sku\_name)
-
-Description: SKU name
-
-Type: `string`
-
-### <a name="input_sku_tier"></a> [sku\_tier](#input\_sku\_tier)
-
-Description: SKU tier
-
-Type: `string`
-
-### <a name="input_virtual_hub_id"></a> [virtual\_hub\_id](#input\_virtual\_hub\_id)
-
-Description: Virtual Hub ID
-
-Type: `string`
+No required inputs.
 
 ## Optional Inputs
 
 The following input variables are optional (have default values):
 
-### <a name="input_tags"></a> [tags](#input\_tags)
+### <a name="input_firewalls"></a> [firewalls](#input\_firewalls)
 
-Description: (Optional) Tags of the resource.
+Description:   
+Map of objects for Azure Firewall resources to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
-Type: `map(string)`
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-Default: `null`
+- `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this Azure Firewall into.
+- `sku_name`: The SKU name for the Azure Firewall. Possible values are: `AZFW_VNet`, `AZFW_Hub`. Defaults to `AZFW_Hub`.
+- `sku_tier`: The SKU tier for the Azure Firewall. Possible values are: `Basic`, `Standard`, `Premium`.
+- `name`: The name for the Azure Firewall resource.
+- `zones`: Optional list of zones to deploy the Azure Firewall into. Defaults to `[1, 2, 3]`.
+- `firewall_policy_id`: Optional Azure Firewall Policy Resource ID to associate with the Azure Firewall.
+- `vhub_public_ip_count`: Optional number of public IP addresses to associate with the Azure Firewall.
+- `tags`: Optional tags to apply to the Azure Firewall resource.
+
+> Note: There can be multiple objects in this map, one for each Azure Firewall you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
+
+Type:
+
+```hcl
+map(object({
+    virtual_hub_id       = string
+    sku_name             = optional(string, "AZFW_Hub")
+    location             = string
+    resource_group_name  = string
+    sku_tier             = string
+    name                 = string
+    zones                = optional(list(number), [1, 2, 3])
+    firewall_policy_id   = optional(string)
+    vhub_public_ip_count = optional(string, null)
+    tags                 = optional(map(string))
+  }))
+```
+
+Default: `{}`
 
 ## Outputs
 
@@ -107,10 +97,6 @@ The following outputs are exported:
 
 Description: Azure Firewall resource name
 
-### <a name="output_id"></a> [id](#output\_id)
-
-Description: Azure Firewall resource ID
-
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
 Description: Azure Firewall resource
@@ -118,6 +104,10 @@ Description: Azure Firewall resource
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: Azure Firewall resource ID
+
+### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
+
+Description: Azure Firewall resource object
 
 ## Modules
 

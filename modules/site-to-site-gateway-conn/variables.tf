@@ -1,5 +1,5 @@
 variable "vpn_site_connection" {
-  type = object({
+  type = map(object({
     name               = string
     remote_vpn_site_id = string
     vpn_gateway_id     = string
@@ -48,6 +48,6 @@ variable "vpn_site_connection" {
       local_address_ranges  = string
       remote_address_ranges = string
     }))
-  })
+  }))
   description = "S2S VPN Site Connections parameter"
 }

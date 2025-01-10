@@ -40,7 +40,7 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
   for_each = local.routing_intents != null ? local.routing_intents : {}
 
   name           = each.value.name
-  virtual_hub_id = module.virtual_hubs[each.value.virtual_hub_key].resource.id
+  virtual_hub_id = module.virtual_hubs.resource_object[each.value.virtual_hub_key].id
 
   dynamic "routing_policy" {
     for_each = each.value.routing_policies
@@ -48,7 +48,7 @@ resource "azurerm_virtual_hub_routing_intent" "routing_intent" {
     content {
       destinations = routing_policy.value.destinations
       name         = routing_policy.value.name
-      next_hop     = module.firewalls[routing_policy.value.next_hop_firewall_key].id
+      next_hop     = module.firewalls.resource_object[routing_policy.value.next_hop_firewall_key].id
     }
   }
 }

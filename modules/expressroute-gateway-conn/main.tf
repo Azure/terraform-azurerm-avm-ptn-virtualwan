@@ -1,14 +1,16 @@
 # Create the Express Route Connection
 resource "azurerm_express_route_connection" "er_connection" {
-  express_route_circuit_peering_id = var.express_route_circuit_peering_id
-  express_route_gateway_id         = var.express_route_gateway_id
-  name                             = var.name
-  authorization_key                = try(var.authorization_key, null)
-  enable_internet_security         = try(var.enable_internet_security, null)
-  routing_weight                   = try(var.routing_weight, null)
+  for_each = var.er_circuit_connections != null && length(var.er_circuit_connections) > 0 ? var.er_circuit_connections : {}
+
+  express_route_circuit_peering_id = each.value.express_route_circuit_peering_id
+  express_route_gateway_id         = each.value.express_route_gateway_id
+  name                             = each.value.name
+  authorization_key                = try(each.value.authorization_key, null)
+  enable_internet_security         = try(each.value.enable_internet_security, null)
+  routing_weight                   = try(each.value.routing_weight, null)
 
   dynamic "routing" {
-    for_each = var.routing != null && length(var.routing) > 0 ? [var.routing] : []
+    for_each = each.value.routing != null ? [each.value.routing] : []
 
     content {
       associated_route_table_id = routing.value.associated_route_table_id
@@ -19,8 +21,8 @@ resource "azurerm_express_route_connection" "er_connection" {
         for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
 
         content {
-          labels          = try(propagated_route_tables.value.labels, [])
-          route_table_ids = try(propagated_route_tables.value.route_table_ids, [])
+          labels          = try(propagated_route_table.value.labels, [])
+          route_table_ids = try(propagated_route_table.value.route_table_ids, [])
         }
       }
     }

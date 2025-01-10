@@ -1,8 +1,8 @@
 output "firewall_ip_addresses" {
   description = "Azure Firewall IP addresses."
-  value = var.firewalls != null ? { for key, value in module.firewalls : key => {
+  value = var.firewalls != null ? { for key, value in module.firewalls.resource_object : key => {
     firewall_key       = key
-    private_ip_address = module.firewalls[key].resource.virtual_hub[0].private_ip_address
+    public_ip_address  = module.firewalls.resource_object[key].virtual_hub[0].public_ip_addresses
   } } : null
 }
 
@@ -38,12 +38,12 @@ output "resource_id" {
 
 output "s2s_vpn_gw" {
   description = "S2S VPN Gateway Objects"
-  value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway : gw] : null
+  value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway.resource_object : gw] : null
 }
 
 output "s2s_vpn_gw_id" {
   description = "S2S VPN Gateway ID"
-  value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway : gw.id] : null
+  value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway.resource_object : gw.id] : null
 }
 
 output "virtual_wan_id" {
@@ -53,10 +53,10 @@ output "virtual_wan_id" {
 
 output "vpn_gateway_resource_ids" {
   description = "A map of Azure VPN Gateway resource IDs with the map keys of the `vpn_gateways` variable."
-  value       = var.vpn_gateways != null ? { for key, value in module.vpn_gateway : key => value.id } : null
+  value       = var.vpn_gateways != null ? { for key, value in module.vpn_gateway.resource_object : key => value.id } : null
 }
 
 output "vpn_gateway_resource_names" {
   description = "A map of Azure VPN Gateway resource names with the map keys of the `vpn_gateways` variable."
-  value       = var.vpn_gateways != null ? { for key, value in module.vpn_gateway : key => value.id } : null
+  value       = var.vpn_gateways != null ? { for key, value in module.vpn_gateway.resource_object : key => value.id } : null
 }

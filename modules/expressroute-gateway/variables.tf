@@ -1,39 +1,27 @@
-variable "location" {
-  type        = string
-  description = "Virtual Hub location"
-  nullable    = false
-}
+variable "expressroute_gateways" {
+  type = map(object({
+    name                          = string
+    virtual_hub_id                = string
+    location                      = string
+    resource_group_name           = string
+    tags                          = optional(map(string))
+    allow_non_virtual_wan_traffic = optional(bool, false)
+    scale_units                   = optional(number, 1)
+  }))
+  default     = {}
+  description = <<DESCRIPTION
 
-variable "name" {
-  type        = string
-  description = "ExpressRoute Gateway name"
-  nullable    = false
-}
+Map of objects for Express Route Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
-variable "resource_group_name" {
-  type        = string
-  description = "Virtual HUB Resource group name"
+The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
 
-  validation {
-    condition     = length(var.resource_group_name) > 0
-    error_message = "Resource group name must be specified."
-  }
-}
+- `name`: Name for the ExpressRoute Gateway to deploy in the Virtual WAN Virtual Hub.
+- `virtual_hub_id`: The object ID of the virtual hub.
+- `tags`: Optional tags to apply to the ExpressRoute Gateway resource.
+- `allow_non_virtual_wan_traffic`: Optional boolean to configures this gateway to accept traffic from non Virtual WAN networks. Defaults to `false`.
+- `scale_units`: Optional number of scale units for the ExpressRoute Gateway. Defaults to `1`. See: https://learn.microsoft.com/azure/virtual-wan/virtual-wan-expressroute-about#expressroute-gateway-performance for more information on scale units.
 
-variable "virtual_hub_id" {
-  type        = string
-  description = "Virtual Hub ID"
-  nullable    = false
-}
+> Note: There can be multiple objects in this map, one for each ExpressRoute Gateway you wish to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
-variable "scale_units" {
-  type        = number
-  default     = 2
-  description = "Scale units of the ExpressRoute Gateway"
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = null
-  description = "(Optional) Tags of the resource."
+  DESCRIPTION
 }

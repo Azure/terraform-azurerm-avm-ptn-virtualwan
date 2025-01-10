@@ -1,16 +1,18 @@
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.
 resource "azurerm_vpn_site" "vpn_site" {
-  location            = var.vpn_sites.location
-  name                = var.vpn_sites.name
-  resource_group_name = var.vpn_sites.resource_group_name
-  virtual_wan_id      = var.vpn_sites.virtual_wan_id
-  address_cidrs       = try(var.vpn_sites.address_cidrs, null)
-  device_model        = try(var.vpn_sites.device_model, null)
-  device_vendor       = try(var.vpn_sites.device_vendor, null)
-  tags                = try(var.vpn_sites.tags, {})
+  for_each = var.vpn_sites != null ? var.vpn_sites : {}
+
+  location            = each.value.location
+  name                = each.value.name
+  resource_group_name = each.value.resource_group_name
+  virtual_wan_id      = each.value.virtual_wan_id
+  address_cidrs       = try(each.value.address_cidrs, null)
+  device_model        = try(each.value.device_model, null)
+  device_vendor       = try(each.value.device_vendor, null)
+  tags                = try(each.value.tags, {})
 
   dynamic "link" {
-    for_each = var.vpn_sites.links != null && length(var.vpn_sites.links) > 0 ? var.vpn_sites.links : []
+    for_each = each.value.links != null && length(each.value.links) > 0 ? each.value.links : []
 
     content {
       name          = link.value.name
@@ -30,7 +32,7 @@ resource "azurerm_vpn_site" "vpn_site" {
     }
   }
   dynamic "o365_policy" {
-    for_each = var.vpn_sites.o365_policy != null ? [var.vpn_sites.o365_policy] : []
+    for_each = each.value.o365_policy != null ? [each.value.o365_policy] : []
 
     content {
       traffic_category {

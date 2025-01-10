@@ -1,8 +1,11 @@
 resource "azurerm_express_route_gateway" "express_route_gateway" {
-  location            = var.location
-  name                = var.name
-  resource_group_name = var.resource_group_name
-  scale_units         = var.scale_units
-  virtual_hub_id      = var.virtual_hub_id
-  tags                = try(var.tags, {})
+  for_each = var.expressroute_gateways != null && length(var.expressroute_gateways) > 0 ? var.expressroute_gateways : {}
+
+  location                      = each.value.location
+  name                          = each.value.name
+  resource_group_name           = each.value.resource_group_name
+  scale_units                   = each.value.scale_units
+  virtual_hub_id                = each.value.virtual_hub_id
+  allow_non_virtual_wan_traffic = each.value.allow_non_virtual_wan_traffic
+  tags                          = try(each.value.tags, {})
 }

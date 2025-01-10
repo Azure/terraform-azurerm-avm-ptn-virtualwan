@@ -106,6 +106,10 @@ locals {
       virtual_hub_key = site.virtual_hub_key
       address_cidrs   = site.address_cidrs
       links           = site.links
+      device_vendor   = site.device_vendor
+      device_model    = site.device_model
+      o365_policy     = site.o365_policy
+      tags            = site.tags
     }
   } : null
 }

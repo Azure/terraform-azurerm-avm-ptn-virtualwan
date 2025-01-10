@@ -1,15 +1,17 @@
 resource "azurerm_vpn_gateway" "vpn_gateway" {
-  location                              = var.location
-  name                                  = var.name
-  resource_group_name                   = var.resource_group_name
-  virtual_hub_id                        = var.virtual_hub_id
-  bgp_route_translation_for_nat_enabled = try(var.bgp_route_translation_for_nat_enabled, false)
-  routing_preference                    = try(var.routing_preference, null)
-  scale_unit                            = try(var.scale_unit, null)
-  tags                                  = try(var.tags, {})
+  for_each = var.vpn_gateways != null ? var.vpn_gateways : {}
+
+  location                              = each.value.location
+  name                                  = each.value.name
+  resource_group_name                   = each.value.resource_group_name
+  virtual_hub_id                        = each.value.virtual_hub_id
+  bgp_route_translation_for_nat_enabled = try(each.value.bgp_route_translation_for_nat_enabled, false)
+  routing_preference                    = try(each.value.routing_preference, null)
+  scale_unit                            = try(each.value.scale_unit, null)
+  tags                                  = try(each.value.tags, {})
 
   dynamic "bgp_settings" {
-    for_each = var.bgp_settings != null ? [var.bgp_settings] : []
+    for_each = each.value.bgp_settings != null ? [each.value.bgp_settings] : []
 
     content {
       asn         = bgp_settings.value.asn

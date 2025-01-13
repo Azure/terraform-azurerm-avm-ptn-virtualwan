@@ -13,7 +13,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
       associated_route_table_id = routing.value.associated_route_table_id
 
       dynamic "propagated_route_table" {
-        for_each = routing.value.propagated_route_table
+        for_each = routing.value.propagated_route_table != null ? [routing.value.propagated_route_table] : []
 
         content {
           labels          = propagated_route_table.value.labels
@@ -21,7 +21,7 @@ resource "azurerm_virtual_hub_connection" "hub_connection" {
         }
       }
       dynamic "static_vnet_route" {
-        for_each = routing.value.static_vnet_route
+        for_each = routing.value.static_vnet_route != null ? [routing.value.static_vnet_route] : []
 
         content {
           address_prefixes    = static_vnet_route.value.address_prefixes

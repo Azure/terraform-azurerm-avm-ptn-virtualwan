@@ -89,6 +89,7 @@ module "vwan_with_vhub" {
         route_weight                          = 1
         shared_key                            = nonsensitive(random_password.shared_key.result)
         vpn_site_link_number                  = 0
+        vpn_site_key                          = local.vpn_sites_key
       }]
     }
   }

@@ -21,15 +21,26 @@ resource "azurerm_virtual_wan" "virtual_wan" {
   type                              = var.type
 }
 
-resource "azurerm_virtual_hub" "virtual_hub" {
-  for_each = local.virtual_hubs != null && length(local.virtual_hubs) > 0 ? local.virtual_hubs : {}
+module "virtual_hubs" {
+  source = "./modules/virtualhub"
 
-  location                               = each.value.location
-  name                                   = each.value.name
-  resource_group_name                    = coalesce(each.value.resource_group, local.resource_group_name)
-  address_prefix                         = each.value.address_prefix
-  hub_routing_preference                 = each.value.hub_routing_preference
-  tags                                   = try(each.value.tags, {})
-  virtual_router_auto_scale_min_capacity = each.value.virtual_router_auto_scale_min_capacity
-  virtual_wan_id                         = azurerm_virtual_wan.virtual_wan.id
+  virtual_hubs = {
+    for key, value in local.virtual_hubs : key => {
+      name                                   = value.name
+      location                               = value.location
+      resource_group                         = try(value.resource_group, "")
+      address_prefix                         = value.address_prefix
+      virtual_wan_id                         = azurerm_virtual_wan.virtual_wan.id
+      hub_routing_preference                 = try(value.hub_routing_preference, "")
+      tags                                   = try(value.tags, {})
+      virtual_router_auto_scale_min_capacity = value.virtual_router_auto_scale_min_capacity
+    }
+  }
+
 }
+
+moved {
+  from = azurerm_virtual_hub.virtual_hub
+  to   = module.virtual_hubs.azurerm_virtual_hub.virtual_hub
+}
+

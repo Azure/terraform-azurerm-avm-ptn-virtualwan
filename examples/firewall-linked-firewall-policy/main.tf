@@ -65,12 +65,7 @@ module "vwan_with_vhub" {
   }
 }
 
-output "firewall_private_ip_address_by_hub" {
+output "firewall_private_ip_address" {
   description = "Private IP Address of the Azure Firewall by Hub"
-  value       = module.vwan_with_vhub.firewall_ip_addresses_by_hub_key[local.virtual_hub_key].private_ip_address
-}
-
-output "firewall_private_ip_address_by_firewall" {
-  description = "Private IP Address of the Azure Firewall by Firewall"
-  value       = module.vwan_with_vhub.firewall_ip_addresses_by_firewall_key[local.firewall_key].private_ip_address
+  value       = module.vwan_with_vhub.firewall_ip_addresses
 }

@@ -60,26 +60,6 @@ locals {
       virtual_router_auto_scale_min_capacity = vhub.virtual_router_auto_scale_min_capacity
     }
   }
-  virtual_network_connections = {
-    for key, vnet_conn in var.virtual_network_connections : key => {
-      name                      = vnet_conn.name
-      virtual_hub_key           = vnet_conn.virtual_hub_key
-      remote_virtual_network_id = vnet_conn.remote_virtual_network_id
-      internet_security_enabled = vnet_conn.internet_security_enabled
-      routing = lookup(vnet_conn, "routing", null) == null ? [] : [{
-        associated_route_table_id = vnet_conn.routing.associated_route_table_id
-        propagated_route_table = lookup(vnet_conn.routing, "propagated_route_table", null) == null ? [] : [{
-          route_table_ids = vnet_conn.routing.propagated_route_table.route_table_ids
-          labels          = vnet_conn.routing.propagated_route_table.labels
-        }]
-        static_vnet_route = lookup(vnet_conn, "static_vnet_route", null) == null ? [] : [{
-          name                = vnet_conn.routing.static_vnet_route.name
-          address_prefixes    = vnet_conn.routing.static_vnet_route.address_prefixes
-          next_hop_ip_address = vnet_conn.routing.static_vnet_route.next_hop_ip_address
-        }]
-      }]
-    }
-  }
   vpn_gateways = var.vpn_gateways != null ? {
     for key, gw in var.vpn_gateways : key => {
       name                                  = gw.name
@@ -106,6 +86,10 @@ locals {
       virtual_hub_key = site.virtual_hub_key
       address_cidrs   = site.address_cidrs
       links           = site.links
+      device_vendor   = site.device_vendor
+      device_model    = site.device_model
+      o365_policy     = site.o365_policy
+      tags            = site.tags
     }
   } : null
 }

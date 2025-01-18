@@ -26,4 +26,5 @@ variable "virtual_hubs" {
   > Note: There can be multiple objects in this map, one for each Virtual Hub you wish to deploy into the Virtual WAN. Multiple Virtual Hubs in the same region/location can be deployed into the same Virtual WAN also.
 
   DESCRIPTION
+  nullable    = false
 }

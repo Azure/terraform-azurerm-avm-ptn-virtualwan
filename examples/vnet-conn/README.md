@@ -91,13 +91,13 @@ resource "azurerm_virtual_network" "vnet" {
   tags                = local.tags
 
   subnet {
-    address_prefix = local.vnet01.subnet1.address_prefix
-    name           = local.vnet01.subnet1.name
+    address_prefixes = [local.vnet01.subnet1.address_prefix]
+    name             = local.vnet01.subnet1.name
   }
   subnet {
-    address_prefix = local.vnet01.subnet2.address_prefix
-    name           = local.vnet01.subnet2.name
-    security_group = azurerm_network_security_group.nsg.id
+    address_prefixes = [local.vnet01.subnet2.address_prefix]
+    name             = local.vnet01.subnet2.name
+    security_group   = azurerm_network_security_group.nsg.id
   }
 }
 
@@ -123,7 +123,7 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.7)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.108)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.6)
 

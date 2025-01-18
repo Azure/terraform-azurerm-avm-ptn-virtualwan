@@ -85,13 +85,13 @@ resource "azurerm_virtual_network" "vnet" {
   tags                = local.tags
 
   subnet {
-    address_prefix = local.vnet01.subnet1.address_prefix
-    name           = local.vnet01.subnet1.name
+    address_prefixes = [local.vnet01.subnet1.address_prefix]
+    name             = local.vnet01.subnet1.name
   }
   subnet {
-    address_prefix = local.vnet01.subnet2.address_prefix
-    name           = local.vnet01.subnet2.name
-    security_group = azurerm_network_security_group.nsg.id
+    address_prefixes = [local.vnet01.subnet2.address_prefix]
+    name             = local.vnet01.subnet2.name
+    security_group   = azurerm_network_security_group.nsg.id
   }
 }
 

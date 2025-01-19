@@ -6,7 +6,7 @@ module "virtual_network_connections" {
   virtual_network_connections = {
     for key, vnet_conn in var.virtual_network_connections : key => {
       name                      = vnet_conn.name
-      virtual_hub_key           = vnet_conn.virtual_hub_key
+      virtual_hub_id            = module.virtual_hubs.resource_id[vnet_conn.virtual_hub_key]
       remote_virtual_network_id = vnet_conn.remote_virtual_network_id
       internet_security_enabled = lookup(vnet_conn, "internet_security_enabled", false)
       routing = lookup(vnet_conn, "routing", null) == null ? null : {

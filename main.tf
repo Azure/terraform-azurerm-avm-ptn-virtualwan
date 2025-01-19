@@ -36,11 +36,9 @@ module "virtual_hubs" {
       virtual_router_auto_scale_min_capacity = value.virtual_router_auto_scale_min_capacity
     }
   }
-
 }
 
 moved {
   from = azurerm_virtual_hub.virtual_hub
   to   = module.virtual_hubs.azurerm_virtual_hub.virtual_hub
 }
-

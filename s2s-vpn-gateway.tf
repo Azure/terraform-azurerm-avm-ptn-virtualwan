@@ -8,7 +8,7 @@ module "vpn_gateway" {
       location                              = module.virtual_hubs.resource_object[value.virtual_hub_key].location
       virtual_hub_id                        = module.virtual_hubs.resource_object[value.virtual_hub_key].id
       bgp_route_translation_for_nat_enabled = value.bgp_route_translation_for_nat_enabled
-      scale_units                           = value.scale_unit
+      scale_unit                            = value.scale_unit
       routing_preference                    = value.routing_preference
       bgp_settings                          = value.bgp_settings
     }

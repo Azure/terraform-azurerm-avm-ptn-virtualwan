@@ -1,8 +1,9 @@
 output "firewall_ip_addresses" {
   description = "Azure Firewall IP addresses."
   value = var.firewalls != null ? { for key, value in module.firewalls.resource_object : key => {
-    firewall_key      = key
-    public_ip_address = module.firewalls.resource_object[key].virtual_hub[0].public_ip_addresses
+    firewall_key       = key
+    private_ip_address = module.firewalls.resource_object[key].virtual_hub[0].private_ip_addresses
+    public_ip_address  = module.firewalls.resource_object[key].virtual_hub[0].public_ip_addresses
   } } : null
 }
 

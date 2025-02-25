@@ -787,7 +787,15 @@ Description: Azure Firewall IP addresses.
 
 Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
 
+### <a name="output_firewall_private_ip_addresses_by_hub_key"></a> [firewall\_private\_ip\_addresses\_by\_hub\_key](#output\_firewall\_private\_ip\_addresses\_by\_hub\_key)
+
+Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
+
 ### <a name="output_firewall_public_ip_addresses"></a> [firewall\_public\_ip\_addresses](#output\_firewall\_public\_ip\_addresses)
+
+Description: A map of Azure Firewall public IP addresses with the map keys of the `firewalls` variable.
+
+### <a name="output_firewall_public_ip_addresses_by_hub_key"></a> [firewall\_public\_ip\_addresses\_by\_hub\_key](#output\_firewall\_public\_ip\_addresses\_by\_hub\_key)
 
 Description: A map of Azure Firewall public IP addresses with the map keys of the `firewalls` variable.
 
@@ -795,7 +803,15 @@ Description: A map of Azure Firewall public IP addresses with the map keys of th
 
 Description: A map of Azure Firewall resource IDs with the map keys of the `firewalls` variable.
 
+### <a name="output_firewall_resource_ids_by_hub_key"></a> [firewall\_resource\_ids\_by\_hub\_key](#output\_firewall\_resource\_ids\_by\_hub\_key)
+
+Description: A map of Azure Firewall resource IDs with the map keys of the `firewalls` variable.
+
 ### <a name="output_firewall_resource_names"></a> [firewall\_resource\_names](#output\_firewall\_resource\_names)
+
+Description: A map of Azure Firewall resource names with the map keys of the `firewalls` variable.
+
+### <a name="output_firewall_resource_names_by_hub_key"></a> [firewall\_resource\_names\_by\_hub\_key](#output\_firewall\_resource\_names\_by\_hub\_key)
 
 Description: A map of Azure Firewall resource names with the map keys of the `firewalls` variable.
 

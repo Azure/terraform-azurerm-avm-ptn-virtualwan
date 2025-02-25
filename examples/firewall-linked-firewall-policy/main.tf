@@ -50,6 +50,7 @@ module "vwan_with_vhub" {
       name               = local.firewall_name
       virtual_hub_key    = local.virtual_hub_key
       firewall_policy_id = azurerm_firewall_policy.this.id
+      zones              = [1, 2]
     }
   }
   routing_intents = {

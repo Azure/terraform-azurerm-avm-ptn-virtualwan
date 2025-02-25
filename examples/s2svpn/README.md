@@ -55,6 +55,7 @@ module "vwan_with_vhub" {
     (local.vpn_gateways_key) = {
       name            = local.vpn_gateways_name
       virtual_hub_key = local.virtual_hub_key
+      scale_unit      = 1
     }
   }
   vpn_sites = {

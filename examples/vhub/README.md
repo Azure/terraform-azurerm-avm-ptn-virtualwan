@@ -41,6 +41,23 @@ module "vwan_with_vhub" {
     }
   }
 }
+
+output "test" {
+  value = {
+    resource_id                              = module.vwan_with_vhub.resource_id
+    name                                     = module.vwan_with_vhub.name
+    firewall_resource_ids                    = module.vwan_with_vhub.firewall_resource_ids
+    firewall_resource_names                  = module.vwan_with_vhub.firewall_resource_names
+    firewall_private_ip_addresses            = module.vwan_with_vhub.firewall_private_ip_addresses
+    firewall_public_ip_addresses             = module.vwan_with_vhub.firewall_public_ip_addresses
+    firewall_resource_ids_by_hub_key         = module.vwan_with_vhub.firewall_resource_ids_by_hub_key
+    firewall_resource_names_by_hub_key       = module.vwan_with_vhub.firewall_resource_names_by_hub_key
+    firewall_private_ip_addresses_by_hub_key = module.vwan_with_vhub.firewall_private_ip_addresses_by_hub_key
+    firewall_public_ip_addresses_by_hub_key  = module.vwan_with_vhub.firewall_public_ip_addresses_by_hub_key
+    virtual_hub_resource_ids                 = module.vwan_with_vhub.virtual_hub_resource_ids
+    virtual_hub_resource_names               = module.vwan_with_vhub.virtual_hub_resource_names
+  }
+}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -71,7 +88,11 @@ No optional inputs.
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_test"></a> [test](#output\_test)
+
+Description: n/a
 
 ## Modules
 

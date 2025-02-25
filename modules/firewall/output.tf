@@ -23,3 +23,23 @@ output "resource_object" {
     }
   } : {}
 }
+
+output "resource_ids" {
+  description = "Azure Firewall resource IDs"
+  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.id } : null
+}
+
+output "resource_names" {
+  description = "Azure Firewall resource names"
+  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.name } : null
+}
+
+output "private_ip_addresses" {
+  description = "Azure Firewall IP addresses"
+  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].private_ip_address } : null
+}
+
+output "public_ip_addresses" {
+  description = "Azure Firewall IP addresses"
+  value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].public_ip_addresses } : null
+}

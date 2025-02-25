@@ -69,3 +69,16 @@ output "firewall_private_ip_address" {
   description = "Private IP Address of the Azure Firewall by Hub"
   value       = module.vwan_with_vhub.firewall_ip_addresses
 }
+
+output "test" {
+  value = {
+    resource_id                   = module.vwan_with_vhub.resource_id
+    name                          = module.vwan_with_vhub.name
+    firewall_resource_ids         = module.vwan_with_vhub.firewall_resource_ids
+    firewall_resource_names       = module.vwan_with_vhub.firewall_resource_names
+    firewall_private_ip_addresses = module.vwan_with_vhub.firewall_ip_addresses
+    firewall_public_ip_addresses  = module.vwan_with_vhub.firewall_public_ip_addresses
+    virtual_hub_resource_ids      = module.vwan_with_vhub.virtual_hub_resource_ids
+    virtual_hub_resource_names    = module.vwan_with_vhub.virtual_hub_resource_names
+  }
+}

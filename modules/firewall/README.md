@@ -97,6 +97,14 @@ The following outputs are exported:
 
 Description: Azure Firewall resource name
 
+### <a name="output_private_ip_addresses"></a> [private\_ip\_addresses](#output\_private\_ip\_addresses)
+
+Description: Azure Firewall IP addresses
+
+### <a name="output_public_ip_addresses"></a> [public\_ip\_addresses](#output\_public\_ip\_addresses)
+
+Description: Azure Firewall IP addresses
+
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
 Description: Azure Firewall resource
@@ -104,6 +112,14 @@ Description: Azure Firewall resource
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: Azure Firewall resource ID
+
+### <a name="output_resource_ids"></a> [resource\_ids](#output\_resource\_ids)
+
+Description: Azure Firewall resource IDs
+
+### <a name="output_resource_names"></a> [resource\_names](#output\_resource\_names)
+
+Description: Azure Firewall resource names
 
 ### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
 

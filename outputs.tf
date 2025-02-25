@@ -31,11 +31,6 @@ output "resource_group_name" {
   value       = local.resource_group_name
 }
 
-output "resource_id" {
-  description = "Virtual WAN ID"
-  value       = azurerm_virtual_wan.virtual_wan != null ? [azurerm_virtual_wan.virtual_wan.id] : var.virtual_hubs != null ? [for hub in module.virtual_hubs : hub.id] : []
-}
-
 output "s2s_vpn_gw" {
   description = "S2S VPN Gateway Objects"
   value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway.resource_object : gw] : null

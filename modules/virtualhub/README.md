@@ -102,6 +102,14 @@ Description: Resource Group Name
 
 Description: Virtual Hub ID
 
+### <a name="output_resource_ids"></a> [resource\_ids](#output\_resource\_ids)
+
+Description: Virtual Hub IDs
+
+### <a name="output_resource_names"></a> [resource\_names](#output\_resource\_names)
+
+Description: Virtual Hub Names
+
 ### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
 
 Description: Virtual Hub Object

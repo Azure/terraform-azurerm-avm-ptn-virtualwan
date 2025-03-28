@@ -32,7 +32,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
       shared_key                            = try(vpn_link.value.shared_key, null)
 
       dynamic "custom_bgp_address" {
-        for_each = vpn_link.value.custom_bgp_address != null ? [vpn_link.value.custom_bgp_address] : []
+        for_each = vpn_link.value.custom_bgp_addresses != null ? vpn_link.value.custom_bgp_addresses : []
 
         content {
           ip_address          = custom_bgp_address.value.ip_address
@@ -146,7 +146,7 @@ map(object({
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
       policy_based_traffic_selector_enabled = optional(bool)
-      custom_bgp_address = optional(list(object({
+      custom_bgp_addresses = optional(list(object({
         ip_address          = string
         ip_configuration_id = string
       })))

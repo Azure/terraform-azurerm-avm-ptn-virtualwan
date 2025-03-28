@@ -43,6 +43,7 @@ module "vwan_with_vhub" {
   virtual_wan_name               = "tvmVwan"
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
+  bgp_community                  = "12076:51010"
   type                           = "Standard"
   virtual_wan_tags = {
     environment = "dev"
@@ -319,7 +320,7 @@ Description:   Specifies the Office 365 local breakout category. Possible values
   - `Optimize`
   - `OptimizeAndAllow`
   - `All`
-  - `None`  
+  - `None`
 
   Defaults to `None`.
 
@@ -461,7 +462,7 @@ Default: `null`
 Description:   Type of the Virtual WAN to create. Possible values include:
 
   - `Basic`
-  - `Standard`  
+  - `Standard`
 
   Defaults to `Standard` and is recommended.
 
@@ -635,9 +636,9 @@ Description:   Map of objects for VPN Site connections to connect VPN Sites to t
     - `shared_key`: Optional shared key for the VPN link.
     - `local_azure_ip_address_enabled`: Optional boolean to enable local Azure IP address for the VPN link.
     - `policy_based_traffic_selector_enabled`: Optional boolean to enable policy based traffic selector for the VPN link.
-    - `custom_bgp_address`: Optional list of custom BGP addresses for the VPN link, which includes:
+    - `custom_bgp_addresses`: Optional list of custom BGP addresses for the VPN link, which includes:
       - `ip_address`: IP address for the custom BGP address.
-      - `ip_configuration_id`: IP configuration ID for the custom BGP address.
+      - `instance`: Instance number for the custom BGP address. Must be `0` or `1`.
   - `internet_security_enabled`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection to a branch/VPN site.
   - `routing`: Optional routing configuration object for the connection, which includes:
     - `associated_route_table`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
@@ -686,9 +687,9 @@ map(object({
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
       policy_based_traffic_selector_enabled = optional(bool)
-      custom_bgp_address = optional(list(object({
-        ip_address          = string
-        ip_configuration_id = string
+      custom_bgp_addresses = optional(list(object({
+        ip_address = string
+        instance   = number
       })))
     }))
     internet_security_enabled = optional(bool)

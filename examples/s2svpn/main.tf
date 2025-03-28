@@ -55,14 +55,14 @@ module "vwan_with_vhub" {
         peer_weight = 0
         instance_0_bgp_peering_address = {
           custom_ips = [
-            "192.168.0.1",
-            "192.168.0.2"
+            "192.254.21.0",
+            "192.254.21.1"
           ]
         }
         instance_1_bgp_peering_address = {
           custom_ips = [
-            "192.168.1.1",
-            "192.168.1.2"
+            "192.254.21.2",
+            "192.254.21.3"
           ]
         }
       }
@@ -103,11 +103,11 @@ module "vwan_with_vhub" {
         vpn_site_key                          = local.vpn_sites_key
         custom_bgp_addresses = [
           {
-            ip_address = "192.168.0.1"
+            ip_address = "192.254.21.0"
             instance   = 0
           },
           {
-            ip_address = "192.168.1.1"
+            ip_address = "192.254.21.2"
             instance   = 1
           }
         ]

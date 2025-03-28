@@ -29,7 +29,7 @@ variable "vpn_site_connection" {
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
       policy_based_traffic_selector_enabled = optional(bool)
-      custom_bgp_address = optional(list(object({
+      custom_bgp_addresses = optional(list(object({
         ip_address          = string
         ip_configuration_id = string
       })))

@@ -28,6 +28,15 @@ output "resource" {
   value       = var.vpn_gateways != null ? [for vpn_gateway in azurerm_vpn_gateway.vpn_gateway : vpn_gateway] : null
 }
 
+output "ip_configuration_ids" {
+  description = "Azure VPN Gateway BGP Peering Address IP Configuration ID"
+  value = var.vpn_gateways != null ? { for key, vpn_gateway in azurerm_vpn_gateway.vpn_gateway : key => [
+    vpn_gateway.bgp_settings[0].instance_0_bgp_peering_address[0].ip_configuration_id,
+    vpn_gateway.bgp_settings[0].instance_1_bgp_peering_address[0].ip_configuration_id
+    ]
+  } : null
+}
+
 output "resource_object" {
   description = "Azure VPN Gateway object"
   value = var.vpn_gateways != null ? { for key, vpn_gateway in azurerm_vpn_gateway.vpn_gateway : key => {

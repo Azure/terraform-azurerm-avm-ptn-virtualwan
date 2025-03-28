@@ -2,7 +2,7 @@ variable "location" {
   type        = string
   description = <<DESCRIPTION
   The Virtual WAN location.
-  
+
   > Note: This is not the location for the Virtual WAN Hubs, these are defined within the `virtual_hubs` variable in their own `location` property of each object.
   DESCRIPTION
   nullable    = false
@@ -11,10 +11,10 @@ variable "location" {
 variable "resource_group_name" {
   type        = string
   description = <<DESCRIPTION
-  Name of the Resource Group where the Virtual WAN and it's child resources, e.g. Virtual WAN Hubs, Gateways etc., will be created. 
+  Name of the Resource Group where the Virtual WAN and it's child resources, e.g. Virtual WAN Hubs, Gateways etc., will be created.
 
   The Resource Group will be created if the variable `create_resource_group` is set to `true`. If it is set to `false` the resource group must already exist.
-  
+
   > Note: Each Virtual WAN Hub can be configured to deploy into different resource groups, that must already exist or be created outside of this module, by specifying the `resource_group` property in each object in the `virtual_hubs` variable map input. If you do not do this, the same resource group will be used for all Virtual WAN resources as specified in this variable.
   DESCRIPTION
 
@@ -58,7 +58,7 @@ variable "disable_vpn_encryption" {
   type        = bool
   default     = false
   description = <<DESCRIPTION
-  Boolean toggle to disable VPN encryption. Defaults to `false` (VPN encryption enabled). 
+  Boolean toggle to disable VPN encryption. Defaults to `false` (VPN encryption enabled).
 
   DESCRIPTION
 }
@@ -104,7 +104,7 @@ The key is deliberately arbitrary to avoid issues with known after apply values.
 - `routing_weight`: Optional routing weight for the connection. Values between `0` and `32000` are allowed.
 
 > Note: There can be multiple objects in this map, one for each ExpressRoute Circuit connection to the Virtual WAN ExpressRoute Gateway you wish to connect together.
-  
+
   DESCRIPTION
 }
 
@@ -172,12 +172,12 @@ variable "office365_local_breakout_category" {
   default     = "None"
   description = <<DESCRIPTION
   Specifies the Office 365 local breakout category. Possible values are:
-  
+
   - `Optimize`
   - `OptimizeAndAllow`
   - `All`
   - `None`
-  
+
   Defaults to `None`.
 
   DESCRIPTION
@@ -310,7 +310,7 @@ variable "tags" {
   default     = null
   description = <<DESCRIPTION
   (Optional) Tags to apply to the Resource Group, if created by module controlled by variable `create_resource_group`, and the Virtual WAN resource only.
-  
+
   DESCRIPTION
 }
 
@@ -319,10 +319,10 @@ variable "type" {
   default     = "Standard"
   description = <<DESCRIPTION
   Type of the Virtual WAN to create. Possible values include:
-  
+
   - `Basic`
   - `Standard`
-  
+
   Defaults to `Standard` and is recommended.
 
   DESCRIPTION
@@ -494,9 +494,9 @@ variable "vpn_site_connections" {
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
       policy_based_traffic_selector_enabled = optional(bool)
-      custom_bgp_address = optional(list(object({
-        ip_address          = string
-        ip_configuration_id = string
+      custom_bgp_addresses = optional(list(object({
+        ip_address = string
+        instance   = number
       })))
     }))
     internet_security_enabled = optional(bool)
@@ -546,9 +546,9 @@ variable "vpn_site_connections" {
     - `shared_key`: Optional shared key for the VPN link.
     - `local_azure_ip_address_enabled`: Optional boolean to enable local Azure IP address for the VPN link.
     - `policy_based_traffic_selector_enabled`: Optional boolean to enable policy based traffic selector for the VPN link.
-    - `custom_bgp_address`: Optional list of custom BGP addresses for the VPN link, which includes:
+    - `custom_bgp_addresses`: Optional list of custom BGP addresses for the VPN link, which includes:
       - `ip_address`: IP address for the custom BGP address.
-      - `ip_configuration_id`: IP configuration ID for the custom BGP address.
+      - `instance`: Instance number for the custom BGP address. Must be `0` or `1`.
   - `internet_security_enabled`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection to a branch/VPN site.
   - `routing`: Optional routing configuration object for the connection, which includes:
     - `associated_route_table`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.

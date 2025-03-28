@@ -51,7 +51,7 @@ module "vwan_with_vhub" {
       virtual_hub_key = local.virtual_hub_key
       scale_unit      = 1
       bgp_settings = {
-        asn         = 65001
+        asn         = 65515
         peer_weight = 0
         instance_0_bgp_peering_address = {
           custom_ips = [

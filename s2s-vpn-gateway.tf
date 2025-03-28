@@ -69,7 +69,7 @@ module "vpn_site_connection" {
           shared_key                            = try(link.shared_key, null)
           local_azure_ip_address_enabled        = try(link.local_azure_ip_address_enabled, null)
           policy_based_traffic_selector_enabled = try(link.policy_based_traffic_selector_enabled, null)
-          custom_bgp_addresses = try(link.custom_bgp_address, null) == null ? [] : [
+          custom_bgp_addresses = try(link.custom_bgp_addresses, null) == null ? [] : [
             for custom_bgp_address in link.custom_bgp_addresses : {
               ip_address          = custom_bgp_address.ip_address
               ip_configuration_id = module.vpn_gateway.ip_configuration_ids[conn.vpn_gateway_key][custom_bgp_address.instance]

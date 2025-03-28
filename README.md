@@ -783,13 +783,13 @@ The following outputs are exported:
 
 Description: Azure Firewall IP addresses.
 
-### <a name="output_firewall_private_ip_addresses"></a> [firewall\_private\_ip\_addresses](#output\_firewall\_private\_ip\_addresses)
+### <a name="output_firewall_private_ip_address"></a> [firewall\_private\_ip\_address](#output\_firewall\_private\_ip\_address)
 
-Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
+Description: A map of Azure Firewall private IP address with the map keys of the `firewalls` variable.
 
-### <a name="output_firewall_private_ip_addresses_by_hub_key"></a> [firewall\_private\_ip\_addresses\_by\_hub\_key](#output\_firewall\_private\_ip\_addresses\_by\_hub\_key)
+### <a name="output_firewall_private_ip_address_by_hub_key"></a> [firewall\_private\_ip\_address\_by\_hub\_key](#output\_firewall\_private\_ip\_address\_by\_hub\_key)
 
-Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
+Description: A map of Azure Firewall private IP address with the map keys of the `firewalls` variable.
 
 ### <a name="output_firewall_public_ip_addresses"></a> [firewall\_public\_ip\_addresses](#output\_firewall\_public\_ip\_addresses)
 

@@ -98,7 +98,7 @@ The following outputs are exported:
 
 Description: Azure Firewall resource name
 
-### <a name="output_private_ip_addresses"></a> [private\_ip\_addresses](#output\_private\_ip\_addresses)
+### <a name="output_private_ip_address"></a> [private\_ip\_address](#output\_private\_ip\_address)
 
 Description: Azure Firewall IP addresses
 

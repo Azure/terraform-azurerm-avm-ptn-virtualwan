@@ -34,7 +34,7 @@ output "resource_names" {
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.name } : null
 }
 
-output "private_ip_addresses" {
+output "private_ip_address" {
   description = "Azure Firewall IP addresses"
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].private_ip_address } : null
 }

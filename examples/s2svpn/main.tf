@@ -50,6 +50,22 @@ module "vwan_with_vhub" {
       name            = local.vpn_gateways_name
       virtual_hub_key = local.virtual_hub_key
       scale_unit      = 1
+      bgp_settings = {
+        asn         = 65515
+        peer_weight = 0
+        instance_0_bgp_peering_address = {
+          custom_ips = [
+            "169.254.21.0",
+            "169.254.21.1"
+          ]
+        }
+        instance_1_bgp_peering_address = {
+          custom_ips = [
+            "169.254.21.2",
+            "169.254.21.3"
+          ]
+        }
+      }
     }
   }
   vpn_sites = {
@@ -85,6 +101,16 @@ module "vwan_with_vhub" {
         shared_key                            = nonsensitive(random_password.shared_key.result)
         vpn_site_link_number                  = 0
         vpn_site_key                          = local.vpn_sites_key
+        custom_bgp_addresses = [
+          {
+            ip_address = "169.254.21.0"
+            instance   = 0
+          },
+          {
+            ip_address = "169.254.21.2"
+            instance   = 1
+          }
+        ]
       }]
     }
   }

@@ -18,9 +18,9 @@ output "firewall_resource_names" {
   value       = module.firewalls.resource_names
 }
 
-output "firewall_private_ip_addresses" {
-  description = "A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable."
-  value       = module.firewalls.private_ip_addresses
+output "firewall_private_ip_address" {
+  description = "A map of Azure Firewall private IP address with the map keys of the `firewalls` variable."
+  value       = module.firewalls.private_ip_address
 }
 
 output "firewall_public_ip_addresses" {
@@ -38,9 +38,9 @@ output "firewall_resource_names_by_hub_key" {
   value       = { for key, value in var.firewalls : value.virtual_hub_key => module.firewalls.resource_names[key] }
 }
 
-output "firewall_private_ip_addresses_by_hub_key" {
-  description = "A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable."
-  value       = { for key, value in var.firewalls : value.virtual_hub_key => module.firewalls.private_ip_addresses[key] }
+output "firewall_private_ip_address_by_hub_key" {
+  description = "A map of Azure Firewall private IP address with the map keys of the `firewalls` variable."
+  value       = { for key, value in var.firewalls : value.virtual_hub_key => module.firewalls.private_ip_address[key] }
 }
 
 output "firewall_public_ip_addresses_by_hub_key" {

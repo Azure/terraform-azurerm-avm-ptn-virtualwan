@@ -14,12 +14,13 @@ locals {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  resource_group_name            = local.resource_group_name
-  create_resource_group          = true
+  source = "../../"
+
   location                       = local.location
+  resource_group_name            = local.resource_group_name
   virtual_wan_name               = local.virtual_wan_name
   allow_branch_to_branch_traffic = true
+  create_resource_group          = true
   type                           = "Standard"
   virtual_wan_tags               = local.tags
 }

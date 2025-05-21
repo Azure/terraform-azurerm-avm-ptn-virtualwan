@@ -1,5 +1,6 @@
 module "firewalls" {
   source = "./modules/firewall"
+
   firewalls = {
     for key, value in var.firewalls : key => {
       location             = module.virtual_hubs.resource_object[value.virtual_hub_key].location

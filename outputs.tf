@@ -1,3 +1,13 @@
+output "ergw" {
+  description = "ExpressRoute Gateway Objects"
+  value       = var.expressroute_gateways != null ? [for gw in module.express_route_gateways.resource_object : gw] : null
+}
+
+output "ergw_id" {
+  description = "ExpressRoute Gateway ID"
+  value       = var.expressroute_gateways != null ? [for gw in module.express_route_gateways.resource_object : gw.id] : null
+}
+
 output "firewall_ip_addresses" {
   description = "Azure Firewall IP addresses."
   value = var.firewalls != null ? { for key, value in module.firewalls.resource_object : key => {

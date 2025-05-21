@@ -33,15 +33,15 @@ locals {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = true
-  resource_group_name            = local.resource_group_name
+  source = "../../"
+
   location                       = local.location
+  resource_group_name            = local.resource_group_name
   virtual_wan_name               = local.virtual_wan_name
-  disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
+  create_resource_group          = true
+  disable_vpn_encryption         = false
   type                           = "Standard"
-  virtual_wan_tags               = local.tags
   virtual_hubs = {
     (local.virtual_hub_key) = {
       name           = local.virtual_hub_name
@@ -51,6 +51,7 @@ module "vwan_with_vhub" {
       tags           = local.tags
     }
   }
+  virtual_wan_tags = local.tags
   vpn_gateways = {
     (local.vpn_gateways_key) = {
       name            = local.vpn_gateways_name
@@ -72,22 +73,6 @@ module "vwan_with_vhub" {
           ]
         }
       }
-    }
-  }
-  vpn_sites = {
-    (local.vpn_sites_key) = {
-      name            = local.vpn_sites_name
-      virtual_hub_key = local.virtual_hub_key
-      links = [{
-        name          = "link1"
-        provider_name = "Cisco"
-        bgp = {
-          asn             = azurerm_virtual_network_gateway.gw.bgp_settings[0].asn
-          peering_address = azurerm_virtual_network_gateway.gw.bgp_settings[0].peering_addresses[0].default_addresses[0]
-        }
-        ip_address    = data.azurerm_public_ip.gw_ip.ip_address
-        speed_in_mbps = "20"
-      }]
     }
   }
   vpn_site_connections = {
@@ -117,6 +102,22 @@ module "vwan_with_vhub" {
             instance   = 1
           }
         ]
+      }]
+    }
+  }
+  vpn_sites = {
+    (local.vpn_sites_key) = {
+      name            = local.vpn_sites_name
+      virtual_hub_key = local.virtual_hub_key
+      links = [{
+        name          = "link1"
+        provider_name = "Cisco"
+        bgp = {
+          asn             = azurerm_virtual_network_gateway.gw.bgp_settings[0].asn
+          peering_address = azurerm_virtual_network_gateway.gw.bgp_settings[0].peering_addresses[0].default_addresses[0]
+        }
+        ip_address    = data.azurerm_public_ip.gw_ip.ip_address
+        speed_in_mbps = "20"
       }]
     }
   }

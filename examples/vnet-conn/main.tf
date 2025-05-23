@@ -96,15 +96,16 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = local.vwan.create_resource_group
-  resource_group_name            = azurerm_resource_group.rg.name
+  source = "../../"
+
   location                       = azurerm_resource_group.rg.location
+  resource_group_name            = azurerm_resource_group.rg.name
   virtual_wan_name               = local.vwan.name
-  disable_vpn_encryption         = local.vwan.disable_vpn_encryption
   allow_branch_to_branch_traffic = local.vwan.allow_branch_to_branch_traffic
+  create_resource_group          = local.vwan.create_resource_group
+  disable_vpn_encryption         = local.vwan.disable_vpn_encryption
   type                           = local.vwan.type
-  virtual_wan_tags               = local.vwan.tags
   virtual_hubs                   = local.vhubs
   virtual_network_connections    = local.vnet_connections
+  virtual_wan_tags               = local.vwan.tags
 }

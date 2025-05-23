@@ -23,6 +23,7 @@ moved {
 # Create a vpn site. Sites represent the Physical locations (On-Premises) you wish to connect.
 module "vpn_site" {
   source = "./modules/site-to-site-vpn-site"
+
   vpn_sites = {
     for key, value in local.vpn_sites : key => {
       name                = value.name
@@ -47,6 +48,7 @@ moved {
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
 module "vpn_site_connection" {
   source = "./modules/site-to-site-gateway-conn"
+
   vpn_site_connection = {
     for key, conn in local.vpn_site_connections : key => {
       name                      = conn.name
@@ -82,6 +84,7 @@ module "vpn_site_connection" {
     }
 
   }
+
   depends_on = [module.vpn_site, module.vpn_gateway]
 }
 

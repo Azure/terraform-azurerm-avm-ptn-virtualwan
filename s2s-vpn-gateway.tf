@@ -11,6 +11,7 @@ module "vpn_gateway" {
       scale_unit                            = value.scale_unit
       routing_preference                    = value.routing_preference
       bgp_settings                          = value.bgp_settings
+      tags                                  = value.tags
     }
   }
 }
@@ -84,8 +85,6 @@ module "vpn_site_connection" {
     }
 
   }
-
-  depends_on = [module.vpn_site, module.vpn_gateway]
 }
 
 moved {

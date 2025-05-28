@@ -17,7 +17,7 @@ locals {
       virtual_hub_key               = gw.virtual_hub_key
       scale_units                   = gw.scale_units
       allow_non_virtual_wan_traffic = gw.allow_non_virtual_wan_traffic
-      tags                          = try(gw.tags, var.tags)
+      tags                          = try(gw.tags, null) == null ? var.tags : gw.tags
     }
   } : null
   p2s_gateway_vpn_server_configurations = var.p2s_gateway_vpn_server_configurations != null ? {
@@ -27,7 +27,7 @@ locals {
       vpn_authentication_types              = svr.vpn_authentication_types
       client_root_certificate               = svr.client_root_certificate
       azure_active_directory_authentication = svr.azure_active_directory_authentication
-      tags                                  = try(svr.tags, var.tags)
+      tags                                  = try(svr.tags, null) == null ? var.tags : svr.tags
     }
   } : null
   p2s_gateways = var.p2s_gateways != null ? {
@@ -37,7 +37,7 @@ locals {
       scale_unit                               = gw.scale_unit
       connection_configuration                 = gw.connection_configuration
       p2s_gateway_vpn_server_configuration_key = gw.p2s_gateway_vpn_server_configuration_key
-      tags                                     = try(gw.tags, var.tags)
+      tags                                     = try(gw.tags, null) == null ? var.tags : gw.tags
     }
   } : null
   routing_intents = {
@@ -60,7 +60,7 @@ locals {
       address_prefix                         = vhub.address_prefix
       hub_routing_preference                 = try(vhub.hub_routing_preference, "")
       sku                                    = try(vhub.sku, "Standard")
-      tags                                   = try(vhub.tags, var.tags)
+      tags                                   = try(vhub.tags, null) == null ? var.tags : vhub.tags
       virtual_router_auto_scale_min_capacity = vhub.virtual_router_auto_scale_min_capacity
     }
   }
@@ -72,7 +72,7 @@ locals {
       bgp_settings                          = gw.bgp_settings
       routing_preference                    = gw.routing_preference
       scale_unit                            = gw.scale_unit
-      tags                                  = try(gw.tags, var.tags)
+      tags                                  = try(gw.tags, null) == null ? var.tags : gw.tags
     }
   } : null
   vpn_site_connections = var.vpn_site_connections != null ? {
@@ -94,7 +94,7 @@ locals {
       device_vendor   = site.device_vendor
       device_model    = site.device_model
       o365_policy     = site.o365_policy
-      tags            = try(site.tags, var.tags)
+      tags            = try(site.tags, null) == null ? var.tags : site.tags
     }
   } : null
 }

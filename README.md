@@ -319,7 +319,7 @@ Description:   Specifies the Office 365 local breakout category. Possible values
   - `Optimize`
   - `OptimizeAndAllow`
   - `All`
-  - `None`  
+  - `None`
 
   Defaults to `None`.
 
@@ -461,7 +461,7 @@ Default: `null`
 Description:   Type of the Virtual WAN to create. Possible values include:
 
   - `Basic`
-  - `Standard`  
+  - `Standard`
 
   Defaults to `Standard` and is recommended.
 
@@ -494,6 +494,7 @@ map(object({
     resource_group                         = optional(string, null)
     address_prefix                         = string
     tags                                   = optional(map(string))
+    sku                                    = optional(string, "Standard")
     hub_routing_preference                 = optional(string, "ExpressRoute")
     virtual_router_auto_scale_min_capacity = optional(number, 2)
   }))
@@ -635,9 +636,9 @@ Description:   Map of objects for VPN Site connections to connect VPN Sites to t
     - `shared_key`: Optional shared key for the VPN link.
     - `local_azure_ip_address_enabled`: Optional boolean to enable local Azure IP address for the VPN link.
     - `policy_based_traffic_selector_enabled`: Optional boolean to enable policy based traffic selector for the VPN link.
-    - `custom_bgp_address`: Optional list of custom BGP addresses for the VPN link, which includes:
+    - `custom_bgp_addresses`: Optional list of custom BGP addresses for the VPN link, which includes:
       - `ip_address`: IP address for the custom BGP address.
-      - `ip_configuration_id`: IP configuration ID for the custom BGP address.
+      - `instance`: Instance number for the custom BGP address. Must be `0` or `1`.
   - `internet_security_enabled`: Optional boolean to enable internet security for the connection, e.g. allow `0.0.0.0/0` route to be propagated to this connection to a branch/VPN site.
   - `routing`: Optional routing configuration object for the connection, which includes:
     - `associated_route_table`: The resource ID of the Virtual Hub Route Table you wish to associate with this connection.
@@ -686,9 +687,9 @@ map(object({
       shared_key                            = optional(string)
       local_azure_ip_address_enabled        = optional(bool)
       policy_based_traffic_selector_enabled = optional(bool)
-      custom_bgp_address = optional(list(object({
-        ip_address          = string
-        ip_configuration_id = string
+      custom_bgp_addresses = optional(list(object({
+        ip_address = string
+        instance   = number
       })))
     }))
     internet_security_enabled = optional(bool)
@@ -778,17 +779,25 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_ergw"></a> [ergw](#output\_ergw)
+
+Description: ExpressRoute Gateway Objects
+
+### <a name="output_ergw_id"></a> [ergw\_id](#output\_ergw\_id)
+
+Description: ExpressRoute Gateway ID
+
 ### <a name="output_firewall_ip_addresses"></a> [firewall\_ip\_addresses](#output\_firewall\_ip\_addresses)
 
 Description: Azure Firewall IP addresses.
 
-### <a name="output_firewall_private_ip_addresses"></a> [firewall\_private\_ip\_addresses](#output\_firewall\_private\_ip\_addresses)
+### <a name="output_firewall_private_ip_address"></a> [firewall\_private\_ip\_address](#output\_firewall\_private\_ip\_address)
 
-Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
+Description: A map of Azure Firewall private IP address with the map keys of the `firewalls` variable.
 
-### <a name="output_firewall_private_ip_addresses_by_hub_key"></a> [firewall\_private\_ip\_addresses\_by\_hub\_key](#output\_firewall\_private\_ip\_addresses\_by\_hub\_key)
+### <a name="output_firewall_private_ip_address_by_hub_key"></a> [firewall\_private\_ip\_address\_by\_hub\_key](#output\_firewall\_private\_ip\_address\_by\_hub\_key)
 
-Description: A map of Azure Firewall private IP addresses with the map keys of the `firewalls` variable.
+Description: A map of Azure Firewall private IP address with the map keys of the `firewalls` variable.
 
 ### <a name="output_firewall_public_ip_addresses"></a> [firewall\_public\_ip\_addresses](#output\_firewall\_public\_ip\_addresses)
 

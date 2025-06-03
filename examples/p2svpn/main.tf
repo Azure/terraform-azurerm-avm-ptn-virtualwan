@@ -22,38 +22,14 @@ locals {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = true
-  resource_group_name            = local.resource_group_name
+  source = "../../"
+
   location                       = local.location
+  resource_group_name            = local.resource_group_name
   virtual_wan_name               = local.virtual_wan_name
-  disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
-  type                           = "Standard"
-  virtual_wan_tags               = local.tags
-  virtual_hubs = {
-    (local.virtual_hub_key) = {
-      name           = local.virtual_hub_name
-      location       = local.location
-      resource_group = local.resource_group_name
-      address_prefix = "10.0.0.0/24"
-      tags           = local.tags
-    }
-  }
-  p2s_gateways = {
-    "aue-vhub-p2s-gw" = {
-      name                                     = local.p2s_gateway_name
-      virtual_hub_key                          = local.virtual_hub_key
-      p2s_gateway_vpn_server_configuration_key = local.p2s_gateway_vpn_server_configuration_key
-      scale_unit                               = 1
-      connection_configuration = {
-        name = local.p2s_gateway_vpn_server_configuration_connection_name
-        vpn_client_address_pool = {
-          address_prefixes = ["192.168.0.0/24"]
-        }
-      }
-    }
-  }
+  create_resource_group          = true
+  disable_vpn_encryption         = false
   p2s_gateway_vpn_server_configurations = {
     (local.p2s_gateway_vpn_server_configuration_key) = {
       name                     = local.p2s_gateway_vpn_server_configuration_name
@@ -91,4 +67,29 @@ EOF
       }
     }
   }
+  p2s_gateways = {
+    "aue-vhub-p2s-gw" = {
+      name                                     = local.p2s_gateway_name
+      virtual_hub_key                          = local.virtual_hub_key
+      p2s_gateway_vpn_server_configuration_key = local.p2s_gateway_vpn_server_configuration_key
+      scale_unit                               = 1
+      connection_configuration = {
+        name = local.p2s_gateway_vpn_server_configuration_connection_name
+        vpn_client_address_pool = {
+          address_prefixes = ["192.168.0.0/24"]
+        }
+      }
+    }
+  }
+  type = "Standard"
+  virtual_hubs = {
+    (local.virtual_hub_key) = {
+      name           = local.virtual_hub_name
+      location       = local.location
+      resource_group = local.resource_group_name
+      address_prefix = "10.0.0.0/24"
+      tags           = local.tags
+    }
+  }
+  virtual_wan_tags = local.tags
 }

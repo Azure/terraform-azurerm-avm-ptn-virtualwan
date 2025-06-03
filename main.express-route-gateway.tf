@@ -9,7 +9,7 @@ module "express_route_gateways" {
       location                      = module.virtual_hubs.resource_object[gw.virtual_hub_key].location
       scale_units                   = gw.scale_units
       allow_non_virtual_wan_traffic = gw.allow_non_virtual_wan_traffic
-      tags                          = try(gw.tags, {})
+      tags                          = gw.tags
     }
   }
 }

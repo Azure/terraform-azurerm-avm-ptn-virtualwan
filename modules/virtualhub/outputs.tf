@@ -1,6 +1,6 @@
-output "resource_id" {
-  description = "Virtual Hub ID"
-  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.id }
+output "location" {
+  description = "Virtual Hub Location"
+  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.location }
 }
 
 output "resource" {
@@ -8,14 +8,24 @@ output "resource" {
   value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub }
 }
 
-output "location" {
-  description = "Virtual Hub Location"
-  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.location }
-}
-
 output "resource_group_name" {
   description = "Resource Group Name"
   value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.resource_group_name }
+}
+
+output "resource_id" {
+  description = "Virtual Hub ID"
+  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.id }
+}
+
+output "resource_ids" {
+  description = "Virtual Hub IDs"
+  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.id }
+}
+
+output "resource_names" {
+  description = "Virtual Hub Names"
+  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.name }
 }
 
 output "resource_object" {
@@ -30,14 +40,4 @@ output "resource_object" {
       tags           = hub.tags
     }
   }
-}
-
-output "resource_ids" {
-  description = "Virtual Hub IDs"
-  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.id }
-}
-
-output "resource_names" {
-  description = "Virtual Hub Names"
-  value       = { for key, hub in azurerm_virtual_hub.virtual_hub : key => hub.name }
 }

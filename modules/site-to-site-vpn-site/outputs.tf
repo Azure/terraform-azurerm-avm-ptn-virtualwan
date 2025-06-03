@@ -1,13 +1,3 @@
-output "resource_id" {
-  description = "Azure VPN Site ID"
-  value       = var.vpn_sites != null ? { for k, v in azurerm_vpn_site.vpn_site : k => v.id } : {}
-}
-
-output "vpn_site_name" {
-  description = "Azure VPN Site names"
-  value       = var.vpn_sites != null ? keys(azurerm_vpn_site.vpn_site) : []
-}
-
 output "links" {
   description = "Azure VPN Site links"
   value       = var.vpn_sites != null ? { for k, v in azurerm_vpn_site.vpn_site : k => v.link } : {}
@@ -16,6 +6,11 @@ output "links" {
 output "resource" {
   description = "Azure VPN Site resource"
   value       = var.vpn_sites != null ? { for k, v in azurerm_vpn_site.vpn_site : k => v } : {}
+}
+
+output "resource_id" {
+  description = "Azure VPN Site ID"
+  value       = var.vpn_sites != null ? { for k, v in azurerm_vpn_site.vpn_site : k => v.id } : {}
 }
 
 output "resource_object" {
@@ -33,4 +28,9 @@ output "resource_object" {
     links          = v.link != null && length(v.link) > 0 ? v.link : []
     o365_policy    = v.o365_policy != null ? [v.o365_policy] : []
   } } : {}
+}
+
+output "vpn_site_name" {
+  description = "Azure VPN Site names"
+  value       = var.vpn_sites != null ? keys(azurerm_vpn_site.vpn_site) : []
 }

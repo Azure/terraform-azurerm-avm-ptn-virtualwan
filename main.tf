@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "rg" {
 
   location = var.location
   name     = var.resource_group_name
-  tags     = try(merge(var.resource_group_tags, var.tags), {})
+  tags     = try(merge(var.resource_group_tags, var.tags), var.tags)
 }
 
 locals {
@@ -28,11 +28,12 @@ module "virtual_hubs" {
     for key, value in local.virtual_hubs : key => {
       name                                   = value.name
       location                               = value.location
-      resource_group                         = try(value.resource_group, "")
+      resource_group                         = value.resource_group
       address_prefix                         = value.address_prefix
       virtual_wan_id                         = azurerm_virtual_wan.virtual_wan.id
-      hub_routing_preference                 = try(value.hub_routing_preference, "")
-      tags                                   = try(value.tags, {})
+      hub_routing_preference                 = value.hub_routing_preference
+      sku                                    = value.sku
+      tags                                   = value.tags
       virtual_router_auto_scale_min_capacity = value.virtual_router_auto_scale_min_capacity
     }
   }

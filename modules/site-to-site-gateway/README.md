@@ -133,6 +133,10 @@ Description: Azure VPN Gateway object
 
 Description: Azure VPN Gateway ID
 
+### <a name="output_ip_configuration_ids"></a> [ip\_configuration\_ids](#output\_ip\_configuration\_ids)
+
+Description: Azure VPN Gateway BGP Peering Address IP Configuration ID
+
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
 Description: Azure VPN Gateway

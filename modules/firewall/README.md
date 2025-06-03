@@ -14,6 +14,7 @@ resource "azurerm_firewall" "fw" {
   sku_tier            = each.value.sku_tier
   firewall_policy_id  = each.value.firewall_policy_id
   tags                = try(each.value.tags, {})
+  zones               = each.value.zones
 
   virtual_hub {
     virtual_hub_id  = each.value.virtual_hub_id
@@ -97,7 +98,7 @@ The following outputs are exported:
 
 Description: Azure Firewall resource name
 
-### <a name="output_private_ip_addresses"></a> [private\_ip\_addresses](#output\_private\_ip\_addresses)
+### <a name="output_private_ip_address"></a> [private\_ip\_address](#output\_private\_ip\_address)
 
 Description: Azure Firewall IP addresses
 

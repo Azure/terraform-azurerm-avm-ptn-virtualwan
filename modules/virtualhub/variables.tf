@@ -8,6 +8,7 @@ variable "virtual_hubs" {
     virtual_wan_id                         = string
     hub_routing_preference                 = optional(string, "ExpressRoute")
     virtual_router_auto_scale_min_capacity = optional(number, 2)
+    sku                                    = optional(string, "Standard")
   }))
   default     = {}
   description = <<DESCRIPTION

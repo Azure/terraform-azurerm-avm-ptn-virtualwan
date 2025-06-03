@@ -17,15 +17,23 @@ locals {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = true
-  resource_group_name            = local.resource_group_name
+  source = "../../"
+
   location                       = local.location
+  resource_group_name            = local.resource_group_name
   virtual_wan_name               = local.virtual_wan_name
-  disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
-  type                           = "Standard"
-  virtual_wan_tags               = local.tags
+  create_resource_group          = true
+  disable_vpn_encryption         = false
+  er_circuit_connections         = {}
+  expressroute_gateways = {
+    aue-vhub-er-gw = {
+      name            = local.express_route_gateway_name
+      virtual_hub_key = local.virtual_hub_key
+      scale_units     = 1
+    }
+  }
+  type = "Standard"
   virtual_hubs = {
     (local.virtual_hub_key) = {
       name           = local.virtual_hub_name
@@ -35,12 +43,5 @@ module "vwan_with_vhub" {
       tags           = local.tags
     }
   }
-  expressroute_gateways = {
-    aue-vhub-er-gw = {
-      name            = local.express_route_gateway_name
-      virtual_hub_key = local.virtual_hub_key
-      scale_units     = 1
-    }
-  }
-  er_circuit_connections = {}
+  virtual_wan_tags = local.tags
 }

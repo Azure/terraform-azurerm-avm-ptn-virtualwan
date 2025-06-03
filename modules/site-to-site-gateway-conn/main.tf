@@ -26,7 +26,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
       shared_key                            = try(vpn_link.value.shared_key, null)
 
       dynamic "custom_bgp_address" {
-        for_each = vpn_link.value.custom_bgp_address != null ? [vpn_link.value.custom_bgp_address] : []
+        for_each = vpn_link.value.custom_bgp_addresses != null ? vpn_link.value.custom_bgp_addresses : []
 
         content {
           ip_address          = custom_bgp_address.value.ip_address

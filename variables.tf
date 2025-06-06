@@ -512,8 +512,8 @@ variable "vpn_site_connections" {
       outbound_route_map_id = optional(string)
     }))
     traffic_selector_policy = optional(object({
-      local_address_ranges  = string
-      remote_address_ranges = string
+      local_address_ranges  = list(string)
+      remote_address_ranges = list(string)
     }))
   }))
   default     = {}

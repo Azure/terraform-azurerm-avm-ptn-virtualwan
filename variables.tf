@@ -340,7 +340,7 @@ variable "virtual_hubs" {
     resource_group                         = optional(string, null)
     address_prefix                         = string
     tags                                   = optional(map(string))
-    sku                                    = optional(string, "Standard")
+    sku                                    = optional(string, null)
     hub_routing_preference                 = optional(string, "ExpressRoute")
     virtual_router_auto_scale_min_capacity = optional(number, 2)
   }))
@@ -355,6 +355,7 @@ variable "virtual_hubs" {
   - `resource_group`: Optional resource group name to deploy the Virtual Hub into. If not specified, the Virtual Hub will be deployed into the resource group specified in the variable `resource_group_name`, e.g. the same as the Virtual WAN itself.
   - `address_prefix`: Address prefix for the Virtual Hub. Recommend using a `/23` CIDR block.
   - `tags`: Optional tags to apply to the Virtual Hub resource.
+  - `sku`: Optional SKU for the Virtual Hub. Possible values are: `Standard`, `Basic`. Defaults to `null` for backwards compatibility. See https://learn.microsoft.com/en-gb/azure/virtual-wan/hub-settings#type for more information.
   - `hub_routing_preference`: Optional hub routing preference for the Virtual Hub. Possible values are: `ExpressRoute`, `ASPath`, `VpnGateway`. Defaults to `ExpressRoute`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#routing-preference for more information.
   - `virtual_router_auto_scale_min_capacity`: Optional minimum capacity for the Virtual Router auto scale. Defaults to `2`. See https://learn.microsoft.com/azure/virtual-wan/hub-settings#capacity for more information.
 

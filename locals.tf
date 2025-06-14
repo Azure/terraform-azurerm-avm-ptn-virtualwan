@@ -59,7 +59,7 @@ locals {
       resource_group                         = try(vhub.resource_group, "")
       address_prefix                         = vhub.address_prefix
       hub_routing_preference                 = try(vhub.hub_routing_preference, "")
-      sku                                    = try(vhub.sku, "Standard")
+      sku                                    = try(vhub.sku, null)
       tags                                   = try(vhub.tags, null) == null ? var.tags : vhub.tags
       virtual_router_auto_scale_min_capacity = vhub.virtual_router_auto_scale_min_capacity
     }

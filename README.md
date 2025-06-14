@@ -43,6 +43,7 @@ module "vwan_with_vhub" {
   virtual_wan_name               = "tvmVwan"
   disable_vpn_encryption         = false
   allow_branch_to_branch_traffic = true
+  bgp_community                  = "12076:51010"
   type                           = "Standard"
   virtual_wan_tags = {
     environment = "dev"

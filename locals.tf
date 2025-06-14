@@ -77,12 +77,13 @@ locals {
   } : null
   vpn_site_connections = var.vpn_site_connections != null ? {
     for key, conn in var.vpn_site_connections : key => {
-      name                    = conn.name
-      vpn_gateway_key         = conn.vpn_gateway_key
-      remote_vpn_site_key     = conn.remote_vpn_site_key
-      vpn_links               = conn.vpn_links
-      routing                 = conn.routing
-      traffic_selector_policy = conn.traffic_selector_policy
+      name                      = conn.name
+      vpn_gateway_key           = conn.vpn_gateway_key
+      remote_vpn_site_key       = conn.remote_vpn_site_key
+      internet_security_enabled = conn.internet_security_enabled
+      vpn_links                 = conn.vpn_links
+      routing                   = conn.routing
+      traffic_selector_policy   = conn.traffic_selector_policy
     }
   } : null
   vpn_sites = var.vpn_sites != null ? {

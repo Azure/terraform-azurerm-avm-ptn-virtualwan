@@ -78,7 +78,7 @@ map(object({
     virtual_wan_id                         = string
     hub_routing_preference                 = optional(string, "ExpressRoute")
     virtual_router_auto_scale_min_capacity = optional(number, 2)
-    sku                                    = optional(string, "Standard")
+    sku                                    = optional(string, null)
   }))
 ```
 

@@ -1,14 +1,18 @@
 # Create a site to site vpn connection between a vpn gateway and a vpn site.
-resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
-  for_each = var.vpn_site_connection != null ? var.vpn_site_connection : {}
+locals {
+  azurerm_vpn_gateway_connection_set = toset(try(nonsensitive(keys(var.vpn_site_connection)), []))
+}
 
-  name                      = each.value.name
-  remote_vpn_site_id        = each.value.remote_vpn_site_id
-  vpn_gateway_id            = each.value.vpn_gateway_id
-  internet_security_enabled = try(each.value.internet_security_enabled, null)
+resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
+  for_each = local.azurerm_vpn_gateway_connection_set
+
+  name                      = var.vpn_site_connection[each.key].name
+  remote_vpn_site_id        = var.vpn_site_connection[each.key].remote_vpn_site_id
+  vpn_gateway_id            = var.vpn_site_connection[each.key].vpn_gateway_id
+  internet_security_enabled = try(var.vpn_site_connection[each.key].internet_security_enabled, null)
 
   dynamic "vpn_link" {
-    for_each = each.value.vpn_links != null && length(each.value.vpn_links) > 0 ? each.value.vpn_links : []
+    for_each = var.vpn_site_connection[each.key].vpn_links != null && length(var.vpn_site_connection[each.key].vpn_links) > 0 ? var.vpn_site_connection[each.key].vpn_links : []
 
     content {
       name                                  = vpn_link.value.name
@@ -50,7 +54,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
     }
   }
   dynamic "routing" {
-    for_each = each.value.routing != null ? [each.value.routing] : []
+    for_each = var.vpn_site_connection[each.key].routing != null ? [var.vpn_site_connection[each.key].routing] : []
 
     content {
       associated_route_table = routing.value.associated_route_table
@@ -66,7 +70,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_site_connection" {
     }
   }
   dynamic "traffic_selector_policy" {
-    for_each = each.value.traffic_selector_policy != null ? [each.value.traffic_selector_policy] : []
+    for_each = var.vpn_site_connection[each.key].traffic_selector_policy != null ? [var.vpn_site_connection[each.key].traffic_selector_policy] : []
 
     content {
       local_address_ranges  = traffic_selector_policy.value.local_address_ranges

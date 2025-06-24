@@ -193,6 +193,7 @@ variable "p2s_gateway_vpn_server_configurations" {
     name                     = string
     virtual_hub_key          = string
     vpn_authentication_types = list(string)
+    vpn_protocols            = optional(list(string))
     tags                     = optional(map(string))
     client_root_certificate = optional(object({
       name             = string
@@ -215,6 +216,7 @@ variable "p2s_gateway_vpn_server_configurations" {
   - `name`: Name for the Point-to-Site VPN Gateway VPN Server Configuration.
   - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this VPN Server Configuration into.
   - `vpn_authentication_types`: List of VPN authentication types to support. Possible values are: `AAD`, `Certificate`, `Radius`.
+  - `vpn_protocols`: Optional list of VPN protocols to support. Possible values are: `IkeV2`, `OpenVPN`. Defaults to both protocols if not specified.
   - `tags`: Optional tags to apply to the VPN Server Configuration resource.
   - `client_root_certificate`: Optional object for the client root certificate configuration, which includes:
     - `name`: Name for the client root certificate.

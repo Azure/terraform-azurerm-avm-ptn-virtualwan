@@ -6,8 +6,8 @@ resource "azurerm_vpn_server_configuration" "p2s_gateway_vpn_server_configuratio
   name                     = each.value.name
   resource_group_name      = module.virtual_hubs.resource_group_name[each.value.virtual_hub_key]
   vpn_authentication_types = each.value.vpn_authentication_types
-  vpn_protocols            = each.value.vpn_protocols
   tags                     = each.value.tags
+  vpn_protocols            = each.value.vpn_protocols
 
   dynamic "azure_active_directory_authentication" {
     for_each = each.value.azure_active_directory_authentication != null ? [each.value.azure_active_directory_authentication] : []

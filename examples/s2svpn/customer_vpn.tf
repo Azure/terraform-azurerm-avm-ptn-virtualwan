@@ -14,10 +14,10 @@ resource "azurerm_resource_group" "rg" {
 
 # Create azure virtual  network
 resource "azurerm_virtual_network" "vnet" {
-  address_space       = ["172.16.0.0/16"]
   location            = azurerm_resource_group.rg.location
   name                = local.on_prem_vnet_name
   resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["172.16.0.0/16"]
 }
 
 # Create azure subnet

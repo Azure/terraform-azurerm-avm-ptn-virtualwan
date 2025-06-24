@@ -25,6 +25,7 @@ locals {
       name                                  = svr.name
       virtual_hub_key                       = svr.virtual_hub_key
       vpn_authentication_types              = svr.vpn_authentication_types
+      vpn_protocols                         = svr.vpn_protocols
       client_root_certificate               = svr.client_root_certificate
       azure_active_directory_authentication = svr.azure_active_directory_authentication
       tags                                  = try(svr.tags, null) == null ? var.tags : svr.tags

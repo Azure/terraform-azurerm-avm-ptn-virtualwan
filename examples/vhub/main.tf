@@ -21,13 +21,13 @@ locals {
 }
 
 resource "azurerm_resource_group" "law" {
-  name     = "rg-${random_pet.law.id}"
   location = local.location
+  name     = "rg-${random_pet.law.id}"
 }
 
 resource "azurerm_log_analytics_workspace" "test" {
-  name                = "law-${random_pet.law.id}"
   location            = local.location
+  name                = "law-${random_pet.law.id}"
   resource_group_name = azurerm_resource_group.law.name
   sku                 = "PerGB2018"
 }
@@ -40,7 +40,14 @@ module "vwan_with_vhub" {
   virtual_wan_name               = local.virtual_wan_name
   allow_branch_to_branch_traffic = true
   create_resource_group          = true
-  disable_vpn_encryption         = false
+  diagnostic_settings_azure_firewall = {
+    (local.virtual_hub_key) = {
+      diags = {
+        workspace_resource_id = azurerm_log_analytics_workspace.test.id
+      }
+    }
+  }
+  disable_vpn_encryption = false
   firewalls = {
     (local.virtual_hub_key) = {
       name                 = "fw-${local.virtual_hub_name}"
@@ -64,11 +71,4 @@ module "vwan_with_vhub" {
     }
   }
   virtual_wan_tags = local.tags
-  diagnostic_settings_azure_firewall = {
-    (local.virtual_hub_key) = {
-      diags = {
-        workspace_resource_id = azurerm_log_analytics_workspace.test.id
-      }
-    }
-  }
 }

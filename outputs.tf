@@ -1,3 +1,8 @@
+output "diagnostic_settings_azure_firewall_resource_ids" {
+  description = "A map of Azure Firewall diagnostic settings resource IDs with the map keys of the `firewalls` variable."
+  value       = module.firewalls.diagnostic_settings_resource_ids
+}
+
 output "ergw" {
   description = "ExpressRoute Gateway Objects"
   value       = var.expressroute_gateways != null ? [for gw in module.express_route_gateways.resource_object : gw] : null

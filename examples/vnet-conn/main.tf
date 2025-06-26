@@ -77,10 +77,10 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  address_space       = local.vnet01.address_space
   location            = azurerm_resource_group.rg.location
   name                = local.vnet01.name
   resource_group_name = azurerm_resource_group.rg.name
+  address_space       = local.vnet01.address_space
   dns_servers         = local.vnet01.dns_servers
   tags                = local.tags
 

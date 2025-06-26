@@ -29,8 +29,25 @@ module "vwan_with_vhub" {
   virtual_wan_name               = local.virtual_wan_name
   allow_branch_to_branch_traffic = true
   create_resource_group          = true
-  disable_vpn_encryption         = false
-  type                           = "Standard"
+  diagnostic_settings_azure_firewall = {
+    (local.virtual_hub_key) = {
+      workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
+    }
+  }
+  disable_vpn_encryption = false
+  firewalls = {
+    (local.virtual_hub_key) = {
+      name                 = "fw-${local.virtual_hub_name}"
+      sku_name             = "AZFW_VNet"
+      sku_tier             = "Standard"
+      firewall_policy_id   = null
+      vhub_public_ip_count = 1
+      virtual_hub_key      = local.virtual_hub_key
+      tags                 = local.tags
+      zones                = []
+    }
+  }
+  type = "Standard"
   virtual_hubs = {
     (local.virtual_hub_key) = {
       name           = local.virtual_hub_name
@@ -42,7 +59,6 @@ module "vwan_with_vhub" {
   }
   virtual_wan_tags = local.tags
 }
-
 ```
 
 <!-- markdownlint-disable MD033 -->

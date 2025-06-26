@@ -57,7 +57,6 @@ module "vwan_with_vhub" {
       vhub_public_ip_count = 1
       virtual_hub_key      = local.virtual_hub_key
       tags                 = local.tags
-      zones                = []
     }
   }
   type = "Standard"

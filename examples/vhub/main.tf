@@ -51,7 +51,7 @@ module "vwan_with_vhub" {
   firewalls = {
     (local.virtual_hub_key) = {
       name                 = "fw-${local.virtual_hub_name}"
-      sku_name             = "AZFW_VNet"
+      sku_name             = "AZFW_Hub"
       sku_tier             = "Standard"
       firewall_policy_id   = null
       vhub_public_ip_count = 1

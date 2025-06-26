@@ -29,12 +29,7 @@ module "vwan_with_vhub" {
   virtual_wan_name               = local.virtual_wan_name
   allow_branch_to_branch_traffic = true
   create_resource_group          = true
-  diagnostic_settings_azure_firewall = {
-    (local.virtual_hub_key) = {
-      workspace_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.OperationalInsights/workspaces/test-workspace"
-    }
-  }
-  disable_vpn_encryption = false
+  disable_vpn_encryption         = false
   firewalls = {
     (local.virtual_hub_key) = {
       name                 = "fw-${local.virtual_hub_name}"

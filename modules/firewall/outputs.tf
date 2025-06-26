@@ -3,6 +3,11 @@ output "azure_firewall_resource_names" {
   value       = var.firewalls != null ? [for fw in azurerm_firewall.fw : fw.name] : []
 }
 
+output "diagnostic_settings_resource_ids" {
+  description = "Value of the diagnostic settings resource ID for Azure Firewall"
+  value       = { for key, value in azurerm_monitor_diagnostic_setting.this : key => value.id }
+}
+
 output "private_ip_address" {
   description = "Azure Firewall IP addresses"
   value       = var.firewalls != null ? { for key, value in azurerm_firewall.fw : key => value.virtual_hub[0].private_ip_address } : null

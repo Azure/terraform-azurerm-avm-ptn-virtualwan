@@ -21,6 +21,41 @@ resource "azurerm_firewall" "fw" {
     public_ip_count = each.value.vhub_public_ip_count
   }
 }
+
+resource "azurerm_monitor_diagnostic_setting" "this" {
+  for_each = local.flattened_diagnostic_settings
+
+  name                           = each.value.data.name != null ? each.value.data.name : "diag-${azurerm_firewall.fw[each.value.virtual_hub_key].name}"
+  target_resource_id             = azurerm_firewall.fw[each.value.virtual_hub_key].id
+  eventhub_authorization_rule_id = each.value.data.event_hub_authorization_rule_resource_id
+  eventhub_name                  = each.value.data.event_hub_name
+  log_analytics_destination_type = each.value.data.log_analytics_destination_type
+  log_analytics_workspace_id     = each.value.data.workspace_resource_id
+  partner_solution_id            = each.value.data.marketplace_partner_resource_id
+  storage_account_id             = each.value.data.storage_account_resource_id
+
+  dynamic "enabled_log" {
+    for_each = each.value.data.log_categories
+
+    content {
+      category = enabled_log.value
+    }
+  }
+  dynamic "enabled_log" {
+    for_each = each.value.data.log_groups
+
+    content {
+      category_group = enabled_log.value
+    }
+  }
+  dynamic "enabled_metric" {
+    for_each = each.value.data.metric_categories
+
+    content {
+      category = enabled_metric.value
+    }
+  }
+}
 ```
 
 <!-- markdownlint-disable MD033 -->
@@ -43,6 +78,7 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_firewall.fw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/firewall) (resource)
+- [azurerm_monitor_diagnostic_setting.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -52,6 +88,42 @@ No required inputs.
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### <a name="input_diagnostic_settings"></a> [diagnostic\_settings](#input\_diagnostic\_settings)
+
+Description:   A map of diagnostic settings to create on the firewall. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+
+  The first map key is that of the Virtual Hub key, as defined in the `virtual_hubs` variable. The second map key is arbitrary to define multiple diagnostic settings on each firewall.
+
+  - `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
+  - `log_categories` - (Optional) A set of log categories to send to the log analytics workspace. Defaults to `[]`.
+  - `log_groups` - (Optional) A set of log groups to send to the log analytics workspace. Defaults to `["allLogs"]`.
+  - `metric_categories` - (Optional) A set of metric categories to send to the log analytics workspace. Defaults to `["AllMetrics"]`.
+  - `log_analytics_destination_type` - (Optional) The destination type for the diagnostic setting. Possible values are `Dedicated` and `AzureDiagnostics`. Defaults to `Dedicated`.
+  - `workspace_resource_id` - (Optional) The resource ID of the log analytics workspace to send logs and metrics to.
+  - `storage_account_resource_id` - (Optional) The resource ID of the storage account to send logs and metrics to.
+  - `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
+  - `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
+  - `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
+
+Type:
+
+```hcl
+map(map(object({
+    name                                     = optional(string, null)
+    log_categories                           = optional(set(string), [])
+    log_groups                               = optional(set(string), ["allLogs"])
+    metric_categories                        = optional(set(string), ["AllMetrics"])
+    log_analytics_destination_type           = optional(string, "Dedicated")
+    workspace_resource_id                    = optional(string, null)
+    storage_account_resource_id              = optional(string, null)
+    event_hub_authorization_rule_resource_id = optional(string, null)
+    event_hub_name                           = optional(string, null)
+    marketplace_partner_resource_id          = optional(string, null)
+  })))
+```
+
+Default: `{}`
 
 ### <a name="input_firewalls"></a> [firewalls](#input\_firewalls)
 
@@ -97,6 +169,10 @@ The following outputs are exported:
 ### <a name="output_azure_firewall_resource_names"></a> [azure\_firewall\_resource\_names](#output\_azure\_firewall\_resource\_names)
 
 Description: Azure Firewall resource name
+
+### <a name="output_diagnostic_settings_resource_ids"></a> [diagnostic\_settings\_resource\_ids](#output\_diagnostic\_settings\_resource\_ids)
+
+Description: Value of the diagnostic settings resource ID for Azure Firewall
 
 ### <a name="output_private_ip_address"></a> [private\_ip\_address](#output\_private\_ip\_address)
 

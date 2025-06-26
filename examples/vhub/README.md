@@ -9,6 +9,11 @@ resource "random_pet" "vvan_name" {
   separator = "-"
 }
 
+resource "random_pet" "law" {
+  length    = 2
+  separator = "-"
+}
+
 locals {
   location            = "australiaeast"
   resource_group_name = "rg-avm-vwan-${random_pet.vvan_name.id}"
@@ -19,6 +24,18 @@ locals {
   virtual_hub_key  = "aue-vhub"
   virtual_hub_name = "vhub-avm-vwan-${random_pet.vvan_name.id}"
   virtual_wan_name = "vwan-avm-vwan-${random_pet.vvan_name.id}"
+}
+
+resource "azurerm_resource_group" "law" {
+  name     = "rg-${random_pet.law.id}"
+  location = local.location
+}
+
+resource "azurerm_log_analytics_workspace" "test" {
+  name                = "law-${random_pet.law.id}"
+  location            = local.location
+  resource_group_name = azurerm_resource_group.law.name
+  sku                 = "PerGB2018"
 }
 
 module "vwan_with_vhub" {
@@ -53,6 +70,13 @@ module "vwan_with_vhub" {
     }
   }
   virtual_wan_tags = local.tags
+  diagnostic_settings_azure_firewall = {
+    (local.virtual_hub_key) = {
+      diags = {
+        workspace_resource_id = azurerm_log_analytics_workspace.test.id
+      }
+    }
+  }
 }
 ```
 
@@ -71,6 +95,9 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
+- [azurerm_log_analytics_workspace.test](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) (resource)
+- [azurerm_resource_group.law](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [random_pet.law](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
 - [random_pet.vvan_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) (resource)
 
 <!-- markdownlint-disable MD013 -->

@@ -13,6 +13,16 @@ output "ergw_id" {
   value       = var.expressroute_gateways != null ? [for gw in module.express_route_gateways.resource_object : gw.id] : null
 }
 
+output "express_route_connection_resource_ids" {
+  description = "A list of Azure ExpressRoute Connection resource IDs."
+  value       = var.er_circuit_connections != null ? module.er_connections.resource_id : null
+}
+
+output "express_route_connections" {
+  description = "A list of Azure ExpressRoute Connection resources."
+  value       = var.er_circuit_connections != null ? module.er_connections.resource : null
+}
+
 output "firewall_ip_addresses" {
   description = "Azure Firewall IP addresses."
   value = var.firewalls != null ? { for key, value in module.firewalls.resource_object : key => {
@@ -57,6 +67,16 @@ output "s2s_vpn_gw_id" {
   value       = var.vpn_gateways != null ? [for gw in module.vpn_gateway.resource_object : gw.id] : null
 }
 
+output "virtual_network_connection_resource_ids" {
+  description = "A list of Azure Virtual Network Connection resource IDs."
+  value       = var.virtual_network_connections != null ? module.virtual_network_connections.resource_id : null
+}
+
+output "virtual_network_connections" {
+  description = "A list of Azure Virtual Network Connection resources."
+  value       = var.virtual_network_connections != null ? module.virtual_network_connections.resource : null
+}
+
 output "virtual_wan_id" {
   description = "Virtual WAN ID"
   value       = azurerm_virtual_wan.virtual_wan != null ? azurerm_virtual_wan.virtual_wan.id : null
@@ -72,32 +92,12 @@ output "vpn_gateway_resource_names" {
   value       = var.vpn_gateways != null ? { for key, value in module.vpn_gateway.resource_object : key => value.id } : null
 }
 
-output "vpn_site_connections" {
-  description = "A map of Azure VPN Site Connection resources with the map keys of the `vpn_site_connections` variable."
-  value       = var.vpn_site_connections != null ? module.vpn_site_connection.resource : null
-}
-
 output "vpn_site_connection_resource_ids" {
   description = "A map of Azure VPN Site Connection resource IDs with the map keys of the `vpn_site_connections` variable."
   value       = var.vpn_site_connections != null ? module.vpn_site_connection.resource_id : null
 }
 
-output "express_route_connections" {
-  description = "A list of Azure ExpressRoute Connection resources."
-  value       = var.er_circuit_connections != null ? module.er_connections.resource : null
-}
-
-output "express_route_connection_resource_ids" {
-  description = "A list of Azure ExpressRoute Connection resource IDs."
-  value       = var.er_circuit_connections != null ? module.er_connections.resource_id : null
-}
-
-output "virtual_network_connections" {
-  description = "A list of Azure Virtual Network Connection resources."
-  value       = var.virtual_network_connections != null ? module.virtual_network_connections.resource : null
-}
-
-output "virtual_network_connection_resource_ids" {
-  description = "A list of Azure Virtual Network Connection resource IDs."
-  value       = var.virtual_network_connections != null ? module.virtual_network_connections.resource_id : null
+output "vpn_site_connections" {
+  description = "A map of Azure VPN Site Connection resources with the map keys of the `vpn_site_connections` variable."
+  value       = var.vpn_site_connections != null ? module.vpn_site_connection.resource : null
 }

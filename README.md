@@ -830,6 +830,14 @@ Description: ExpressRoute Gateway Objects
 
 Description: ExpressRoute Gateway ID
 
+### <a name="output_express_route_connection_resource_ids"></a> [express\_route\_connection\_resource\_ids](#output\_express\_route\_connection\_resource\_ids)
+
+Description: A list of Azure ExpressRoute Connection resource IDs.
+
+### <a name="output_express_route_connections"></a> [express\_route\_connections](#output\_express\_route\_connections)
+
+Description: A list of Azure ExpressRoute Connection resources.
+
 ### <a name="output_firewall_ip_addresses"></a> [firewall\_ip\_addresses](#output\_firewall\_ip\_addresses)
 
 Description: Azure Firewall IP addresses.
@@ -910,6 +918,14 @@ Description: A map of Azure Virtual Hub resource IDs with the map keys of the `v
 
 Description: A map of Azure Virtual Hub resource names with the map keys of the `virtual_hubs` variable.
 
+### <a name="output_virtual_network_connection_resource_ids"></a> [virtual\_network\_connection\_resource\_ids](#output\_virtual\_network\_connection\_resource\_ids)
+
+Description: A list of Azure Virtual Network Connection resource IDs.
+
+### <a name="output_virtual_network_connections"></a> [virtual\_network\_connections](#output\_virtual\_network\_connections)
+
+Description: A list of Azure Virtual Network Connection resources.
+
 ### <a name="output_virtual_wan_id"></a> [virtual\_wan\_id](#output\_virtual\_wan\_id)
 
 Description: Virtual WAN ID
@@ -921,6 +937,14 @@ Description: A map of Azure VPN Gateway resource IDs with the map keys of the `v
 ### <a name="output_vpn_gateway_resource_names"></a> [vpn\_gateway\_resource\_names](#output\_vpn\_gateway\_resource\_names)
 
 Description: A map of Azure VPN Gateway resource names with the map keys of the `vpn_gateways` variable.
+
+### <a name="output_vpn_site_connection_resource_ids"></a> [vpn\_site\_connection\_resource\_ids](#output\_vpn\_site\_connection\_resource\_ids)
+
+Description: A map of Azure VPN Site Connection resource IDs with the map keys of the `vpn_site_connections` variable.
+
+### <a name="output_vpn_site_connections"></a> [vpn\_site\_connections](#output\_vpn\_site\_connections)
+
+Description: A map of Azure VPN Site Connection resources with the map keys of the `vpn_site_connections` variable.
 
 ## Modules
 

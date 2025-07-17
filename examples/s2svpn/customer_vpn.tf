@@ -58,10 +58,10 @@ resource "azurerm_virtual_network_gateway" "gw" {
   vpn_type            = "RouteBased"
 
   ip_configuration {
-    public_ip_address_id          = azurerm_public_ip.gw_ip.id
     subnet_id                     = azurerm_subnet.gwsubnet.id
     name                          = "gw-ip-config"
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.gw_ip.id
   }
   bgp_settings {
     asn = 65001

@@ -269,6 +269,7 @@ variable "p2s_gateways" {
     name                                     = string
     virtual_hub_key                          = string
     tags                                     = optional(map(string))
+    dns_servers                              = optional(list(string))
     p2s_gateway_vpn_server_configuration_key = string
     connection_configuration = object({
       name = string
@@ -289,6 +290,7 @@ variable "p2s_gateways" {
   - `name`: Name for the Point-to-Site VPN Gateway.
   - `virtual_hub_key`: The arbitrary key specified in the map of objects variable called `virtual_hubs` for the object specifying the Virtual Hub you wish to deploy this Point-to-Site VPN Gateway into.
   - `tags`: Optional tags to apply to the Point-to-Site VPN Gateway resource.
+  - `dns_servers`: Optional list of IP Addresses of DNS Servers for the Point-to-Site VPN Gateway.
   - `p2s_gateway_vpn_server_configuration_key`: The key of the VPN Server Configuration you wish to use for this Point-to-Site VPN Gateway from the `p2s_gateway_vpn_server_configurations` variable.
   - `connection_configuration`: Object for the connection configuration, which includes:
     - `name`: Name for the connection configuration.

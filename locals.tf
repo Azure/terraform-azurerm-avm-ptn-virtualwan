@@ -38,6 +38,7 @@ locals {
       connection_configuration                 = gw.connection_configuration
       p2s_gateway_vpn_server_configuration_key = gw.p2s_gateway_vpn_server_configuration_key
       tags                                     = try(gw.tags, null) == null ? var.tags : gw.tags
+      dns_servers                              = gw.dns_servers
     }
   } : null
   routing_intents = {

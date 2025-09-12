@@ -13,6 +13,11 @@ output "ergw_id" {
   value       = var.expressroute_gateways != null ? [for gw in module.express_route_gateways.resource_object : gw.id] : null
 }
 
+output "ergw_resource_ids_by_hub_key" {
+  description = "A map of Azure Firewall resource IDs with the map keys of the `firewalls` variable."
+  value       = try(var.expressroute_gateways, null) != null ? { for key, value in var.expressroute_gateways : value.virtual_hub_key => module.express_route_gateways.resource_object[key].id } : null
+}
+
 output "firewall_ip_addresses" {
   description = "Azure Firewall IP addresses."
   value = var.firewalls != null ? { for key, value in module.firewalls.resource_object : key => {

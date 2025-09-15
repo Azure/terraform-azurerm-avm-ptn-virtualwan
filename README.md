@@ -127,6 +127,9 @@ The following resources are used by this module:
 
 - [azurerm_point_to_site_vpn_gateway.p2s_gateway](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/point_to_site_vpn_gateway) (resource)
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_virtual_hub.virtual_hub](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub) (resource)
+- [azurerm_virtual_hub_connection.hub_connection](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_connection) (resource)
+- [azurerm_virtual_hub_route_table.virtual_hub_route_table](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_route_table) (resource)
 - [azurerm_virtual_hub_routing_intent.routing_intent](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_hub_routing_intent) (resource)
 - [azurerm_virtual_wan.virtual_wan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_wan) (resource)
 - [azurerm_vpn_server_configuration.p2s_gateway_vpn_server_configuration](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/vpn_server_configuration) (resource)
@@ -190,7 +193,7 @@ Default: `false`
 
 Description:   A map of diagnostic settings to create on the firewalls. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-  The first map key is that of the Virtual Hub key, as defined in the `virtual_hubs` variable.  
+  The first map key is that of the Virtual Hub key, as defined in the `virtual_hubs` variable.
   The second map key is arbitrary to define multiple diagnostic settings on each firewall.
 
   - `name` - (Optional) The name of the diagnostic setting. One will be generated if not set, however this will not be unique if you want to create multiple diagnostic setting resources.
@@ -233,8 +236,8 @@ Default: `false`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
-Description: This variable controls whether or not telemetry is enabled for the module.  
-For more information see <https://aka.ms/avm/telemetryinfo>.  
+Description: This variable controls whether or not telemetry is enabled for the module.
+For more information see <https://aka.ms/avm/telemetryinfo>.
 If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
@@ -275,10 +278,12 @@ map(object({
     enable_internet_security             = optional(bool)
     express_route_gateway_bypass_enabled = optional(bool)
     routing = optional(object({
-      associated_route_table_id = string
+      associated_route_table_id = optional(string)
+      associated_route_table_key = optional(string
       propagated_route_table = optional(object({
-        route_table_ids = optional(list(string))
-        labels          = optional(list(string))
+        route_table_ids  = optional(list(string))
+        route_table_keys = optional(list(string))
+        labels           = optional(list(string))
       }))
       inbound_route_map_id  = optional(string)
       outbound_route_map_id = optional(string)
@@ -291,7 +296,7 @@ Default: `{}`
 
 ### <a name="input_expressroute_gateways"></a> [expressroute\_gateways](#input\_expressroute\_gateways)
 
-Description:   
+Description:
 Map of objects for Express Route Gateways to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
 The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
@@ -320,7 +325,7 @@ Default: `{}`
 
 ### <a name="input_firewalls"></a> [firewalls](#input\_firewalls)
 
-Description:   
+Description:
 Map of objects for Azure Firewall resources to deploy into the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
 
 The key is deliberately arbitrary to avoid issues with known after apply values. The value is an object, of which there can be multiple in the map:
@@ -546,6 +551,39 @@ map(object({
 
 Default: `{}`
 
+### <a name="input_virtual_hub_route_tables"></a> [virtual\_hub\_route\_tables](#input\_virtual\_hub\_route\_tables)
+
+Description: - `name` - (Required) The name which should be used for Virtual Hub Route Table. Changing this forces a new resource to be created.
+- `virtual_hub_key` - (Required) The key of the Virtual Hub within which this route table should be created. Changing this forces a new resource to be created.
+- `labels` - (Optional) List of labels associated with this route table.
+- `routes` - (Optional) A map of routes in the Virtual Hub Route Table. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+ - `name` - (Required) The name which should be used for this route.
+ - `destinations` - (Required) A list of destination addresses for this route.
+ - `destinations_type` - (Required) The type of destinations. Possible values are CIDR, ResourceId and Service.
+ - `next_hop` - (Optional) The next hop's resource ID. Required if `vnet_connection_key` is not defined.
+ - `vnet_connection_key` - (Optional) The next hop vnet connection's key. Required if `next_hop` is not defined.
+ - `next_hop_type` - (Optional) The type of next hop. Currently the only possible value is ResourceId. Defaults to ResourceId.
+
+Type:
+
+```hcl
+map(object({
+    name            = string
+    virtual_hub_key = string
+    labels          = optional(list(string))
+    routes = optional(map(object({
+      name                = string
+      destinations        = list(string)
+      destinations_type   = string
+      next_hop            = optional(string)
+      vnet_connection_key = optional(string)
+      next_hop_type       = string
+    })))
+  }))
+```
+
+Default: `{}`
+
 ### <a name="input_virtual_network_connections"></a> [virtual\_network\_connections](#input\_virtual\_network\_connections)
 
 Description:   Map of objects for Virtual Network connections to connect Virtual Networks to the Virtual WAN Virtual Hubs that have been defined in the variable `virtual_hubs`.
@@ -577,7 +615,8 @@ map(object({
     remote_virtual_network_id = string
     internet_security_enabled = optional(bool, false)
     routing = optional(object({
-      associated_route_table_id = string
+      associated_route_table_id = optional(string)
+      associated_route_table_key = optional(string
       propagated_route_table = optional(object({
         route_table_ids = optional(list(string), [])
         labels          = optional(list(string), [])
@@ -740,8 +779,9 @@ map(object({
     routing = optional(object({
       associated_route_table = string
       propagated_route_table = optional(object({
-        route_table_ids = optional(list(string))
-        labels          = optional(list(string))
+        route_table_ids  = optional(list(string))
+        route_table_keys = optional(list(string))
+        labels           = optional(list(string))
       }))
       inbound_route_map_id  = optional(string)
       outbound_route_map_id = optional(string)

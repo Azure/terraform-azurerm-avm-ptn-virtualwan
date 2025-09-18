@@ -48,7 +48,7 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
   for_each = var.virtual_hub_route_tables
 
   name           = each.value.name
-  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
+  virtual_hub_id = module.virtual_hubs.resource_id[each.value.virtual_hub_key]
   labels         = each.value.labels
 
   dynamic "route" {
@@ -58,7 +58,7 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
       destinations      = route.value.destinations
       destinations_type = route.value.destinations_type
       name              = route.value.name
-      next_hop          = try(azurerm_virtual_hub_connection.hub_connection[route.value.vnet_connection_key].id, route.value.next_hop)
+      next_hop          = try(module.virtual_network_connections.resource_object[route.value.vnet_connection_key].id, route.value.next_hop)
       next_hop_type     = route.value.next_hop_type
     }
   }

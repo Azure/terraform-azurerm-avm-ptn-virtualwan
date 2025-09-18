@@ -48,7 +48,7 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
   for_each = var.virtual_hub_route_tables
 
   name           = each.value.name
-  virtual_hub_id = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_key].id
+  virtual_hub_id = module.virtual_hubs.resource_id[each.value.virtual_hub_key]
   labels         = each.value.labels
 
   dynamic "route" {

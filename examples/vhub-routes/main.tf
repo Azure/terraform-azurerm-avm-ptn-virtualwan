@@ -66,15 +66,15 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 resource "azurerm_virtual_network" "vnet" {
-  address_space       = local.vnet01.address_space
   location            = azurerm_resource_group.rg.location
   name                = local.vnet01.name
   resource_group_name = azurerm_resource_group.rg.name
+  address_space       = local.vnet01.address_space
   dns_servers         = local.vnet01.dns_servers
   tags                = local.tags
 
   subnet {
-    name           = local.vnet01.subnet1.name
+    name = local.vnet01.subnet1.name
   }
   subnet {
     name           = local.vnet01.subnet2.name
@@ -83,18 +83,15 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 module "vwan_with_vhub" {
-  source                         = "../../"
-  create_resource_group          = true
-  resource_group_name            = local.resource_group_name
-  location                       = local.location
-  virtual_wan_name               = local.virtual_wan_name
-  disable_vpn_encryption         = false
-  allow_branch_to_branch_traffic = true
-  type                           = "Standard"
-  virtual_wan_tags               = local.tags
-  virtual_network_connections    = local.vnet_connections
-  virtual_hubs                   = local.vhubs
+  source = "../../"
 
+  location                       = local.location
+  resource_group_name            = local.resource_group_name
+  virtual_wan_name               = local.virtual_wan_name
+  allow_branch_to_branch_traffic = true
+  create_resource_group          = true
+  disable_vpn_encryption         = false
+  type                           = "Standard"
   virtual_hub_route_tables = {
     aue-rt1 = {
       name            = "example-vhubroutetable"
@@ -113,4 +110,7 @@ module "vwan_with_vhub" {
     }
 
   }
+  virtual_hubs                = local.vhubs
+  virtual_network_connections = local.vnet_connections
+  virtual_wan_tags            = local.tags
 }

@@ -1,7 +1,11 @@
-# Terraform Verified Module for Azure Virtual WAN Hub Networking
+⚠️THIS MODULE IS DEPRECATED.⚠️
 
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Azure/terraform-azurerm-vwan.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-vwan "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/Azure/terraform-azurerm-vwan.svg)](http://isitmaintained.com/project/Azure/terraform-azurerm-vwan "Percentage of issues still open")
+- It will no longer receive any updates.
+- The module can still be used as is (references to any existing versions will keep working), but it is not recommended for new deployments.
+- It is recommended to migrate to a replacement/alternative version of the module, if available.
+- The code for this module was migrated to a submodule [here](https://registry.terraform.io/modules/Azure/avm-ptn-alz-connectivity-virtual-wan/azurerm/latest/submodules/virtual-wan).
+
+# Terraform Verified Module for Azure Virtual WAN Hub Networking
 
 This module is designed to simplify the creation of virtual wan based networks in Azure.
 

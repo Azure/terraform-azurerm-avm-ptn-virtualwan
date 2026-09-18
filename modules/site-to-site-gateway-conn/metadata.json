@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "network/virtual-wan/site-to-site-gateway-conn",
+  "moduleDescription": "AVM Terraform pattern module for network/virtual-wan/site-to-site-gateway-conn.",
+  "canonicalType": "network/virtual-wan/site-to-site-gateway-conn",
+  "telemetryIdPrefix": "46d3xtrf.ptn.11c5108"
+}
